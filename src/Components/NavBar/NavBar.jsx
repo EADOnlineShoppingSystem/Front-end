@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  DialogTitle,
   TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -83,7 +82,6 @@ const NavBar = () => {
     { label: "Sign in", href: "#" },
   ];
 
-  // Mobile menu item with dropdown
   const MobileMenuItem = ({ item, index }) => (
     <div className="w-full">
       <button
@@ -128,21 +126,21 @@ const NavBar = () => {
   return (
     <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
       <header className="">
-        <div className="px-4 mx-auto sm:px-6 lg:px-8 lg:mt-1">
+        <div className="mx-auto">
           {/* Desktop Navigation */}
-          <nav className="relative flex items-center justify-between h-12 lg:h-12">
+          <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-50">
             <div className="flex-shrink-0 ml-10">
               <a href="#" title="" className="flex">
                 <img
                   className="w-auto h-5 lg:h-6"
-                  src="/public/icons/logo.png"
+                  src="/icons/logo.png"
                   alt=""
                 />
               </a>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex lg:items-center lg:space-x-10">
+            <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {menuItems.map((item, index) => (
                 <div key={index} className="relative group">
                   <a href="#" className="text-sm text-white  relative py-1">
@@ -152,7 +150,7 @@ const NavBar = () => {
                     </span>
                     {item.items.length > 0 && (
                       <svg
-                        className="w-4 h-4 ml-1 inline-block text-gray-500 opacity-90"
+                        className="w-4 h-4 ml-1 inline-block text-gray-300 opacity-80"
                         fill="none"
                         strokeLinecap="round"
                         strokeLinejoin="round"
