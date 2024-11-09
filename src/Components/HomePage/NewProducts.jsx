@@ -108,7 +108,7 @@ const NewProducts = () => {
                             <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                               {selectedVariant
                                 ? selectedVariant.color
-                                : "Default"}
+                                : "Available Colors"}
                             </p>
                           </div>
                         </a>
