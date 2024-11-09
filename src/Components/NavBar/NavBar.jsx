@@ -113,7 +113,7 @@ const NavBar = () => {
             <a
               key={subIndex}
               href="#"
-              className="block py-2 text-sm text-gray-400 hover:text-white transition-colors duration-200"
+              className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200"
             >
               {subItem}
             </a>
@@ -266,7 +266,7 @@ const NavBar = () => {
         >
           <div className="px-4 mx-auto sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold tracking-widest text-gray-400 uppercase">
+              <p className="text-md font-semibold tracking-widest text-gray-100 uppercase">
                 Menu
               </p>
 
@@ -310,7 +310,7 @@ const NavBar = () => {
                   <a
                     key={index}
                     href={item.href}
-                    className="py-2 text-base font-medium text-white transition-all duration-200 focus:text-gray-400"
+                    className="py-2 text-base font-medium text-white transition-all duration-200 focus:text-gray-200"
                   >
                     {item.icon}
                     {item.label}
