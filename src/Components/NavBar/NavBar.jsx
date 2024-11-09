@@ -130,7 +130,7 @@ const NavBar = () => {
           {/* Desktop Navigation */}
           <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-50">
             <div className="flex-shrink-0 ml-10">
-              <a href="#" title="" className="flex">
+              <a href="/" title="" className="flex">
                 <img
                   className="w-auto h-5 lg:h-6"
                   src="/icons/logo.png"

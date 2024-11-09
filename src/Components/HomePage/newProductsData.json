@@ -1,0 +1,422 @@
+[{
+        "title": "iPhone 16 Pro Max",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/1.png",
+        "defaultHoverImage": "/newProducts/1_1.png",
+        "variants": [
+            {
+                "color": "Black Titanium",
+                "colorHex": "#444444",
+                "variantImage": "/newProducts/Types/16_Pro_Max/1.png"
+            },
+            {
+                "color": "Desert Titanium",
+                "colorHex": "#C1A895",
+                "variantImage": "/newProducts/Types/16_Pro_Max/2.png"
+            },
+            {
+                "color": "Natural Titanium",
+                "colorHex": "#BCBBA9",
+                "variantImage": "/newProducts/Types/16_Pro_Max/3.png"
+            },
+            {
+                "color": "White Titanium",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/16_Pro_Max/4.png"
+            }
+        ],
+        "price": "LKR 369,900.00 – LKR 649,900.00"
+    },
+    
+    {
+        "title": "iPhone 16 Pro",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/2.png",
+        "defaultHoverImage": "/newProducts/2.png",
+        "variants": [
+            {
+                "color": "Black Titanium",
+                "colorHex": "#444444",
+                "variantImage": "/newProducts/Types/16_Pro/1.png"
+            },
+            {
+                "color": "Desert Titanium",
+                "colorHex": "#C1A895",
+                "variantImage": "/newProducts/Types/16_Pro/2.png"
+            },
+            {
+                "color": "Natural Titanium",
+                "colorHex": "#BCBBA9",
+                "variantImage": "/newProducts/Types/16_Pro/3.png"
+            },
+            {
+                "color": "White Titanium",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/16_Pro/4.png"
+            }
+        ],
+        "price": "LKR 369,900.00 – LKR 649,900.00"
+    },
+    {
+        "title": "iPhone 16 Plus",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/3.png",
+        "defaultHoverImage": "/newProducts/3_1.png",
+        "variants": [
+            {
+                "color": "Black",
+                "colorHex": "#34303A",
+                "variantImage": "/newProducts/Types/16_Plus/1.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/newProducts/Types/16_Plus/2.png"
+            },
+            {
+                "color": "Teal",
+                "colorHex": "#008080",
+                "variantImage": "/newProducts/Types/16_Plus/3.png"
+            },
+            {
+                "color": "Ultramarine",
+                "colorHex": "#A2B2F8",
+                "variantImage": "/newProducts/Types/16_Plus/4.png"
+            },
+            {
+                "color": "White",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/16_Plus/5.png"
+            }
+        ],
+        "price": "LKR 369,900.00 – LKR 504,900.00"
+    },
+    {
+        "title": "iPhone 16",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/4.png",
+        "defaultHoverImage": "/newProducts/4_1.png",
+        "variants": [
+            {
+                "color": "Black",
+                "colorHex": "#34303A",
+                "variantImage": "/newProducts/Types/16/1.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/newProducts/Types/16/2.png"
+            },
+            {
+                "color": "Teal",
+                "colorHex": "#008080",
+                "variantImage": "/newProducts/Types/16/3.png"
+            },
+            {
+                "color": "Ultramarine",
+                "colorHex": "#A2B2F8",
+                "variantImage": "/newProducts/Types/16/4.png"
+            },
+            {
+                "color": "White",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/16/5.png"
+            }
+        ],
+        "price": "LKR 264,900.00 – LKR 464,900.00"
+    },
+    {
+        "title": "iPhone 15 Pro Max",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/5.png",
+        "defaultHoverImage": "/newProducts/5_1.png",
+        "variants": [
+            {
+                "color": "Blue titanium",
+                "colorHex": "#455767",
+                "variantImage": "/newProducts/Types/15_Pro_Max/1.png"
+            },
+            {
+                "color": "Natural titanium",
+                "colorHex": "#BCBBA9",
+                "variantImage": "/newProducts/Types/15_Pro_Max/2.png"
+            },
+            {
+                "color": "Titanium/Black",
+                "colorHex": "#424242",
+                "variantImage": "/newProducts/Types/15_Pro_Max/3.png"
+            },
+            {
+                "color": "White titanium",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/15_Pro_Max/4.png"
+            }
+        ],
+        "price": "LKR 374,900.00 – LKR 664,900.00"
+    },
+    {
+        "title": "iPhone 15 Plus",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/6.jpg",
+        "defaultHoverImage": "/newProducts/6_1.jpg",
+        "variants": [
+            {
+                "color": "Black",
+                "colorHex": "#36323C",
+                "variantImage": "/newProducts/Types/15_Plus/1.png"
+            },
+            {
+                "color": "Blue",
+                "colorHex": "#457791",
+                "variantImage": "/newProducts/Types/15_Plus/2.png"
+            },
+            {
+                "color": "Green",
+                "colorHex": "#AEBFAC",
+                "variantImage": "/newProducts/Types/15_Plus/3.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/newProducts/Types/15_Plus/4.png"
+            },
+            {
+                "color": "Yellow",
+                "colorHex": "#FFC859",
+                "variantImage": "/newProducts/Types/15_Plus/5.png"
+            }
+        ],
+        "price": "LKR 319,900.00 – LKR 619,900.00"
+    },
+    {
+        "title": "iPhone 15 Pro",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/7.jpg",
+        "defaultHoverImage": "/newProducts/7.jpg",
+        "variants": [
+            {
+                "color": "Blue Titanium",
+                "colorHex": "#455767",
+                "variantImage": "/newProducts/Types/15_Pro/1.png"
+            },
+            {
+                "color": "Natural Titanium",
+                "colorHex": "#BCBBA9",
+                "variantImage": "/newProducts/Types/15_Pro/2.png"
+            },
+            {
+                "color": "Titanium/Black",
+                "colorHex": "#424242",
+                "variantImage": "/newProducts/Types/15_Pro/3.png"
+            },
+            {
+                "color": "White titanium",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/15_Pro/4.png"
+            }
+        ],
+        "price": "LKR 219,900.00 – LKR 449,900.00"
+    },
+    {
+        "title": "iPhone 15",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/8.jpg",
+        "defaultHoverImage": "/newProducts/8_1.jpg",
+        "variants": [
+            {
+                "color": "Black",
+                "colorHex": "#36323C",
+                "variantImage": "/newProducts/Types/15/1.png"
+            },
+            {
+                "color": "Blue",
+                "colorHex": "#457791",
+                "variantImage": "/newProducts/Types/15/2.png"
+            },
+            {
+                "color": "Green",
+                "colorHex": "#AEBFAC",
+                "variantImage": "/newProducts/Types/15/3.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/newProducts/Types/15/4.png"
+            },
+            {
+                "color": "Yellow",
+                "colorHex": "#FFC859",
+                "variantImage": "/newProducts/Types/15/5.png"
+            }
+        ],
+        "price": "LKR 234,900.00 – LKR 459,900.00"
+    },
+    {
+        "title": "iPhone 14 Plus",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/9.jpg",
+        "defaultHoverImage": "/newProducts/9_1.jpg",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/newProducts/Types/14_Plus/1.png"
+            },
+            {
+                "color": "Midnight",
+                "colorHex": "#333A43",
+                "variantImage": "/newProducts/Types/14_Plus/2.png"
+            },
+            {
+                "color": "Purple iPhone",
+                "colorHex": "#E6DDE9",
+                "variantImage": "/newProducts/Types/14_Plus/3.png"
+            },
+            {
+                "color": "Red",
+                "colorHex": "#FC1635",
+                "variantImage": "/newProducts/Types/14_Plus/4.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/newProducts/Types/14_Plus/5.png"
+            },
+            {
+                "color": "Yellow",
+                "colorHex": "#FFC95A",
+                "variantImage": "/newProducts/Types/14_Plus/6.png"
+            }
+        ],
+        "price": "LKR 209,900.00 – LKR 409,900.00"
+    },
+    {
+        "title": "iPhone 14",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/9.jpg",
+        "defaultHoverImage": "/newProducts/9_1.jpg",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/newProducts/Types/14/1.png"
+            },
+            {
+                "color": "Midnight",
+                "colorHex": "#333A43",
+                "variantImage": "/newProducts/Types/14/2.png"
+            },
+            {
+                "color": "Purple iPhone",
+                "colorHex": "#E6DDE9",
+                "variantImage": "/newProducts/Types/14/3.png"
+            },
+            {
+                "color": "Red",
+                "colorHex": "#FC1635",
+                "variantImage": "/newProducts/Types/14/4.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/newProducts/Types/14/5.png"
+            },
+            {
+                "color": "Yellow",
+                "colorHex": "#FFC95A",
+                "variantImage": "/newProducts/Types/14/6.png"
+            }
+        ],
+        "price": "LKR 209,900.00 – LKR 409,900.00"
+    },
+    {
+        "title": "iPhone 13",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/10.jpg",
+        "defaultHoverImage": "/newProducts/10_1.jpg",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#457791",
+                "variantImage": "/newProducts/Types/13/1.png"
+            },
+            {
+                "color": "Green",
+                "colorHex": "#AEBFAC",
+                "variantImage": "/newProducts/Types/13/2.png"
+            },
+            {
+                "color": "Midnight",
+                "colorHex": "#333A43",
+                "variantImage": "/newProducts/Types/13/3.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/newProducts/Types/13/4.png"
+            },
+            {
+                "color": "Red",
+                "colorHex": "#FD1333",
+                "variantImage": "/newProducts/Types/13/5.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/newProducts/Types/13/6.png"
+            }
+        ],
+        "price": "LKR 179,900.00 – LKR 224,900.00"
+    },
+    {
+        "title": "iPhone 12",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/newProducts/11.jpg",
+        "defaultHoverImage": "/newProducts/11_1.jpg",
+        "variants": [
+            {
+                "color": "Black",
+                "colorHex": "#201B21",
+                "variantImage": "/newProducts/Types/12/1.png"
+            },
+            {
+                "color": "Blue",
+                "colorHex": "#083459",
+                "variantImage": "/newProducts/Types/12/2.png"
+            },
+            {
+                "color": "Green",
+                "colorHex": "#DDF6D9",
+                "variantImage": "/newProducts/Types/12/3.png"
+            },
+            {
+                "color": "Purple",
+                "colorHex": "#F5F5F0",
+                "variantImage": "/newProducts/Types/12/4.png"
+            },
+            {
+                "color": "Red",
+                "colorHex": "#E83B3C",
+                "variantImage": "/newProducts/Types/12/5.png"
+            },
+            {
+                "color": "white",
+                "colorHex": "#FAF8F6",
+                "variantImage": "/newProducts/Types/12/6.png"
+            }
+        ],
+        "price": "LKR 204,990.00 – LKR 209,990.00"
+    }
+]
