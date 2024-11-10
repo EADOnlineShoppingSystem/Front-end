@@ -1,0 +1,98 @@
+[
+    {
+        "title": "Apple Watch SE 2024",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/1.png",
+        "defaultHoverImage": "/watch/1_1.png",
+        "price": "LKR 369,900.00 – LKR 649,900.00"
+    },
+    {
+        "title": "Apple Watch Series 10 Titanium",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/2.png",
+        "defaultHoverImage": "/watch/2_1.png",
+        "price": "LKR 369,900.00 – LKR 649,900.00"
+    },
+    {
+        "title": "Apple Watch Series 10 Aluminum",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/3.png",
+        "defaultHoverImage": "/watch/3_1.png",
+        "price": "LKR 369,900.00 – LKR 504,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra 2 Trail Loop",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/4.png",
+        "defaultHoverImage": "/watch/4_1.png",
+        "price": "LKR 264,900.00 – LKR 464,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra 2 Ocean Band",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/5.png",
+        "defaultHoverImage": "/watch/5_1.png",
+        "price": "LKR 374,900.00 – LKR 664,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra 2 Alpine Loop",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/6.png",
+        "defaultHoverImage": "/watch/6_1.png",
+        "price": "LKR 319,900.00 – LKR 619,900.00"
+    },
+    {
+        "title": "Apple Watch Series 9 Aluminum",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/7.png",
+        "defaultHoverImage": "/watch/7_1.png",
+        "price": "LKR 219,900.00 – LKR 449,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra – Ocean Band",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/8.png",
+        "defaultHoverImage": "/watch/8_1.png",
+        "price": "LKR 234,900.00 – LKR 459,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra – Trail Loop",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/9.png",
+        "defaultHoverImage": "/watch/9_1.png",
+        "price": "LKR 209,900.00 – LKR 409,900.00"
+    },
+    {
+        "title": "Apple Watch Ultra – Alpine Loop",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/10.png",
+        "defaultHoverImage": "/watch/10_1.png",
+        "price": "LKR 209,900.00 – LKR 409,900.00"
+    },
+    {
+        "title": "Apple Watch series 8",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/11.png",
+        "defaultHoverImage": "/watch/11.png",
+        "price": "LKR 179,900.00 – LKR 224,900.00"
+    },
+    {
+        "title": "Apple Watch Series 7 Nike",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/watch/12.png",
+        "defaultHoverImage": "/watch/12.png",
+        "price": "LKR 204,990.00 – LKR 209,990.00"
+    }
+]

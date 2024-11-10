@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 // Import category data from JSON file
-import categoriesData from "./newProductsData.json";
+import categoriesData from "./Data/newProductsData.json";
 
 const NewProducts = () => {
   const [hoveredStates, setHoveredStates] = useState({});
@@ -28,7 +28,7 @@ const NewProducts = () => {
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
             The latest. Take a look at{" "}
             <span className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text">
-              what's new,
+              what&apos;s new,
             </span>{" "}
             right now.
           </h2>

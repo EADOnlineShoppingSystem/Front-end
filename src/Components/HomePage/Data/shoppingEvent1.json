@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "imageUrl": "/shoppingEvent/L_1.jpeg",
+        "alt": "Shopping Slide 1"
+    },
+    {
+        "id": 2,
+        "imageUrl": "/shoppingEvent/L_9.jpeg",
+        "alt": "Shopping Slide 2"
+    },
+    {
+        "id": 8,
+        "imageUrl": "/shoppingEvent/L_8.jpeg",
+        "alt": "Shopping Slide 8"
+    },
+    {
+        "id": 11,
+        "imageUrl": "/shoppingEvent/L_11.jpeg",
+        "alt": "Shopping Slide 11"
+    }
+]
