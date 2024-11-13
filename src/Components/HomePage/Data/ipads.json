@@ -1,0 +1,271 @@
+[
+    {
+        "title": "iPad Mini 7",
+        "href": "/category/smartphones",
+        "defaultImage": "/iPads/iPad_Mini_7/1_p.png",
+        "defaultHoverImage": "/iPads/iPad_Mini_7/1_b.png",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/iPads/iPad_Mini_7/1_b.png"
+            },
+            {
+                "color": "Purple",
+                "colorHex": "#BAB2E7",
+                "variantImage": "/iPads/iPad_Mini_7/1_p.png"
+            },
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Mini_7/1_g.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/iPads/iPad_Mini_7/1_w.png"
+            }
+        ],
+        "price": "LKR 199,900.00 – LKR 309,900.00"
+    },
+    {
+        "title": "iPad Air M2",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Air_M2/1_b.png",
+        "defaultHoverImage": "/iPads/iPad_Air_M2/1_h.png",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/iPads/iPad_Air_M2/1_b.png"
+            },
+            {
+                "color": "Purple",
+                "colorHex": "#BAB2E7",
+                "variantImage": "/iPads/iPad_Air_M2/1_pur.png"
+            },
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Air_M2/1_g.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/iPads/iPad_Air_M2/1_w.png"
+            }
+        ],
+        "price": "LKR 214,900.00 – LKR 449,900.00"
+    },
+    {
+        "title": "iPad Pro M4",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Pro_M4/1_m.png",
+        "defaultHoverImage": "/iPads/iPad_Pro_M4/1_h.png",
+        "variants": [
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Pro_M4/1_h.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#F1F3F2",
+                "variantImage": "/iPads/iPad_Pro_M4/1_m.png"
+            }
+        ],
+        "price": "LKR 309,900.00 – LKR 769,000.00"
+    },
+    {
+        "title": "iPad ( 10th Gen )",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Gen_10/1_b.png",
+        "defaultHoverImage": "/iPads/iPad_Gen_10/1_b.png",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/iPads/iPad_Gen_10/1_b.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/iPads/iPad_Gen_10/1_p.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#F2F4F3",
+                "variantImage": "/iPads/iPad_Gen_10/1_s.png"
+            },
+            {
+                "color": "Yellow",
+                "colorHex": "#FFC858",
+                "variantImage": "/iPads/iPad_Gen_10/1_y.png"
+            }
+        ],
+        "price": "LKR 134,900.00 – LKR 219,900.00"
+    },
+    {
+        "title": "iPad Pro M2",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Pro_M2/1_m.png",
+        "defaultHoverImage": "/iPads/iPad_Pro_M2/1_h.png",
+        "variants": [
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Pro_M2/1_g.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#F1F3F2",
+                "variantImage": "/iPads/iPad_Pro_M2/1_s.png"
+            }
+        ],
+        "price": "LKR 274,900.00 – LKR 419,900.00"
+    },
+    {
+        "title": "iPad Pro M1",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Pro_M1/1_g.png",
+        "defaultHoverImage": "/iPads/iPad_Pro_M1/1_g.png",
+        "variants": [
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Pro_M1/1_g.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#F1F3F2",
+                "variantImage": "/iPads/iPad_Pro_M1/1_s.png"
+            }
+        ],
+        "price": "LKR 259,900.00 – LKR 389,900.00"
+    },
+    {
+        "title": "iPad ( 9th Gen )",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Gen_9/1_g.png",
+        "defaultHoverImage": "/iPads/iPad_Gen_9/1_g.png",
+        "variants": [
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Gen_9/1_g.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#F1F3F2",
+                "variantImage": "/iPads/iPad_Gen_9/1_s.png"
+            }
+        ],
+        "price": "LKR 109,900.00 – LKR 189,900.00"
+    },
+    {
+        "title": "iPad Air ( 5th Gen )",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Gen_5/1_g.png",
+        "defaultHoverImage": "/iPads/iPad_Gen_5/1_g.png",
+        "variants": [
+            {
+                "color": "Blue",
+                "colorHex": "#447690",
+                "variantImage": "/iPads/iPad_Gen_5/1_b.png"
+            },
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/iPads/iPad_Gen_5/1_p.png"
+            },
+            {
+                "color": "Purple",
+                "colorHex": "#BAB2E7",
+                "variantImage": "/iPads/iPad_Gen_5/1_pur.png"
+            },
+            {
+                "color": "Space Gray",
+                "colorHex": "#B2B5B9",
+                "variantImage": "/iPads/iPad_Air_M2/1_g.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/iPads/iPad_Gen_5/1_w.png"
+            }
+        ],
+        "price": "LKR 199,900.00 – LKR 314,900.00"
+    },
+    {
+        "title": "iPad Air ( 4th Gen )",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Gen_4/1_g.png",
+        "defaultHoverImage": "/iPads/iPad_Gen_4/1_g.png",
+        "variants": [
+            {
+                "color": "Sky Blue",
+                "colorHex": "#A6B8C6",
+                "variantImage": "/iPads/iPad_Gen_4/1_c.png"
+            },
+            {
+                "color": "Green",
+                "colorHex": "#B1C4AE",
+                "variantImage": "/iPads/iPad_Gen_4/1_c.png"
+            },
+            {
+                "color": "Rose Gold",
+                "colorHex": "#D6AEA6",
+                "variantImage": "/iPads/iPad_Gen_4/1_c.png"
+            },
+            {
+                "color": "Space Gray",
+                "colorHex": "#45464A",
+                "variantImage": "/iPads/iPad_Gen_4/1_c.png"
+            },
+            {
+                "color": "Silver",
+                "colorHex": "#BDBEC0",
+                "variantImage": "/iPads/iPad_Gen_4/1_c.png"
+            }
+        ],
+        "price": "LKR 209,900.00 – LKR 225,000.00"
+    },
+    {
+        "title": "iPad Mini 6",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/iPads/iPad_Mini_6/1_m.png",
+        "defaultHoverImage": "/iPads/iPad_Mini_6/1_h.png",
+        "variants": [
+            {
+                "color": "Pink",
+                "colorHex": "#E7D1CF",
+                "variantImage": "/iPads/iPad_Mini_6/1_p.png"
+            },
+            {
+                "color": "Purple",
+                "colorHex": "#BBB3E7",
+                "variantImage": "/iPads/iPad_Mini_6/1_pur.png"
+            },
+            {
+                "color": "Space Gray",
+                "colorHex": "#AFB3B4",
+                "variantImage": "/iPads/iPad_Mini_6/1_g.png"
+            },
+            {
+                "color": "Starlight",
+                "colorHex": "#FBF7F4",
+                "variantImage": "/iPads/iPad_Mini_6/1_w.png"
+            }
+        ],
+        "price": "LKR 164,900.00 – LKR 259,900.00"
+    }
+]

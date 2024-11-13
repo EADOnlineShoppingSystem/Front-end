@@ -204,7 +204,9 @@ const ShoppingEvent = () => {
             --fcc-separator-size: 4px;
           }
         }
-      `}</style>
+      `}
+      
+      </style>
     </div>
   );
 };
