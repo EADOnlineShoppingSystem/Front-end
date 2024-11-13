@@ -9,6 +9,7 @@ import Tab from "./Tab.jsx";
 import IPads from "./IPads.jsx";
 import Mac from "./Mac.jsx";
 import MacProducts from "./MacProducts.jsx";
+import Footer from "./Footer.jsx";
 
 const HomePage = () => {
   return (
@@ -44,8 +45,8 @@ const HomePage = () => {
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-12">
         <MacProducts />
       </div>
-      <div className="bg-gray-100 h-auto xl:p-24 xl:pt-12">
-        
+      <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0 xl:pb-5">
+        <Footer />
       </div>
     </div>
   );
