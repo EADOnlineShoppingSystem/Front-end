@@ -2,8 +2,16 @@ import { useState } from "react";
 import {
   SearchOutlined,
   UserOutlined,
-  ShoppingCartOutlined,
 } from "@ant-design/icons";
+import {
+  LogIn,
+  UserPlus,
+  ShoppingBag,
+  Heart,
+  User,
+  ShoppingCart,
+} from "lucide-react";
+
 import { Avatar } from "antd";
 import {
   Dialog,
@@ -12,7 +20,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import SignInDrawer from "../HomePage/SignInDrawer";
+import SignInDrawer from  "./SignInDrawer";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,40 +52,125 @@ const NavBar = () => {
   const menuItems = [
     {
       name: "iPhone",
-      items: ["iPhone 15 Pro", "iPhone 15", "iPhone 14"],
+      items: [
+        "iPhone 16 Pro Max",
+        "iPhone 16 Pro",
+        "iPhone 16 plus",
+        "iPhone 16",
+        "iPhone 15 Pro Max",
+        "iPhone 15 Pro",
+        "iPhone 15 plus",
+        "iPhone 15",
+      ],
     },
     {
       name: "Mac",
-      items: ["MacBook Pro", "MacBook Air", "iMac", "Mac mini"],
+      items: [
+        "MacBook Pro M4",
+        "MacBook Pro M3",
+        "MacBook Pro 13″ M2",
+        "Macbook Air M3 2024",
+        'MacBook Air 15" M2',
+      ],
     },
     {
       name: "iPad",
-      items: ["iPad Pro", "iPad Air", "iPad", "iPad mini"],
+      items: [
+        "iPad Mini 7",
+        "iPad Air M2",
+        "iPad Pro M4",
+        "iPad ( 10th Gen )",
+        "iPad Pro M2",
+        
+      ],
     },
     {
       name: "Watch",
-      items: ["Apple Watch Ultra", "Apple Watch Series 9", "Apple Watch SE"],
+      items: [
+        "Apple Watch Series 8",
+        "Apple Watch SE - 2nd",
+        "Apple Watch Ultra",
+        "Apple Watch Series 7",
+        
+      ],
     },
     {
       name: "AirPods",
-      items: ["AirPods Pro", "AirPods", "AirPods Max"],
+      items: [
+        "AirPods",
+        "AirPods 2",
+        "AirPods 3",
+        "AirPods 4",
+        
+      ],
+    },
+    {
+      name: "HomePod",
+      items: ["HomePod 2023", "HomePod mini"],
+    },
+    {
+      name: "AirTag",
+      items: ["Apple Airtag 4 pack", "AirTag"],
     },
     {
       name: "Accessories",
-      items: ["Cases", "Power & Cables", "Bands", "Protection", "Audio"],
+      items: [
+        "Apple Vision Pro",
+        "iPad Accessories",
+        "iPhone Accessories",
+        "Mac Accessories",
+        "Smart Watch Accessories",
+      ],
     },
   ];
 
-  const accountNavItems = [
-    {
-      label: "Cart",
-      href: "#",
-      icon: <ShoppingCartOutlined className="w-5 h-5 text-white opacity-90" />,
-    },
-    { label: "Sign up", href: "#" },
-    { label: "Sign in", href: "#" },
-  ];
+const accountNavItems = [
+  {
+    label: "Sign in",
+    href: "#",
+    icon: (
+      <LogIn className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+  {
+    label: "Sign up",
+    href: "#",
+    icon: (
+      <UserPlus className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+  {
+    label: "Cart",
+    href: "#",
+    icon: (
+      <ShoppingCart className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+  {
+    label: "My Orders",
+    href: "#",
+    icon: (
+      <ShoppingBag className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+  {
+    label: "Wish List",
+    href: "#",
+    icon: (
+      <Heart className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+  {
+    label: "My Profile",
+    href: "#",
+    icon: (
+      <User className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+    ),
+  },
+];
 
+
+  
   const MobileMenuItem = ({ item, index }) => (
     <div className="w-full">
       <button
@@ -293,26 +386,28 @@ const NavBar = () => {
             </div>
 
             {/* Mobile Menu Items */}
-            <div className="mt-6">
-              <div className="flex flex-col space-y-2">
+            <div className="mt-2">
+              <div className="flex flex-col space-y-1">
                 {menuItems.map((item, index) => (
                   <MobileMenuItem key={index} item={item} index={index} />
                 ))}
               </div>
 
               {/* Mobile Menu Separator */}
-              <hr className="my-4 border-gray-700" />
+              <hr className="my-1 border-gray-300" />
 
               {/* Mobile Account Navigation */}
-              <div className="flex flex-col space-y-2">
+              <div className="grid grid-cols-3 grid-rows-2 gap-2 sm:gap-4 p-2 sm:p-4  max-w-2xl">
                 {accountNavItems.map((item, index) => (
                   <a
                     key={index}
                     href={item.href}
-                    className="py-2 text-base font-medium text-white transition-all duration-200 focus:text-gray-200"
+                    className="flex items-center justify-start gap-1 sm:gap-2 p-2 sm:p-3 text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
                   >
                     {item.icon}
-                    {item.label}
+                    <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
+                      {item.label}
+                    </span>
                   </a>
                 ))}
               </div>
@@ -337,7 +432,7 @@ const NavBar = () => {
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <DialogPanel
                 transition
-                className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+                className=" pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
               >
                 <TransitionChild>
                   <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
