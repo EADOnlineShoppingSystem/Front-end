@@ -1,0 +1,682 @@
+[
+    {
+        "id": 1,
+        "name": "iPhone 16 Pro Max",
+        "category": "iPhone",
+        "subCategory": "iPhone 16 Pro Max",
+        "price": 1099.00,
+        "image": "/newProducts/Types/16_Pro_Max/4.png",
+        "description": "The ultimate iPhone experience with a large display, powerful performance, and advanced camera system.",
+        "color": "Silver"
+    },
+    {
+        "id": 2,
+        "name": "iPhone 16 Pro",
+        "category": "iPhone",
+        "subCategory": "iPhone 16 Pro",
+        "price": 999.00,
+        "image": "/newProducts/Types/16_Pro/4.png",
+        "description": "A powerful and versatile iPhone with a pro-grade camera and a stunning display.",
+        "color": "Gold"
+    },
+    {
+        "id": 3,
+        "name": "iPhone 16 Plus",
+        "category": "iPhone",
+        "subCategory": "iPhone 16 Plus",
+        "price": 899.00,
+        "image": "/newProducts/Types/16_Plus/1.png",
+        "description": "A large-screen iPhone with a long-lasting battery and a great camera.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 4,
+        "name": "iPhone 16",
+        "category": "iPhone",
+        "subCategory": "iPhone 16",
+        "price": 799.00,
+        "image": "/newProducts/Types/16/4.png",
+        "description": "The latest iPhone with a stylish design, impressive performance, and a user-friendly interface.",
+        "color": "Blue"
+    },
+    {
+        "id": 5,
+        "name": "iPhone 15 Pro Max",
+        "category": "iPhone",
+        "subCategory": "iPhone 15 Pro Max",
+        "price": 1099.00,
+        "image": "/newProducts/Types/15_Pro_Max/2.png",
+        "description": "The ultimate iPhone experience with a large display, powerful performance, and advanced camera system.",
+        "color": "Purple"
+    },
+    {
+        "id": 6,
+        "name": "iPhone 15 Pro",
+        "category": "iPhone",
+        "subCategory": "iPhone 15 Pro",
+        "price": 999.00,
+        "image": "/newProducts/Types/15_Pro/3.png",
+        "description": "A powerful and versatile iPhone with a pro-grade camera and a stunning display.",
+        "color": "Black"
+    },
+    {
+        "id": 7,
+        "name": "iPhone 15 Plus",
+        "category": "iPhone",
+        "subCategory": "iPhone 15 Plus",
+        "price": 899.00,
+        "image": "/newProducts/Types/15_Plus/4.png",
+        "description": "A large-screen iPhone with a long-lasting battery and a great camera.",
+        "color": "Pink"
+    },
+    {
+        "id": 8,
+        "name": "iPhone 15",
+        "category": "iPhone",
+        "subCategory": "iPhone 15",
+        "price": 799.00,
+        "image": "/newProducts/Types/15/3.png",
+        "description": "The latest iPhone with a stylish design, impressive performance, and a user-friendly interface.",
+        "color": "Green"
+    },
+    {
+        "id": 9,
+        "name": "iPhone 14 Pro Max",
+        "category": "iPhone",
+        "subCategory": "iPhone 14 Pro Max",
+        "price": 1099.00,
+        "image": "/newProducts/Types/14_Plus/1.png",
+        "description": "The ultimate iPhone experience with a large display, powerful performance, and advanced camera system.",
+        "color": "Silver"
+    },
+    {
+        "id": 10,
+        "name": "iPhone 14 Pro",
+        "category": "iPhone",
+        "subCategory": "iPhone 14 Pro",
+        "price": 999.00,
+        "image": "/newProducts/Types/14_Plus/2.png",
+        "description": "A powerful and versatile iPhone with a pro-grade camera and a stunning display.",
+        "color": "Gold"
+    },
+    {
+        "id": 11,
+        "name": "iPhone 14 Plus",
+        "category": "iPhone",
+        "subCategory": "iPhone 14 Plus",
+        "price": 899.00,
+        "image": "/newProducts/Types/14_Plus/1.png",
+        "description": "A large-screen iPhone with a long-lasting battery and a great camera.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 12,
+        "name": "iPhone 14",
+        "category": "iPhone",
+        "subCategory": "iPhone 14",
+        "price": 799.00,
+        "image": "/newProducts/Types/14/4.png",
+        "description": "The latest iPhone with a stylish design, impressive performance, and a user-friendly interface.",
+        "color": "Red"
+    },
+    {
+        "id": 13,
+        "name": "iPhone 13 Pro Max",
+        "category": "iPhone",
+        "subCategory": "iPhone 13 Pro Max",
+        "price": 1099.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The ultimate iPhone experience with a large display, powerful performance, and advanced camera system.",
+        "color": "Gold"
+    },
+    {
+        "id": 14,
+        "name": "iPhone 13 Pro",
+        "category": "iPhone",
+        "subCategory": "iPhone 13 Pro",
+        "price": 999.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPhone with a pro-grade camera and a stunning display.",
+        "color": "Silver"
+    },
+    {
+        "id": 15,
+        "name": "iPhone 13 mini",
+        "category": "iPhone",
+        "subCategory": "iPhone 13 mini",
+        "price": 699.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A compact and powerful iPhone with a great camera and a long-lasting battery.",
+        "color": "Red"
+    },
+    {
+        "id": 16,
+        "name": "iPhone 13",
+        "category": "iPhone",
+        "subCategory": "iPhone 13",
+        "price": 799.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest iPhone with a stylish design, impressive performance, and a user-friendly interface.",
+        "color": "Pink"
+    },
+    {
+        "id": 17,
+        "name": "iPhone 12",
+        "category": "iPhone",
+        "subCategory": "iPhone 12",
+        "price": 699.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPhone with a great camera and a stylish design.",
+        "color": "Green"
+    },
+    {
+        "id": 18,
+        "name": "iPhone 11",
+        "category": "iPhone",
+        "subCategory": "iPhone 11",
+        "price": 599.00,
+        "image": "/api/placeholder/200/200",
+        "description": "An affordable iPhone with a great camera and a long-lasting battery.",
+        "color": "Purple"
+    },
+    {
+        "id": 19,
+        "name": "iPhone SE 3",
+        "category": "iPhone",
+        "subCategory": "iPhone SE 3",
+        "price": 429.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A compact and affordable iPhone with powerful performance and a great camera.",
+        "color": "Red"
+    },
+    {
+        "id": 20,
+        "name": "MacBook Pro M4",
+        "category": "Mac",
+        "subCategory": "MacBook Pro M4",
+        "price": 1999.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The most powerful MacBook Pro ever with the M4 chip, offering exceptional performance for demanding tasks.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 21,
+        "name": "MacBook Pro M3",
+        "category": "Mac",
+        "subCategory": "MacBook Pro M3",
+        "price": 1499.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile MacBook Pro with the M3 chip, ideal for professionals and creative work.",
+        "color": "Silver"
+    },
+    {
+        "id": 22,
+        "name": "MacBook Pro 13″ M2",
+        "category": "Mac",
+        "subCategory": "MacBook Pro 13″ M2",
+        "price": 1299.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A compact and powerful MacBook Pro with the M2 chip, perfect for everyday use and productivity.",
+        "color": "Gold"
+    },
+    {
+        "id": 23,
+        "name": "Macbook Air M3 2024",
+        "category": "Mac",
+        "subCategory": "Macbook Air M3 2024",
+        "price": 1199.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest MacBook Air with the M3 chip, offering sleek design, incredible performance, and all-day battery life.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 24,
+        "name": "MacBook Air 15\" M2",
+        "category": "Mac",
+        "subCategory": "MacBook Air 15\" M2",
+        "price": 1499.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A larger-screen MacBook Air with the M2 chip, providing a spacious canvas for creativity and productivity.",
+        "color": "Silver"
+    },
+    {
+        "id": 25,
+        "name": "MacBook Air M2",
+        "category": "Mac",
+        "subCategory": "MacBook Air M2",
+        "price": 1199.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A lightweight and powerful MacBook Air with the M2 chip, perfect for students, professionals, and everyday use.",
+        "color": "Gold"
+    },
+    {
+        "id": 26,
+        "name": "Mac Mini M2 Pro",
+        "category": "Mac",
+        "subCategory": "Mac Mini M2 Pro",
+        "price": 1299.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and compact desktop computer with the M2 Pro chip, ideal for creative professionals and demanding tasks.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 27,
+        "name": "Mac Mini M2",
+        "category": "Mac",
+        "subCategory": "Mac Mini M2",
+        "price": 699.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A versatile and affordable desktop computer with the M2 chip, perfect for everyday use, productivity, and creative work.",
+        "color": "Silver"
+    },
+    {
+        "id": 28,
+        "name": "Mac Studio M2 Ultra",
+        "category": "Mac",
+        "subCategory": "Mac Studio M2 Ultra",
+        "price": 3999.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The most powerful Mac ever with the M2 Ultra chip, offering unparalleled performance for demanding tasks.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 29,
+        "name": "Mac Studio M2 Max",
+        "category": "Mac",
+        "subCategory": "Mac Studio M2 Max",
+        "price": 1999.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and compact desktop computer with the M2 Max chip, ideal for creative professionals and demanding tasks.",
+        "color": "Silver"
+    },
+    {
+        "id": 30,
+        "name": "iMac M4",
+        "category": "Mac",
+        "subCategory": "iMac M4",
+        "price": 1799.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest iMac with the M4 chip, featuring a stunning display, powerful performance, and a sleek design.",
+        "color": "Gold"
+    },
+    {
+        "id": 31,
+        "name": "iMac 24\"",
+        "category": "Mac",
+        "subCategory": "iMac 24\"",
+        "price": 1299.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A beautiful and powerful all-in-one desktop computer with a vibrant 24-inch display.",
+        "color": "Blue"
+    },
+    {
+        "id": 32,
+        "name": "iPad Mini 7",
+        "category": "iPad",
+        "subCategory": "iPad Mini 7",
+        "price": 499.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest iPad Mini with a stunning display, powerful performance, and a compact design.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 33,
+        "name": "iPad Air M2",
+        "category": "iPad",
+        "subCategory": "iPad Air M2",
+        "price": 649.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPad with the M2 chip, perfect for creativity, productivity, and entertainment.",
+        "color": "Silver"
+    },
+    {
+        "id": 34,
+        "name": "iPad Pro M4",
+        "category": "iPad",
+        "subCategory": "iPad Pro M4",
+        "price": 1099.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The most powerful iPad ever with the M4 chip, offering exceptional performance for demanding tasks.",
+        "color": "Gold"
+    },
+    {
+        "id": 35,
+        "name": "iPad ( 10th Gen )",
+        "category": "iPad",
+        "subCategory": "iPad ( 10th Gen )",
+        "price": 449.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest iPad with a stunning display, powerful performance, and a user-friendly interface.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 36,
+        "name": "iPad Pro M2",
+        "category": "iPad",
+        "subCategory": "iPad Pro M2",
+        "price": 799.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPad with the M2 chip, perfect for creativity, productivity, and entertainment.",
+        "color": "Silver"
+    },
+    {
+        "id": 37,
+        "name": "iPad Pro M1",
+        "category": "iPad",
+        "subCategory": "iPad Pro M1",
+        "price": 699.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPad with the M1 chip, perfect for creativity, productivity, and entertainment.",
+        "color": "Gold"
+    },
+    {
+        "id": 38,
+        "name": "iPad ( 9th Gen )",
+        "category": "iPad",
+        "subCategory": "iPad ( 9th Gen )",
+        "price": 329.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A versatile and affordable iPad with a great display and powerful performance.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 39,
+        "name": "iPad Air ( 5th Gen )",
+        "category": "iPad",
+        "subCategory": "iPad Air ( 5th Gen )",
+        "price": 599.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPad with a stunning display and a long-lasting battery.",
+        "color": "Silver"
+    },
+    {
+        "id": 40,
+        "name": "iPad Air ( 4th Gen )",
+        "category": "iPad",
+        "subCategory": "iPad Air ( 4th Gen )",
+        "price": 599.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A powerful and versatile iPad with a stunning display and a long-lasting battery.",
+        "color": "Gold"
+    },
+    {
+        "id": 41,
+        "name": "iPad Mini 6",
+        "category": "iPad",
+        "subCategory": "iPad Mini 6",
+        "price": 499.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A compact and powerful iPad with a stunning display and a long-lasting battery.",
+        "color": "Purple"
+    },
+    {
+        "id": 42,
+        "name": "Apple Watch Series 8",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 8",
+        "price": 399.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest Apple Watch with advanced health and fitness tracking, a stunning display, and a long-lasting battery.",
+        "color": "Silver"
+    },
+    {
+        "id": 43,
+        "name": "Apple Watch SE ( 2nd Gen )",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch SE ( 2nd Gen )",
+        "price": 249.00,
+        "image": "/api/placeholder/200/200",
+        "description": "An affordable Apple Watch with essential health and fitness tracking features, a bright display, and a long-lasting battery.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 44,
+        "name": "Apple Watch Ultra",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Ultra",
+        "price": 799.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The ultimate Apple Watch for adventure with a rugged design, advanced features, and a long-lasting battery.",
+        "color": "Gold"
+    },
+    {
+        "id": 45,
+        "name": "Apple Watch Series 7",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 7",
+        "price": 399.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A stylish and feature-rich Apple Watch with a large display, advanced health and fitness tracking, and a long-lasting battery.",
+        "color": "Silver"
+    },
+    {
+        "id": 46,
+        "name": "Apple Watch SE ( 1st Gen )",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch SE ( 1st Gen )",
+        "price": 269.00,
+        "image": "/api/placeholder/200/200",
+        "description": "An affordable Apple Watch with essential health and fitness tracking features, a bright display, and a long-lasting battery.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 47,
+        "name": "Apple Watch Series 6",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 6",
+        "price": 399.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A stylish and feature-rich Apple Watch with advanced health and fitness tracking, a bright display, and a long-lasting battery.",
+        "color": "Gold"
+    },
+    {
+        "id": 48,
+        "name": "Apple Watch Series 5",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 5",
+        "price": 399.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A stylish and feature-rich Apple Watch with advanced health and fitness tracking, a bright display, and a long-lasting battery.",
+        "color": "Silver"
+    },
+    {
+        "id": 49,
+        "name": "Apple Watch Series 4",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 4",
+        "price": 399.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A stylish and feature-rich Apple Watch with advanced health and fitness tracking, a bright display, and a long-lasting battery.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 50,
+        "name": "Apple Watch Series 3",
+        "category": "AppleWatch",
+        "subCategory": "Apple Watch Series 3",
+        "price": 199.00,
+        "image": "/api/placeholder/200/200",
+        "description": "An affordable Apple Watch with essential health and fitness tracking features, a bright display, and a long-lasting battery.",
+        "color": "Gold"
+    },
+    {
+        "id": 51,
+        "name": "AirPods",
+        "category": "AirPods",
+        "subCategory": "AirPods",
+        "price": 129.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The classic AirPods with a comfortable fit, clear audio, and seamless integration with Apple devices.",
+        "color": "White"
+    },
+    {
+        "id": 52,
+        "name": "AirPods 2",
+        "category": "AirPods",
+        "subCategory": "AirPods 2",
+        "price": 159.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The updated AirPods with a longer battery life, hands-free Siri access, and improved audio quality.",
+        "color": "White"
+    },
+    {
+        "id": 53,
+        "name": "AirPods 3",
+        "category": "AirPods",
+        "subCategory": "AirPods 3",
+        "price": 179.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A refined AirPods model with spatial audio support, a powerful amplifier, and a longer battery life.",
+        "color": "White"
+    },
+    {
+        "id": 54,
+        "name": "AirPods 4",
+        "category": "AirPods",
+        "subCategory": "AirPods 4",
+        "price": 199.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest AirPods model with improved audio quality, adaptive EQ, and enhanced performance.",
+        "color": "White"
+    },
+    {
+        "id": 55,
+        "name": "AirPods Max",
+        "category": "AirPods",
+        "subCategory": "AirPods Max",
+        "price": 549.00,
+        "image": "/api/placeholder/200/200",
+        "description": "High-end over-ear headphones with active noise cancellation, spatial audio, and a luxurious design.",
+        "color": "Space Gray"
+    },
+    {
+        "id": 56,
+        "name": "AirPods Pro",
+        "category": "AirPods",
+        "subCategory": "AirPods Pro",
+        "price": 249.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A premium AirPods model with active noise cancellation, transparency mode, and a comfortable fit.",
+        "color": "White"
+    },
+    {
+        "id": 57,
+        "name": "AirPods Pro 2",
+        "category": "AirPods",
+        "subCategory": "AirPods Pro 2",
+        "price": 249.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The latest AirPods Pro with improved active noise cancellation, a new custom amplifier, and enhanced audio quality.",
+        "color": "White"
+    },
+    {
+        "id": 58,
+        "name": "AirPods Pro MagSafe",
+        "category": "AirPods",
+        "subCategory": "AirPods Pro MagSafe",
+        "price": 249.00,
+        "image": "/api/placeholder/200/200",
+        "description": "The AirPods Pro with MagSafe charging case, for easy and secure wireless charging.",
+        "color": "White"
+    },
+    {
+        "id": 59,
+        "name": "Apple Vision Pro",
+        "category": "AppleVisionPro",
+        "subCategory": "Apple Vision Pro",
+        "price": 3499.00,
+        "image": "/api/placeholder/200/200",
+        "description": "Apple's groundbreaking mixed reality headset, offering immersive experiences and advanced capabilities.",
+        "color": "White"
+    },
+    {
+        "id": 60,
+        "name": "Apple Airtag 4 pack",
+        "category": "AirTag",
+        "subCategory": "Apple Airtag 4 pack",
+        "price": 99.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A pack of four AirTags, perfect for tracking your belongings with ease.",
+        "color": "White"
+    },
+    {
+        "id": 61,
+        "name": "AirTag",
+        "category": "AirTag",
+        "subCategory": "AirTag",
+        "price": 29.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A small, compact device that can be attached to your belongings to help you track them.",
+        "color": "White"
+    },
+    {
+        "id": 62,
+        "name": "HomePod 2023",
+        "category": "HomePod",
+        "subCategory": "HomePod 2023",
+        "price": 299.00,
+        "image": "/api/placeholder/200/200",
+        "description": "Apple's latest smart speaker with impressive audio quality, smart home control, and seamless integration with Apple devices.",
+        "color": "White"
+    },
+    {
+        "id": 63,
+        "name": "HomePod mini",
+        "category": "HomePod",
+        "subCategory": "HomePod mini",
+        "price": 99.00,
+        "image": "/api/placeholder/200/200",
+        "description": "A compact smart speaker with impressive audio quality, smart home control, and seamless integration with Apple devices.",
+        "color": "White"
+    },
+    {
+        "id": 64,
+        "name": "iPad Accessories",
+        "category": "Accessories",
+        "subCategory": "iPad Accessories",
+        "price": 19.99,
+        "image": "/api/placeholder/200/200",
+        "description": "A wide range of accessories for iPad, including cases, keyboards, styluses, and more.",
+        "color": "Black"
+    },
+    {
+        "id": 65,
+        "name": "iPhone Accessories",
+        "category": "Accessories",
+        "subCategory": "iPhone Accessories",
+        "price": 19.99,
+        "image": "/api/placeholder/200/200",
+        "description": "A wide range of accessories for iPhone, including cases, chargers, screen protectors, and more.",
+        "color": "Black"
+    },
+    {
+        "id": 66,
+        "name": "Mac Accessories",
+        "category": "Accessories",
+        "subCategory": "Mac Accessories",
+        "price": 19.99,
+        "image": "/api/placeholder/200/200",
+        "description": "A wide range of accessories for Mac, including mice, keyboards, external displays, and more.",
+        "color": "Black"
+    },
+    {
+        "id": 67,
+        "name": "Smart Watch Accessories",
+        "category": "Accessories",
+        "subCategory": "Smart Watch Accessories",
+        "price": 19.99,
+        "image": "/api/placeholder/200/200",
+        "description": "A wide range of accessories for smartwatches, including bands, chargers, screen protectors, and more.",
+        "color": "Black"
+    },
+    {
+        "id": 68,
+        "name": "iPhone 16 Pro",
+        "category": "iPhone",
+        "subCategory": "iPhone 16 Pro",
+        "price": 999.00,
+        "image": "/newProducts/Types/16_Pro/2.png",
+        "description": "A powerful and versatile iPhone with a pro-grade camera and a stunning display.",
+        "color": "Silver"
+    }
+]
