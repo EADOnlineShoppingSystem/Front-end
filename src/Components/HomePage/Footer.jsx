@@ -18,7 +18,7 @@ const Footer = () => {
                 <div className="w-full">
                   <a href="/">
                     <img
-                      src="/Logo.svg"
+                      src="/icons/logo.png"
                       alt="Apple Asia Logo"
                       className="w-full"
                     />
@@ -97,7 +97,7 @@ const Footer = () => {
                       href="https://goo.gl/maps/nrpC7KZtJUVJub5C9"
                       className="text-sm text-gray-600 hover:text-gray-800"
                     >
-                      No.11B, Fussel's lane, Wellawatta.
+                      No.11B, Fussel&apos;s lane, Wellawatta.
                     </a>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 mt-2 border-b-2 border-gray-400 border-opacity-35 pb-3 mt-2 pt-3">
@@ -177,7 +177,7 @@ const Footer = () => {
                   ].map((item) => (
                     <div key={item} className="w-full">
                       <a
-                        href="/"
+                        href="/categories"
                         className="text-gray-600 hover:text-gray-900 inline-block"
                       >
                         <div className="relative pr-6">
@@ -250,7 +250,7 @@ const Footer = () => {
         </div>
         <div className="mt-10 border-t-2 border-gray-400 border-opacity-50 flex justify-between items-center">
           <div className="text-sm mt-3">
-            APPLE ASIA © 2024 CREATED BY TEAM HEX LAB
+            HANDSFREE.LK © 2024 CREATED BY TEAM HEX LAB
           </div>
           <div className="flex items-center "></div>
         </div>

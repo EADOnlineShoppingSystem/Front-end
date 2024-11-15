@@ -43,10 +43,6 @@ const NavBar = () => {
 
   const menuItems = [
     {
-      name: "Home",
-      items: [],
-    },
-    {
       name: "iPhone",
       items: ["iPhone 15 Pro", "iPhone 15", "iPhone 14"],
     },
@@ -112,7 +108,7 @@ const NavBar = () => {
           {item.items.map((subItem, subIndex) => (
             <a
               key={subIndex}
-              href="#"
+              href="/categories"
               className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200"
             >
               {subItem}
@@ -128,7 +124,7 @@ const NavBar = () => {
       <header className="">
         <div className="mx-auto">
           {/* Desktop Navigation */}
-          <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-50">
+          <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
             <div className="flex-shrink-0 ml-10">
               <a href="/" title="" className="flex">
                 <img
@@ -143,7 +139,10 @@ const NavBar = () => {
             <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {menuItems.map((item, index) => (
                 <div key={index} className="relative group">
-                  <a href="#" className="text-sm text-white  relative py-1">
+                  <a
+                    href="/categories"
+                    className="text-sm text-white  relative py-1"
+                  >
                     <span className="inline-block relative py-1">
                       {item.name}
                       <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100 opacity-100"></span>

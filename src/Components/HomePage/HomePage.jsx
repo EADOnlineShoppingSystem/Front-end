@@ -45,7 +45,7 @@ const HomePage = () => {
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-12">
         <MacProducts />
       </div>
-      <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0 xl:pb-5">
+      <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0 xl:pb-2">
         <Footer />
       </div>
     </div>
