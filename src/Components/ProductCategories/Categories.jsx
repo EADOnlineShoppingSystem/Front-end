@@ -372,7 +372,7 @@ const Categories = () => {
                     <span className="font-bold text-lg text-gray-900">
                       LKR {product.price.toFixed(2)}
                     </span>
-                    <button className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                    <button className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:shadow-md transition-colors duration-200">
                       Add to Cart
                     </button>
                   </div>
