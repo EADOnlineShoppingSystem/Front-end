@@ -155,7 +155,7 @@ const Orders = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search orders..."
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           </div>
@@ -187,7 +187,7 @@ const Orders = () => {
                       orderNumber: e.target.value,
                     })
                   }
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter order number"
                 />
               </div>
@@ -204,7 +204,7 @@ const Orders = () => {
                       trackingNumber: e.target.value,
                     })
                   }
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter tracking number"
                 />
               </div>
@@ -220,7 +220,7 @@ const Orders = () => {
                       dateRange: e.target.value,
                     })
                   }
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="all">All Time</option>
                   <option value="last30">Last 30 Days</option>
@@ -252,7 +252,7 @@ const Orders = () => {
             onClick={() => setActiveTab(tab.id)}
             className={`pb-3 px-2 relative whitespace-nowrap ${
               activeTab === tab.id
-                ? "text-orange-500 border-b-2 border-orange-500"
+                ? "text-blue-500 border-b-1 border-blue-500"
                 : "text-gray-600"
             }`}
           >
@@ -295,7 +295,7 @@ const Orders = () => {
                   {order.isFinished && !order.hasReview && (
                     <button
                       onClick={() => handleAddReview(order.id)}
-                      className="flex items-center gap-1 px-3 py-1 text-sm text-yellow-600 border border-yellow-600 rounded-lg hover:bg-yellow-50 w-full sm:w-auto justify-center"
+                      className="flex items-center gap-1 px-3 py-1 text-sm text-green-600 border border-green-600 rounded-lg hover:bg-green-50 w-full sm:w-auto justify-center"
                     >
                       <Star className="w-4 h-4" />
                       <span>Add Review</span>
@@ -303,7 +303,7 @@ const Orders = () => {
                   )}
                   <button
                     onClick={() => handleDeleteOrder(order.id)}
-                    className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50 w-full sm:w-auto justify-center"
+                    className="flex items-center gap-1 px-3 py-1 text-sm text-red-500 border border-red-500 rounded-lg hover:bg-red-50 w-full sm:w-auto justify-center"
                   >
                     <Trash2 className="w-4 h-4" />
                     <span>Delete</span>
@@ -341,7 +341,7 @@ const Orders = () => {
                     Tracking Number: {order.tracking}
                   </span>
                   <button
-                    className="text-orange-500 text-sm hover:underline"
+                    className="text-blue-500 text-sm hover:underline"
                     onClick={() => handleTrack(order)}
                   >
                     Track Package
@@ -376,7 +376,7 @@ const Orders = () => {
               </button>
               <button
                 onClick={confirmDelete}
-                className="text-red-600 hover:text-red-800"
+                className="text-red-500 hover:text-red-600"
               >
                 Delete
               </button>

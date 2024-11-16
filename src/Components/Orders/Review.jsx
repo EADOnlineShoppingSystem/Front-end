@@ -216,13 +216,13 @@ const Review = () => {
                                   )
                                 }
                                 placeholder="Share your experience with this product..."
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 min-h-[100px]"
+                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-[100px]"
                               />
                             </div>
 
                             <button
                               type="submit"
-                              className="w-full bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                               disabled={
                                 !review.rating ||
                                 !review.review?.trim() ||
@@ -266,7 +266,7 @@ const Review = () => {
                   setShowModal(false);
                   navigate("/orders");
                 }}
-                className="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600 transition-colors"
+                className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
               >
                 OK
               </button>
