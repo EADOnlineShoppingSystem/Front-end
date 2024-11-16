@@ -1,19 +1,36 @@
-import { LogIn, UserPlus, ShoppingBag, Heart, User } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Import for navigation
+import {
+  LogIn,
+  UserPlus,
+  ShoppingBag,
+  Heart,
+  User,
+  MapPin,
+  LogOut,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const SignInPage = () => {
-  const navigate = useNavigate(); // Get the navigation function
+  const navigate = useNavigate();
 
   const handleOrders = () => {
-    navigate("/orders"); // Navigate to the orders page
+    navigate("/orders");
   };
 
   const handleWish = () => {
-    navigate("/wishlist"); // Navigate to the wishlist page
+    navigate("/wishlist");
   };
 
   const handleProfile = () => {
-    navigate("/profile"); // Navigate to the profile page
+    navigate("/profile");
+  };
+
+  const handleAddresses = () => {
+    navigate("/addresses");
+  };
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    navigate("/");
   };
 
   return (
@@ -38,14 +55,13 @@ const SignInPage = () => {
                 Sign in
               </button>
               <div className="flex items-center text-gray-900 justify-center opacity-70 hover:opacity-100">
-                <a href="#">Register</a>{" "}
-                {/* Changed to '#' for a placeholder */}
+                <a href="#">Register</a>
               </div>
             </div>
           </form>
           <div>
             <div className="mt-8 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4">Dashboard</h3>
               <button
                 className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors"
                 onClick={handleOrders}
@@ -66,6 +82,20 @@ const SignInPage = () => {
               >
                 <User className="w-5 h-5 text-gray-600" />
                 <span>My Profile</span>
+              </button>
+              <button
+                className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors"
+                onClick={handleAddresses}
+              >
+                <MapPin className="w-5 h-5 text-gray-600" />
+                <span>Addresses</span>
+              </button>
+              <button
+                className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors text-red-600"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Logout</span>
               </button>
             </div>
           </div>
