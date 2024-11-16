@@ -25,7 +25,7 @@ const SignInPage = () => {
   };
 
   const handleAddresses = () => {
-    navigate("/addresses");
+    navigate("/address");
   };
 
   const handleLogout = () => {
