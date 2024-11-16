@@ -129,42 +129,42 @@ const accountNavItems = [
     label: "Sign in",
     href: "#",
     icon: (
-      <LogIn className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <LogIn className="w-5 h-5 sm:w-5 sm:h-5  text-white opacity-90" />
     ),
   },
   {
     label: "Sign up",
     href: "#",
     icon: (
-      <UserPlus className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <UserPlus className="w-5 h-5 sm:w-5 sm:h-5  text-white opacity-90" />
     ),
   },
   {
     label: "Cart",
     href: "#",
     icon: (
-      <ShoppingCart className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <ShoppingCart className="w-5 h-5 sm:w-5 sm:h-5  text-white opacity-90" />
     ),
   },
   {
     label: "My Orders",
     href: "#",
     icon: (
-      <ShoppingBag className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <ShoppingBag className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />
     ),
   },
   {
     label: "Wish List",
     href: "#",
     icon: (
-      <Heart className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <Heart className="w-5 h-5 sm:w-5 sm:h-5  text-white opacity-90" />
     ),
   },
   {
     label: "My Profile",
     href: "#",
     icon: (
-      <User className="w-5 h-5 sm:w-5 sm:h-5 w-4 h-4 text-white opacity-90" />
+      <User className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />
     ),
   },
 ];
@@ -298,7 +298,7 @@ const accountNavItems = [
               </a>
 
               <div className="inline-flex relative">
-                <a href="http://">
+                <a href="/orders">
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
