@@ -21,12 +21,27 @@ import {
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import SignInDrawer from  "./SignInDrawer";
+import AuthModal from "../Auth/AuthModal";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalView, setAuthModalView] = useState("signin");
+
+  const handleAuthAction = (view) => {
+    setAuthModalView(view);
+    setIsAuthModalOpen(true);
+    setIsDrawerOpen(false); // Close the drawer when opening auth modal
+  };
+
+  const handleClose = () => {
+    setIsAuthModalOpen(false);
+    setAuthModalView('signin');
+  };
+
 
   const handleSearchClick = () => {
     setShowSearchInput(!showSearchInput);
@@ -213,6 +228,7 @@ const accountNavItems = [
   );
 
   return (
+    <>
     <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
       <header className="">
         <div className="mx-auto">
@@ -298,7 +314,7 @@ const accountNavItems = [
               </a>
 
               <div className="inline-flex relative">
-                <a href="/orders">
+                <a href="/cart">
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -449,7 +465,7 @@ const accountNavItems = [
                 </TransitionChild>
                 <div className="flex h-full flex-col justify-center  overflow-hidden bg-white py-6 shadow-xl">
                   <div className="relative flex-1 px-4 sm:px-6">
-                    <SignInDrawer />
+                  <SignInDrawer onAuthAction={handleAuthAction} />
                   </div>
                 </div>
               </DialogPanel>
@@ -458,6 +474,12 @@ const accountNavItems = [
         </div>
       </Dialog>
     </div>
+    <AuthModal
+    isOpen={isAuthModalOpen}
+    onClose={handleClose}
+    initialView={authModalView}
+  />
+  </>
   );
 };
 
