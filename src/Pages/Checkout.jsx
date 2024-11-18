@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdEdit  } from "react-icons/md";
-import watch from "../images/watch.jpg";
-import Container from "../components/Container";
+import { MdLocationPin } from "react-icons/md";
+import pro1 from "../../public/images/pro1.webp";
+//import Container from "../components/Container";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../utils/axiosConfig";
 import { createAnOrder } from "../features/user/userSlice";
@@ -165,11 +166,11 @@ const Checkout = () => {
   }, [isError]);
 
   return (
-    <Container class1="py-5">
+    // <Container class1="py-5">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
       <div className="lg:col-span-7">
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-2xl font-semibold mb-4">NextGen Dresses</h3>
+            <h3 className="text-2xl font-semibold mb-4">HandFree</h3>
             <nav className="mb-6">
               <ol className="flex items-center text-sm">
                 <li>
@@ -206,7 +207,7 @@ const Checkout = () => {
               {selectedAddress ? (
                 <div className="border rounded-lg p-4">
                   <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-gray-500 mt-1" />
+                  <MdLocationPin className="w-5 h-5 text-gray-500 mt-1" />
                     <div>
                       <div className="flex items-center gap-2">
                         <h5 className="font-medium">{selectedAddress.name}</h5>
@@ -277,7 +278,7 @@ const Checkout = () => {
                         {item?.quantity}
                       </span>
                       <img
-                        src={item?.productId?.images?.[0]?.url || watch}
+                        src={item?.productId?.images?.[0]?.url || pro1}
                         alt="product"
                         className="w-full h-24 object-cover rounded-md"
                       />
@@ -332,11 +333,363 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-    </Container>
+    // </Container>
   );
 };
 
 export default Checkout;
+
+
+
+
+
+//withbackend
+// import React, { useEffect, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import { MdArrowBackIosNew, MdEdit  } from "react-icons/md";
+// import pro1 from "../../public/images/pro1.webp";
+// //import Container from "../components/Container";
+// import { useDispatch, useSelector } from "react-redux";
+// import { axiosInstance } from "../utils/axiosConfig";
+// import { createAnOrder } from "../features/user/userSlice";
+
+// const Checkout = () => {
+//   const navigate = useNavigate();
+//   const dispatch = useDispatch();
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [selectedAddress, setSelectedAddress] = useState(null);
+
+//   const { isLoading, isError, isSuccess, orderedProduct, user } = useSelector(
+//     (state) => state.auth
+//   );
+
+//   const cartState = useSelector((state) => state.auth.cartProducts);
+//   const [totalAmount, setTotalAmount] = useState(null);
+
+//   const [addresses, setAddresses] = useState([
+//     {
+//       id: 1,
+//       name: "John Doe",
+//       street: "123 Main St",
+//       city: "San Francisco",
+//       state: "CA",
+//       zip: "94105",
+//       phone: "(555) 123-4567",
+//       isDefault: true,
+//     }
+//   ]);
+
+//   useEffect(() => {
+//     // Find and set the default address when component mounts
+//     const defaultAddress = addresses.find(addr => addr.isDefault);
+//     setSelectedAddress(defaultAddress);
+//   }, [addresses]);
+
+//   const handlePlaceOrder = async () => {
+//     if (!selectedAddress) {
+//       setError("Please select a delivery address");
+//       return;
+//     }
+
+//     try {
+//       setLoading(true);
+//       setError(null);
+
+//       const totalWithShipping = totalAmount + 350.0;
+
+//       const orderData = {
+//         user: user._id,
+//         shippingInfo: {
+//           fullName: selectedAddress.name,
+//           mobile: selectedAddress.phone,
+//           address: selectedAddress.street,
+//           city: selectedAddress.city,
+//           state: selectedAddress.state,
+//           country: "Sri Lanka",
+//           pincode: selectedAddress.zip,
+//         },
+//         orderItems: cartState.map((item) => ({
+//           product: item.productId._id,
+//           color: item.color._id,
+//           quantity: Number(item.quantity),
+//           price: Number(item.price),
+//           size: item.size,
+//         })),
+//         paymentInfo: {
+//           onepayOrderId: "PENDING",
+//           onepayPaymentId: "PENDING",
+//         },
+//         totalPrice: Number(totalWithShipping),
+//         totalPriceAfterDiscount: Number(totalWithShipping),
+//         orderStatus: "Ordered",
+//       };
+
+//       const result = await dispatch(createAnOrder(orderData)).unwrap();
+
+//       if (result) {
+//         const paymentData = {
+//           amount: totalWithShipping,
+//           fullName: selectedAddress.name,
+//           mobile: selectedAddress.phone,
+//           email: user.email,
+//           reference: result._id,
+//           additionalData: {
+//             orderId: result._id,
+//             shippingAddress: orderData.shippingInfo,
+//           },
+//         };
+
+//         const response = await axiosInstance.post(
+//           "user/order/checkout",
+//           paymentData
+//         );
+
+//         if (response.data.success && response.data.redirectUrl) {
+//           sessionStorage.setItem("pendingOrderId", result._id);
+//           window.location.href = response.data.redirectUrl;
+//         } else {
+//           throw new Error(response.data.error || "Failed to initialize payment");
+//         }
+//       }
+//     } catch (err) {
+//       setError(
+//         err.response?.data?.message ||
+//         err.message ||
+//         "Something went wrong. Please try again."
+//       );
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     let sum = 0;
+//     for (let index = 0; index < cartState?.length; index++) {
+//       sum = sum + Number(cartState[index].quantity) * cartState[index].price;
+//       setTotalAmount(sum);
+//     }
+//   }, [cartState]);
+
+//   useEffect(() => {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const status = urlParams.get("status");
+//     const orderId = sessionStorage.getItem("pendingOrderId");
+
+//     if (status && orderId) {
+//       const verifyPayment = async () => {
+//         try {
+//           const response = await axiosInstance.post(
+//             "user/order/paymentVerification",
+//             {
+//               status,
+//               orderId,
+//             }
+//           );
+
+//           if (response.data.success) {
+//             navigate("/order-success");
+//           } else {
+//             navigate("/order-failed");
+//           }
+//         } catch (err) {
+//           console.error("Payment verification failed:", err);
+//           navigate("/order-failed");
+//         } finally {
+//           sessionStorage.removeItem("pendingOrderId");
+//         }
+//       };
+
+//       verifyPayment();
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (isError) {
+//       setError("Failed to create order. Please try again.");
+//     }
+//   }, [isError]);
+
+//   return (
+//     // <Container class1="py-5">
+//       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+//       <div className="lg:col-span-7">
+//           <div className="bg-white p-6 rounded-lg shadow-sm">
+//             <h3 className="text-2xl font-semibold mb-4">NextGen Dresses</h3>
+//             <nav className="mb-6">
+//               <ol className="flex items-center text-sm">
+//                 <li>
+//                   <Link to="/cart" className="text-gray-600 hover:text-gray-800">
+//                     Cart
+//                   </Link>
+//                 </li>
+//                 <span className="mx-2 text-gray-400">/</span>
+//                 <li className="text-gray-800">Information</li>
+//                 <span className="mx-2 text-gray-400">/</span>
+//                 <li className="text-gray-400">Shipping</li>
+//                 <span className="mx-2 text-gray-400">/</span>
+//                 <li className="text-gray-400">Payment</li>
+//               </ol>
+//             </nav>
+
+//             <h4 className="text-lg font-medium mb-2">Contact Information</h4>
+//             <p className="text-gray-600 mb-6">
+//               Supun Ishara (supun20000207@gmail.com)
+//             </p>
+
+//             <div className="mb-6">
+//               <div className="flex justify-between items-center mb-4">
+//                 <h4 className="text-lg font-medium">Delivery Address</h4>
+//                 <button
+//                   onClick={() => navigate('/address')}
+//                   className="flex items-center text-blue-600 hover:text-blue-700"
+//                 >
+//                   <MdEdit className="w-4 h-4 mr-1" />
+//                   Change
+//                 </button>
+//               </div>
+
+//               {selectedAddress ? (
+//                 <div className="border rounded-lg p-4">
+//                   <div className="flex items-start gap-3">
+//                     <MapPin className="w-5 h-5 text-gray-500 mt-1" />
+//                     <div>
+//                       <div className="flex items-center gap-2">
+//                         <h5 className="font-medium">{selectedAddress.name}</h5>
+//                         {selectedAddress.isDefault && (
+//                           <span className="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+//                             Default
+//                           </span>
+//                         )}
+//                       </div>
+//                       <p className="text-gray-600 text-sm mt-1">
+//                         {selectedAddress.street}
+//                       </p>
+//                       <p className="text-gray-600 text-sm">
+//                         {`${selectedAddress.city}, ${selectedAddress.state} ${selectedAddress.zip}`}
+//                       </p>
+//                       <p className="text-gray-600 text-sm">{selectedAddress.phone}</p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <button
+//                   onClick={() => navigate('/address')}
+//                   className="w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-center hover:border-blue-500 hover:text-blue-500"
+//                 >
+//                   <span className="block font-medium">Add Delivery Address</span>
+//                   <span className="text-sm text-gray-500">
+//                     Please add an address to continue
+//                   </span>
+//                 </button>
+//               )}
+//             </div>
+
+//             <div className="flex justify-between items-center pt-4">
+//               <Link
+//                 to="/cart"
+//                 className="flex items-center text-gray-600 hover:text-gray-800"
+//               >
+//                 <MdArrowBackIosNew className="mr-2" /> Return to Cart
+//               </Link>
+//               <button
+//                 onClick={handlePlaceOrder}
+//                 disabled={loading || isLoading || !selectedAddress}
+//                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+//               >
+//                 {loading || isLoading ? "Processing..." : "Place Order"}
+//               </button>
+//             </div>
+
+//             {error && (
+//               <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+//                 <p className="text-sm text-red-600">{error}</p>
+//               </div>
+//             )}
+
+//           </div>
+//         </div>
+
+
+
+//         <div className="lg:col-span-5">
+//           <div className="bg-white p-6 rounded-lg shadow-sm">
+//             <div className="border-b border-gray-200 pb-4">
+//               {cartState &&
+//                 cartState?.map((item, index) => (
+//                   <div key={index} className="flex items-center gap-4 mb-4">
+//                     <div className="relative w-24">
+//                       <span className="absolute -top-2 -right-2 w-6 h-6 flex items-center justify-center bg-gray-500 text-white text-sm rounded-full">
+//                         {item?.quantity}
+//                       </span>
+//                       <img
+//                         src={item?.productId?.images?.[0]?.url || pro1}
+//                         alt="product"
+//                         className="w-full h-24 object-cover rounded-md"
+//                       />
+//                     </div>
+//                     <div className="flex-grow">
+//                       <h5 className="text-sm font-medium text-gray-800">
+//                         {item?.productId?.title}
+//                       </h5>
+//                       <div className="flex items-center mt-1 text-sm text-gray-600">
+//                         <span>{item?.size}</span>
+//                         <span className="mx-2">/</span>
+//                         <div
+//                           className="w-4 h-4 rounded-full"
+//                           style={{ backgroundColor: item?.color?.title }}
+//                         ></div>
+//                       </div>
+//                     </div>
+//                     <div className="text-right">
+//                       <h5 className="text-sm font-medium text-gray-800">
+//                         LKR {item?.price * item?.quantity}
+//                       </h5>
+//                     </div>
+//                   </div>
+//                 ))}
+//             </div>
+
+//             <div className="border-b border-gray-200 py-4 space-y-3">
+//               <div className="flex justify-between items-center">
+//                 <p className="text-sm text-gray-600">Subtotal</p>
+//                 <p className="text-sm font-medium text-gray-800">
+//                   LKR {totalAmount ? totalAmount : "0"}
+//                 </p>
+//               </div>
+//               <div className="flex justify-between items-center">
+//                 <p className="text-sm text-gray-600">Shipping</p>
+//                 <p className="text-sm font-medium text-gray-800">LKR 350.00</p>
+//               </div>
+//             </div>
+
+//             <div className="flex justify-between items-center py-4">
+//               <h4 className="text-base font-medium text-gray-800">Total</h4>
+//               <h5 className="text-lg font-semibold text-gray-800">
+//                 LKR {totalAmount ? totalAmount + 350.0 : "0"}
+//               </h5>
+//             </div>
+
+//             {error && (
+//               <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+//                 <p className="text-sm text-red-600">{error}</p>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     // </Container>
+//   );
+// };
+
+// export default Checkout;
+
+
+
+
+
+
+//old
 
 
 
