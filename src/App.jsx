@@ -5,6 +5,7 @@ import ProductCategories from "./Components/ProductCategories/Categories"
 import Orders from "./Components/Orders/Orders"
 import Review from "./Components/Orders/Review"
 import Cart from "./Components/Orders/Cart";
+import Wishlist from "./Components/Orders/Wishlist";
 import {CartProvider} from "./contexts/CartContext"
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/review/:id" element={<Review />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
         </Routes>
       </BrowserRouter>
       </CartProvider>
