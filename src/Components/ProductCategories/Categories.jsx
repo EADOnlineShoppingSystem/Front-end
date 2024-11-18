@@ -10,6 +10,9 @@ import NavBar from "../NavBar/NavBar";
 import sampleProducts from "./Data/sampleProducts.json";
 import categories from "./Data/categories.json";
 import Footer from "../HomePage/Footer.jsx";
+import { useCart } from "../../contexts/CartContext";
+import { message } from "antd";
+
 
 const Categories = () => {
   const [products, setProducts] = useState(sampleProducts);
@@ -23,6 +26,28 @@ const Categories = () => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const { addToCart, cartItems } = useCart();
+  const handleAddToCart = (product) => {
+    console.log('Adding product to cart:', product); // Debug log
+
+    const cartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: getVariantImage(product, selectedColor),
+      color: selectedColor !== 'all' ? selectedColor : product.color,
+      brand: product.brand || 'No Brand', // Fallback if brand is undefined
+      storage: product.storage || 'N/A', // Fallback if storage is undefined
+      quantity: 1
+    };
+
+    console.log('Formatted cart item:', cartItem); // Debug log
+    addToCart(cartItem);
+    console.log('Current cart items:', cartItems); // Debug log
+    message.info("Add to cart"); 
+  };
+
 
   const colorOptions = [
     { name: "Silver", value: "#C0C0C0" },
@@ -372,7 +397,13 @@ const Categories = () => {
                     <span className="font-bold text-lg text-gray-900">
                       LKR {product.price.toFixed(2)}
                     </span>
-                    <button className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:shadow-md transition-colors duration-200">
+                    <button
+                    
+                    onClick={() => {
+                      console.log('Add to cart clicked for product:', product); // Debug log
+                      handleAddToCart(product);
+                    }}
+                    className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:shadow-md transition-colors duration-200">
                       Add to Cart
                     </button>
                   </div>
