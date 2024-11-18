@@ -22,8 +22,10 @@ import {
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import SignInDrawer from  "./SignInDrawer";
 import AuthModal from "../Auth/AuthModal";
+import { useCart } from "../../contexts/CartContext";
 
 const NavBar = () => {
+  const { getCartCount } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -334,7 +336,7 @@ const accountNavItems = [
                 </a>
 
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs">1</span>
+                  <span className="text-white text-xs">{getCartCount()}</span>
                 </div>
               </div>
               <a href="#" onClick={openDrawer}>
