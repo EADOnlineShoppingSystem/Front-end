@@ -1,5 +1,7 @@
 // ForgotPasswordForm.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
+import {message} from 'antd'
 
 const ForgotPasswordForm = ({ onSwitchToSignIn, onSwitchToOTP }) => {
   const [email, setEmail] = useState('');
@@ -16,6 +18,7 @@ const ForgotPasswordForm = ({ onSwitchToSignIn, onSwitchToOTP }) => {
       // This is where you would typically make an API call to send the reset email with OTP
       await sendResetEmail(email);
       
+      message.success('Reset email sent successfully!');
       // If successful, switch to OTP view
       onSwitchToOTP(email);
     } catch (err) {
@@ -28,6 +31,10 @@ const ForgotPasswordForm = ({ onSwitchToSignIn, onSwitchToOTP }) => {
   // Mock function - replace with your actual API call
   const sendResetEmail = async (email) => {
     // Simulate API call
+    const response = await axios.post('http://localhost:5000/api/users/forgot-password', {
+        email
+      });
+    console.log(response.data);
     return new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
