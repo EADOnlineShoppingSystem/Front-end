@@ -5,11 +5,13 @@ import SignUpForm from './SignUpForm';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import OtpForm from './OtpForm';
 import NewPasswordForm from './NewPasswordForm';
+import SignupOtpVerification from './SignupOtpVerification';  // Add this import
 
 const AuthModal = ({ isOpen, onClose, initialView }) => {
   const [currentView, setCurrentView] = useState(initialView);
   const [email, setEmail] = useState('');
   const [verifiedOtp, setVerifiedOtp] = useState('');
+  const [signupData, setSignupData] = useState(null);  // Add this state for signup data
 
   // Reset states when modal closes
   useEffect(() => {
@@ -17,6 +19,7 @@ const AuthModal = ({ isOpen, onClose, initialView }) => {
       // Reset all states to initial values
       setEmail('');
       setVerifiedOtp('');
+      setSignupData(null);  // Reset signup data
     }
   }, [isOpen]);
 
@@ -123,7 +126,26 @@ const AuthModal = ({ isOpen, onClose, initialView }) => {
     const getComponent = () => {
       switch (currentView) {
         case 'signup':
-          return <SignUpForm onSwitchToSignIn={() => setCurrentView('signin')} />;
+          return (
+            <SignUpForm 
+              onSwitchToSignIn={() => setCurrentView('signin')}
+              onSignupSubmit={(data) => {
+                setSignupData(data);  // Store signup data
+                setCurrentView('signup-otp');  // Switch to OTP verification
+              }}
+            />
+          );
+        case 'signup-otp':  // Add new case for signup OTP verification
+          return (
+            <SignupOtpVerification
+              signupData={signupData}
+              onBackToSignup={() => setCurrentView('signup')}
+              onVerificationSuccess={() => {
+                handleClose();  // Close modal after successful verification
+                // You might want to trigger a success callback here
+              }}
+            />
+          );
         case 'forgot-password':
           return (
             <ForgotPasswordForm 
