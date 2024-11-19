@@ -1,6 +1,4 @@
 import {
-  LogIn,
-  UserPlus,
   ShoppingBag,
   Heart,
   User,

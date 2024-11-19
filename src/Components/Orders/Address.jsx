@@ -3,7 +3,6 @@ import { PlusCircle, Trash2, Edit2, X } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
 
 const Address = () => {
-  // Move addresses to state
   const [addresses, setAddresses] = useState([
     {
       id: 1,
@@ -30,16 +29,19 @@ const Address = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const handleAdd = () => {
     setModalMode("add");
     setSelectedAddress(null);
+    setErrors({});
     setShowModal(true);
   };
 
   const handleEdit = (address) => {
     setModalMode("edit");
     setSelectedAddress(address);
+    setErrors({});
     setShowModal(true);
   };
 
@@ -47,7 +49,6 @@ const Address = () => {
     setAddresses(addresses.filter((address) => address.id !== id));
   };
 
-  // handle setting default address
   const handleSetDefault = (id) => {
     setAddresses(
       addresses.map((address) => ({
@@ -55,6 +56,55 @@ const Address = () => {
         isDefault: address.id === id,
       }))
     );
+  };
+
+  const validateForm = (formData) => {
+    const newErrors = {};
+
+    // Name validation
+    const name = formData.get("name").trim();
+    if (name.length < 2) {
+      newErrors.name = "Name must be at least 2 characters long";
+    } else if (!/^[a-zA-Z\s'-]+$/.test(name)) {
+      newErrors.name =
+        "Name can only contain letters, spaces, hyphens, and apostrophes";
+    }
+
+    // Phone validation
+    const phone = formData.get("phone").trim();
+    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+    if (!phoneRegex.test(phone)) {
+      newErrors.phone = "Phone must be in format (XXX) XXX-XXXX";
+    }
+
+    // Street validation
+    const street = formData.get("street").trim();
+    if (street.length < 5) {
+      newErrors.street = "Street address must be at least 5 characters long";
+    }
+
+    // City validation
+    const city = formData.get("city").trim();
+    if (!/^[a-zA-Z\s'-]+$/.test(city)) {
+      newErrors.city =
+        "City can only contain letters, spaces, hyphens, and apostrophes";
+    }
+
+    // State validation
+    const state = formData.get("state").trim();
+    if (!/^[A-Z]{2}$/.test(state)) {
+      newErrors.state = "State must be a 2-letter code (e.g., CA)";
+    }
+
+    // ZIP validation
+    const zip = formData.get("zip").trim();
+    if (!/^\d{5}(-\d{4})?$/.test(zip)) {
+      newErrors.zip =
+        "ZIP must be 5 digits or 5+4 format (e.g., 12345 or 12345-6789)";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const AddressModal = () => (
@@ -77,14 +127,19 @@ const Address = () => {
           onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+
+            if (!validateForm(formData)) {
+              return;
+            }
+
             const newAddress = {
               id: selectedAddress?.id || Date.now(),
-              name: formData.get("name"),
-              street: formData.get("street"),
-              city: formData.get("city"),
-              state: formData.get("state"),
-              zip: formData.get("zip"),
-              phone: formData.get("phone"),
+              name: formData.get("name").trim(),
+              street: formData.get("street").trim(),
+              city: formData.get("city").trim(),
+              state: formData.get("state").trim().toUpperCase(),
+              zip: formData.get("zip").trim(),
+              phone: formData.get("phone").trim(),
               isDefault: selectedAddress?.isDefault || false,
             };
 
@@ -112,6 +167,9 @@ const Address = () => {
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -121,9 +179,13 @@ const Address = () => {
                 type="tel"
                 name="phone"
                 defaultValue={selectedAddress?.phone || ""}
+                placeholder="(XXX) XXX-XXXX"
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.phone && (
+                <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+              )}
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -136,6 +198,9 @@ const Address = () => {
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.street && (
+                <p className="mt-1 text-sm text-red-600">{errors.street}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -148,6 +213,9 @@ const Address = () => {
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.city && (
+                <p className="mt-1 text-sm text-red-600">{errors.city}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -157,9 +225,14 @@ const Address = () => {
                 type="text"
                 name="state"
                 defaultValue={selectedAddress?.state || ""}
+                placeholder="CA"
+                maxLength={2}
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.state && (
+                <p className="mt-1 text-sm text-red-600">{errors.state}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -169,9 +242,13 @@ const Address = () => {
                 type="text"
                 name="zip"
                 defaultValue={selectedAddress?.zip || ""}
+                placeholder="12345 or 12345-6789"
                 className="mt-1 block w-full rounded-md border-2 border-blue-100 px-2 py-1 text-md text-gray-500 focus:outline-none focus:border-blue-200 focus:ring-1 focus:ring-blue-300"
                 required
               />
+              {errors.zip && (
+                <p className="mt-1 text-sm text-red-600">{errors.zip}</p>
+              )}
             </div>
           </div>
           <div className="flex justify-end space-x-3 mt-6">
