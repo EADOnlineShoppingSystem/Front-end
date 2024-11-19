@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import {message } from 'antd'
 
 const NewPasswordForm = ({ email, otp, onSwitchToSignIn, onClose }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -26,8 +28,9 @@ const NewPasswordForm = ({ email, otp, onSwitchToSignIn, onClose }) => {
 
     try {
       // Add your password reset API call here
-      await resetPassword(email, otp, newPassword);
+      await resetPassword(email, newPassword,confirmPassword );
       // Show success message and close the modal
+      message.success('Password reset successfully!');
       onClose();
     } catch (err) {
       setError('Failed to reset password. Please try again.');
@@ -37,7 +40,14 @@ const NewPasswordForm = ({ email, otp, onSwitchToSignIn, onClose }) => {
   };
 
   // Mock API function - replace with your actual API call
-  const resetPassword = async (email, otp, newPassword) => {
+  const resetPassword = async (email, newPassword,confirmPassword) => {
+    const response = await axios.post('http://localhost:5000/api/users/reset-password', {
+        email,
+        newPassword,
+        confirmPassword,
+      });
+
+    console.log(response.data);
     return new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
