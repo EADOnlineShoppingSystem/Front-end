@@ -1,5 +1,6 @@
-// Updated OtpForm.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
+import { message } from 'antd'
 
 const OtpForm = ({ email, onSwitchToSignIn, onOtpVerified }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -49,24 +50,35 @@ const OtpForm = ({ email, onSwitchToSignIn, onOtpVerified }) => {
     setIsVerifying(true);
 
     try {
-      // Add your OTP verification API call here
-      await verifyOtp(email, otpString);
-      onOtpVerified(otpString); // Pass the OTP to parent component
+      const response = await axios.post('http://localhost:5000/api/users/verify-reset-otp', { 
+        email, 
+        otp: otpString 
+      });
+      
+      // If verification is successful
+      message.success(response.data.message);
+      onOtpVerified(otpString);
     } catch (err) {
-      setError('Invalid OTP. Please try again.');
+      // Handle error response from server
+      setError(err.response?.data?.message || 'Invalid OTP. Please try again.');
     } finally {
       setIsVerifying(false);
     }
   };
 
-  // Mock API function - replace with your actual API call
-  const verifyOtp = async (email, otp) => {
-    return new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleResendOtp = async () => {
+    try {
+      // Implement your resend OTP logic here
+      // This would typically be another API call to generate and send a new OTP
+      console.log('Resending OTP...');
+      // You might want to add a success message or state
+    } catch (error) {
+      setError('Failed to resend OTP. Please try again.');
+    }
   };
 
   return (
     <div className="w-full bg-white rounded-3xl">
-      {/* Decorative header line */}
       <div className="h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-t-3xl" />
       
       <div className="p-6">
@@ -129,10 +141,7 @@ const OtpForm = ({ email, onSwitchToSignIn, onOtpVerified }) => {
             <button
               type="button"
               className="text-blue-600 hover:text-blue-700 font-medium"
-              onClick={() => {
-                // Add your resend OTP logic here
-                console.log('Resending OTP...');
-              }}
+              onClick={handleResendOtp}
             >
               Resend OTP
             </button>
