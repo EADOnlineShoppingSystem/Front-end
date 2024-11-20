@@ -86,7 +86,7 @@ const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
 
       const { token } = response.data;
       localStorage.setItem('token', token);
-      window.location.href = '/dashboard';
+      window.location.href = '/';
     } catch (err) {
       setApiError(err.response?.data?.message || 'An error occurred during login');
     } finally {
