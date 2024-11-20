@@ -1,10 +1,10 @@
 import axiosInstance from "./ApiClient";
 
-const orderServices={
+const cartServices={
 
-    getAllOrders:async()=>{
+    getCartDetailsByUserID:async()=>{
         try {
-            const responce =await axiosInstance.get("/orders/api/orders/allOrders");
+            const responce =await axiosInstance.get("/orders/api/cart/getCartsByuser/:userId");
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
@@ -14,9 +14,9 @@ const orderServices={
             }
         }
     },
-    getOrderByUserId:async(id)=>{
+    addToCart:async(id)=>{
         try {
-            const responce =await axiosInstance.get(`/orders/api/orders/getOdersByUserId/${id}`);
+            const responce =await axiosInstance.get("/orders/api/cart/addtocart");
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
@@ -27,4 +27,4 @@ const orderServices={
         }
     },
 }
-export default orderServices;
+export default cartServices;
