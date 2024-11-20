@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
@@ -257,3 +258,4 @@ const Cart = () => {
 };
 
 export default Cart;
+

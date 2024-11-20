@@ -1,6 +1,4 @@
 import {
-  LogIn,
-  UserPlus,
   ShoppingBag,
   Heart,
   User,
@@ -25,7 +23,7 @@ const SignInDrawer = ({ onAuthAction }) => {
   };
 
   const handleAddresses = () => {
-    navigate("/addresses");
+    navigate("/address");
   };
 
   const handleLogout = () => {

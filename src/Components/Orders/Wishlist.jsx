@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ShoppingCart, Trash2, CheckSquare, Heart, Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -178,3 +179,4 @@ const WatchlistPage = () => {
 };
 
 export default WatchlistPage;
+
