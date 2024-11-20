@@ -386,11 +386,11 @@ const NavBar = () => {
         onClose={closeDrawer}
         className="relative z-50"
       >
-        <DialogBackdrop className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0" />
+        <DialogBackdrop transition className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0" />
         <div className="fixed inset-0">
           <div className="absolute inset-0">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-              <DialogPanel className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700">
+              <DialogPanel transition className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700">
                 <TransitionChild>
                   <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
                     <button
