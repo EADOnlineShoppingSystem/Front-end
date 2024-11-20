@@ -16,19 +16,37 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import SignInDrawer from "./SignInDrawer";
+import SignInDrawer from  "./SignInDrawer";
+import AuthModal from "../Auth/AuthModal";
+import { useCart } from "../../contexts/CartContext";
 
 const NavBar = () => {
+  const { getCartCount } = useCart();
   const [isLoggedIn] = useState(true);
   const [user] = useState({
     name: "John Doe",
     email: "john@example.com",
   });
-
+  
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalView, setAuthModalView] = useState("signin");
+
+  const handleAuthAction = (view) => {
+    setAuthModalView(view);
+    setIsAuthModalOpen(true);
+    setIsDrawerOpen(false); // Close the drawer when opening auth modal
+  };
+
+  const handleClose = () => {
+    setIsAuthModalOpen(false);
+    setAuthModalView('signin');
+  };
+
 
   const handleSearchClick = () => {
     setShowSearchInput(!showSearchInput);
@@ -215,6 +233,7 @@ const NavBar = () => {
   );
 
   return (
+    <>
     <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
       <header>
         <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
@@ -254,7 +273,6 @@ const NavBar = () => {
               </div>
             ))}
           </div>
-
           <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
             {showSearchInput && (
               <input
@@ -388,6 +406,7 @@ const NavBar = () => {
                 </TransitionChild>
                 <div className="flex h-full flex-col justify-center overflow-hidden bg-white py-6 shadow-xl">
                   <div className="relative flex-1 px-4 sm:px-6">
+
                     {isLoggedIn ? (
                       <div className="flex flex-col items-center gap-4">
                         <Avatar size={64} icon={<UserOutlined />} />
@@ -409,8 +428,9 @@ const NavBar = () => {
                         </div>
                       </div>
                     ) : (
-                      <SignInDrawer />
+                      <SignInDrawer onAuthAction={handleAuthAction} />
                     )}
+
                   </div>
                 </div>
               </DialogPanel>
@@ -419,6 +439,12 @@ const NavBar = () => {
         </div>
       </Dialog>
     </div>
+    <AuthModal
+    isOpen={isAuthModalOpen}
+    onClose={handleClose}
+    initialView={authModalView}
+  />
+  </>
   );
 };
 

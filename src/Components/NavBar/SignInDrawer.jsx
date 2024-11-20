@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const SignInPage = () => {
+const SignInDrawer = ({ onAuthAction }) => {
   const navigate = useNavigate();
 
   const handleOrders = () => {
@@ -27,12 +27,11 @@ const SignInPage = () => {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
     navigate("/");
   };
 
   return (
-    <div className="flex items-center justify-center bg-white min-h-screen">
+    <div className="flex items-center justify-center bg-white h-full">
       <div className="w-full max-w-sm px-4 py-10 bg-white sm:px-6 lg:px-3 sm:py-16">
         <div>
           <div className="flex items-center justify-center">
@@ -44,19 +43,20 @@ const SignInPage = () => {
             </span>
           </div>
 
-          <form className="mt-2">
+          <div className="mt-2">
             <div className="space-y-2">
               <button
-                type="submit"
+                onClick={() => onAuthAction("signin")}
                 className="inline-flex items-center justify-center w-full px-4 py-3 text-base font-semibold text-white bg-gradient-to-r from-blue-500 to-pink-500/50 ease-in-out border border-transparent rounded-3xl focus:outline-none hover:from-blue-500 hover:to-pink-500 focus:from-blue-500 focus:to-pink-500 transition-colors duration-700"
               >
                 Sign in
               </button>
               <div className="flex items-center text-gray-900 justify-center opacity-70 hover:opacity-100">
-                <a href="#">Register</a>
+                <button onClick={() => onAuthAction("signup")}>Register</button>
               </div>
             </div>
-          </form>
+          </div>
+
           <div>
             <div className="mt-8 space-y-4">
               <h3 className="text-lg font-semibold mb-4">Dashboard</h3>
@@ -103,4 +103,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignInDrawer;
