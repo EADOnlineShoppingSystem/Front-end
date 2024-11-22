@@ -165,6 +165,83 @@ const Checkout = () => {
     }
   }, [isError]);
 
+
+////payment
+
+
+  const orderId = "123456";
+  const name = "Iphone16";
+  const amount = 1000;
+  const merchantId = "1228659";
+  const merchantSecret = "MjY0OTk5MTk1MjI3MzM3MDY5NDIyODQ5ODU0NDM5MjAwOTMxMzEwNg==";
+
+  const hashedSecret = md5(merchantSecret).toString().toUpperCase();
+  const amountFormated = parseFloat(amount)
+     .toLocaleString("en-us", { minimumFractionDigits: 2 })
+     .replaceAll(",", "");
+  const currency = "LKR";
+
+  const hash = md5(
+    merchantId + orderId + amountFormated + currency + hashedSecret
+  )
+    .toString()
+    .toUpperCase();
+
+
+
+  const paymentData = {
+    sandbox: true,
+    merchant_id: "1228659",
+    return_url: "http://localhost:3000/bookings",
+    cancel_url: "http://sample.com/cancel",
+    notify_url: "http://sample.com/notify",
+    order_id: orderId,
+    items: name,
+    amount: amount,
+    currency: currency,
+    first_name: "kanishka",
+    last_name: "udayanga",
+    email: "mskanihskaudayang@gmail.com",
+    phone: "0784657729",
+    address: "kurunda",
+    city: "city",
+    country: "Lanka",
+    hash: hash,
+  };
+
+useEffect(() => {
+   window.payhere.onCompleted = function onCompleted(paymentId) {
+    console.log("Payment completed. Payment Id:" + paymentId);
+    
+  };
+
+
+  window.payhere.onDismissed = function onDismissed() {
+    console.log("Payment dismissed");
+  };
+
+  window.payhere.onError = function onError(error) {
+    console.log("Error:" + error);
+  };
+
+}, []);
+ 
+
+ const paymentDone = () => {
+  console.log("paymentDone");
+    window.payhere.startPayment(paymentData);
+  };
+  
+  const payment = async () => {
+    console.log("payment");
+    paymentDone();
+  }
+
+
+
+
+
+
   return (
     // <Container class1="py-5">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -248,7 +325,7 @@ const Checkout = () => {
                 <MdArrowBackIosNew className="mr-2" /> Return to Cart
               </Link>
               <button
-                onClick={handlePlaceOrder}
+                onClick={payment}
                 disabled={loading || isLoading || !selectedAddress}
                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
               >
