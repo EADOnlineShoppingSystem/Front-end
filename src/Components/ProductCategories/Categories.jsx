@@ -37,14 +37,14 @@ const Categories = () => {
       price: product.price,
       image: getVariantImage(product, selectedColor),
       color: selectedColor !== 'all' ? selectedColor : product.color,
-      brand: product.brand || 'No Brand', // Fallback if brand is undefined
-      storage: product.storage || 'N/A', // Fallback if storage is undefined
+      brand: product.brand || 'No Brand', 
+      storage: product.storage || 'N/A', 
       quantity: 1
     };
 
-    console.log('Formatted cart item:', cartItem); // Debug log
+    console.log('Formatted cart item:', cartItem); 
     addToCart(cartItem);
-    console.log('Current cart items:', cartItems); // Debug log
+    console.log('Current cart items:', cartItems); 
     message.info("Add to cart"); 
   };
 

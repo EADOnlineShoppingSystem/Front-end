@@ -54,6 +54,10 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    navigate('/checkout');
+  };
+
   // Shipping fee is 280 when items are selected, 0 otherwise
   const shippingFee = selectedItems.size > 0 ? 280 : 0;
 
@@ -245,6 +249,7 @@ const Cart = () => {
                 <button 
                   className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
                   disabled={selectedItems.size === 0}
+                  onClick={handleCheckout}
                 >
                   PROCEED TO CHECKOUT ({selectedItems.size})
                 </button>
