@@ -7,7 +7,8 @@ import pro1 from "../../public/images/pro1.webp";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../utils/axiosConfig";
 import { createAnOrder } from "../features/user/userSlice";
-
+import md5 from "md5";
+import orderServices from "../Services/order.services";
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -192,7 +193,7 @@ const Checkout = () => {
   const paymentData = {
     sandbox: true,
     merchant_id: "1228659",
-    return_url: "http://localhost:3000/bookings",
+    return_url: "http://localhost:5173",
     cancel_url: "http://sample.com/cancel",
     notify_url: "http://sample.com/notify",
     order_id: orderId,
@@ -209,10 +210,23 @@ const Checkout = () => {
     hash: hash,
   };
 
+  const oderCompleteApi = async (oderData) => {
+    const res = await orderServices.createOrder(oderData);
+  }
+
+ 
 useEffect(() => {
    window.payhere.onCompleted = function onCompleted(paymentId) {
     console.log("Payment completed. Payment Id:" + paymentId);
-    
+      const oderData={
+      productId:"12334",
+      userId:"633333",   
+      quantity:2,
+      price:2333333
+    }
+    oderCompleteApi(oderData);
+  
+  
   };
 
 
