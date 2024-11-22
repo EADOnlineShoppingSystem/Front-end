@@ -1,0 +1,98 @@
+[
+    {
+        "title": "iMac M4",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/iMac_M4/1.png",
+        "defaultHoverImage": "/mac/iMac_M4/1.png",
+        "price": "LKR 649,000.00"
+    },
+    {
+        "title": "MacBook Pro M4",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Pro_M4/1.png",
+        "defaultHoverImage": "/mac/MacBook_Pro_M4/1.png",
+        "price": "LKR 529,900.00 – LKR 1,239,900.00"
+    },
+    {
+        "title": "MacBook Pro M3",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Pro_M3/1.png",
+        "defaultHoverImage": "/mac/MacBook_Pro_M3/1.png",
+        "price": "LKR 464,900.00 – LKR 1,299,900.00"
+    },
+    {
+        "title": "MacBook Air M3 2024",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Air_M3_2024/1.png",
+        "defaultHoverImage": "/mac/MacBook_Air_M3_2024/2.png",
+        "price": "LKR 334,900.00 – LKR 539,900.00"
+    },
+    {
+        "title": "Mac Mini M2 Pro",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/Mac_Mini M2_Pro/1.png",
+        "defaultHoverImage": "/mac/Mac_Mini M2_Pro/2.png",
+        "price": "LKR 449,900.00"
+    },
+    {
+        "title": "Mac Mini M2",
+        "href": "/category/smartphones",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/Mac_Mini M2/1.png",
+        "defaultHoverImage": "/mac/Mac_Mini M2/2.png",
+        "price": "LKR 269,900.00 – LKR 189,900.00"
+    },
+    {
+        "title": "Mac Studio M2 Ultra",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/Mac_Studio_M2_Ultra/1.png",
+        "defaultHoverImage": "/mac/Mac_Studio_M2_Ultra/2.png",
+        "price": "LKR 1,459,900.00"
+    },
+    {
+        "title": "Mac Studio M2 Max",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/Mac_Studio_M2_Max/1.png",
+        "defaultHoverImage": "/mac/Mac_Studio_M2_Max/2.png",
+        "price": "LKR 789,900.00 – LKR 739,900.00"
+    },
+    {
+        "title": "MacBook Air 15\" M2",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Air_15_M2/1.png",
+        "defaultHoverImage": "/mac/MacBook_Air_15_M2/2.png",
+        "price": "LKR 359,900.00 – LKR 339,900.00"
+    },
+    {
+        "title": "iMac 24\"",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/iMac_24/1.png",
+        "defaultHoverImage": "/mac/iMac_24/2.png",
+        "price": "LKR 209,900.00 – LKR 409,900.00"
+    },
+    {
+        "title": "MacBook Pro 13\" M2",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Pro_13_M2/1.png",
+        "defaultHoverImage": "/mac/MacBook_Pro_13_M2/2.png",
+        "price": "LKR 434,900.00 – LKR 419,900.00"
+    },
+    {
+        "title": "MacBook Air M2",
+        "href": "/category/laptops",
+        "numOfProducts": 100,
+        "defaultImage": "/mac/MacBook_Air_M2/1.png",
+        "defaultHoverImage": "/mac/MacBook_Air_M2/2.png",
+        "price": "LKR 324,900.00 – LKR 299,900.00"
+    }
+]

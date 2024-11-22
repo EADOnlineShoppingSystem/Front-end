@@ -54,19 +54,13 @@ const PopularCategories = () => {
     },
     {
       image: "/popular/9.png",
-      title: "HomePad",
+      title: "HomePod",
       href: "/category/laptops",
       numOfProducts: 100,
     },
     {
       image: "/popular/10.png",
       title: "Accessories",
-      href: "/category/laptops",
-      numOfProducts: 100,
-    },
-    {
-      image: "/popular/11.png",
-      title: "Apple Gift Cards",
       href: "/category/laptops",
       numOfProducts: 100,
     },
