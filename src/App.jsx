@@ -1,6 +1,5 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./Components/HomePage/HomePage";
 import SingleProduct from "./Pages/SingleProduct";
 import Checkout from "./Pages/Checkout";
 import ProductCategories from "./Components/ProductCategories/Categories"
@@ -11,6 +10,7 @@ import Wishlist from "./Components/Orders/Wishlist";
 import {CartProvider} from "./contexts/CartContext"
 import Address from "./Components/Orders/Address";
 import Profile from "./Components/Profile/Profile";
+import HomePage from "./Components/HomePage/HomePage";
 
 function App() {
   return (
