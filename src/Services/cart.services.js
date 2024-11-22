@@ -2,9 +2,9 @@ import axiosInstance from "./ApiClient";
 
 const cartServices={
 
-    getCartDetailsByUserID:async()=>{
+    getCartDetailsByUserID:async(userId)=>{
         try {
-            const responce =await axiosInstance.get("/orders/api/cart/getCartsByuser/:userId");
+            const responce =await axiosInstance.get(`/orders/api/cart/getCartsByuser/${userId}`);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
@@ -14,9 +14,9 @@ const cartServices={
             }
         }
     },
-    addToCart:async(id)=>{
+    addToCart:async(cartdata)=>{
         try {
-            const responce =await axiosInstance.get("/orders/api/cart/addtocart");
+            const responce =await axiosInstance.post("/orders/api/cart/addtocart",cartdata);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
