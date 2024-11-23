@@ -4,7 +4,7 @@ const orderServices={
 
     getAllOrders:async()=>{
         try {
-            const responce =await axiosInstance.get("/orders/api/orders/allOrders");
+            const responce =await axiosInstance.get("/order/api/orders/allOrders");
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
@@ -28,7 +28,7 @@ const orderServices={
     },
     createOrder :async(order)=>{
         try {
-            const responce =await axiosInstance.post("/orders/api/orders/createOrder",order);
+            const responce =await axiosInstance.post("/order/api/orders/createOrder",order);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
