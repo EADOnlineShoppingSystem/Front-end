@@ -85,7 +85,7 @@ const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
       });
 
       const { token } = response.data;
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       window.location.href = '/';
     } catch (err) {
       setApiError(err.response?.data?.message || 'An error occurred during login');
