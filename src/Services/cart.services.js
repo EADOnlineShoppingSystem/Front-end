@@ -4,7 +4,7 @@ const cartServices={
 
     getCartDetailsByUserID:async(userId)=>{
         try {
-            const responce =await axiosInstance.get(`/orders/api/cart/getCartsByuser/${userId}`);
+            const responce =await axiosInstance.get(`/order/api/cart/getCartsByuser/${userId}`);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
@@ -16,7 +16,7 @@ const cartServices={
     },
     addToCart:async(cartdata)=>{
         try {
-            const responce =await axiosInstance.post("/orders/api/cart/addtocart",cartdata);
+            const responce =await axiosInstance.post("/order/api/cart/addtocart",cartdata);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {

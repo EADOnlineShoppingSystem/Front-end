@@ -4,6 +4,7 @@ import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
+import { useOrder } from '../../contexts/OrderContext';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, removeMultipleFromCart } = useCart();
@@ -12,6 +13,18 @@ const Cart = () => {
   const [location, setLocation] = useState('Weligama, Matara,Southern');
   const [selectedItems, setSelectedItems] = useState(new Set());
   const navigate = useNavigate();
+
+const { setOrderData } = useOrder();
+const orderData = {
+    productId: "674195cbc36bd2ccee6e1205",    
+    quantity: 99,
+    price: 2669.99
+}
+const handleOrders= () => {
+  setOrderData(orderData);
+  navigate('/checkout');
+  console.log("Order Data", orderData);
+}
 
   const toggleSelectAll = () => {
     if (selectedItems.size === cartItems.length) {
@@ -54,10 +67,7 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = () => {
-    navigate('/checkout');
-  };
-
+ 
   // Shipping fee is 280 when items are selected, 0 otherwise
   const shippingFee = selectedItems.size > 0 ? 280 : 0;
 
@@ -249,7 +259,7 @@ const Cart = () => {
                 <button 
                   className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
                   disabled={selectedItems.size === 0}
-                  onClick={handleCheckout}
+                  onClick={handleOrders}
                 >
                   PROCEED TO CHECKOUT ({selectedItems.size})
                 </button>
