@@ -20,13 +20,13 @@ const ShoppingEvent = () => {
           {/* Fixed Header Content */}
           <div className="absolute top-0 left-0 right-0 p-4 sm:p-8 z-10 bg-gradient-to-b from-black/50 via-black/30 to-transparent">
             <div className="text-left">
-              <h1 className="sm:text-4xl font-bold text-white mb-2 sm:mb-5 text-4xl">
+              <h1 data-testid="shopping-event-title" className="sm:text-4xl font-bold text-white mb-2 sm:mb-5 text-4xl">
                 Apple Shopping Event
               </h1>
-              <p className="text-white mb-2 sm:mb-4">
+              <p data-testid="shopping-event-description" className="text-white mb-2 sm:mb-4">
                 Shop great deals on MacBook, iPad, iPhone and more.
               </p>
-              <button className="bg-gradient-to-r text-sm from-blue-400 to-pink-400 text-white text-semibold px-3 py-2 rounded-lg ease-in-out transform hover:scale-105 hover:shadow-lg duration-500">
+              <button data-testid="shop-now-button" className="bg-gradient-to-r text-sm from-blue-400 to-pink-400 text-white text-semibold px-3 py-2 rounded-lg ease-in-out transform hover:scale-105 hover:shadow-lg duration-500">
                 Shop Now
               </button>
             </div>

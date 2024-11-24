@@ -22,7 +22,7 @@ const VideoFrame = () => {
 
   return (
     <div>
-      <video
+      <video data-testid="apple-video-one"
         ref={videoRef}
         className="absolute top-0 left-0 w-full h-full object-cover"
         loop
@@ -32,7 +32,7 @@ const VideoFrame = () => {
         <source src="/videos/apple.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <button
+      <button data-testid="play-pause-button"
         className="absolute bottom-0 right-4 transform -translate-y-1/2 bg-white opacity-60  rounded-full p-2 w-10 h-10"
         onClick={handlePlayPause}
       >
