@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
-import { useNavigate } from 'react-router-dom';
-
+import { Navigate, useNavigate } from 'react-router-dom';
+import { useOrder } from '../../contexts/orderContext';
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, removeMultipleFromCart } = useCart();
   const [voucherCode, setVoucherCode] = useState('');
@@ -63,6 +63,18 @@ const Cart = () => {
     const voucherDiscount = voucherApplied ? 500 : 0;
     return subtotal + shippingFee - voucherDiscount;
   };
+
+const { setOrderData } = useOrder();
+const orderData = {
+     productId: "674195cbc36bd2ccee6e1205",    
+    quantity: 99,
+    price: 2669.99
+}
+const handleOrders= () => {
+  console.log("Order Data", orderData);
+  //setOrderData(orderData);
+  Navigate('/Checkout');
+}
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -242,7 +254,7 @@ const Cart = () => {
                   </span>
                 </div>
 
-                <button 
+                <button onClick={handleOrders}
                   className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
                   disabled={selectedItems.size === 0}
                 >

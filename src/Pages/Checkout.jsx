@@ -9,6 +9,7 @@ import { axiosInstance } from "../utils/axiosConfig";
 import { createAnOrder } from "../features/user/userSlice";
 import md5 from "md5";
 import orderServices from "../Services/order.services";
+import { useOrder } from "../contexts/orderContext";
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -169,7 +170,8 @@ const Checkout = () => {
 
 ////payment
 
-
+const {orderData} = useOrder();
+console.log("context data ",orderData);
   const orderId = "123456";
   const name = "Iphone16";
   const amount = 1000;

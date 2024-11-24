@@ -12,10 +12,11 @@ import Cart from "./Components/Orders/Cart";
 import Wishlist from "./Components/Orders/Wishlist";
 import {CartProvider} from "./contexts/CartContext"
 import Address from "./Components/Orders/Address";
-
+import { OrderProvider } from "./contexts/orderContext";
 function App() {
   return (
     <> 
+    <OrderProvider>
     <CartProvider>
       <BrowserRouter>
         <Routes>
@@ -31,6 +32,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       </CartProvider>
+      </OrderProvider>
     </>
   );
 }
