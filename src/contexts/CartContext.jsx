@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-
+import cartServices from "../Services/cart.services"
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -16,7 +16,15 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product) => {
+  const addToCart = async (product) => {
+    const adding ={
+      
+    productId:"674195cbc36bd2ccee6e1205",
+    quantity:2241
+
+    }
+   const data = await cartServices.addToCart(adding)
+   console.log(data)
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       

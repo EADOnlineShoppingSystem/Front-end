@@ -16,7 +16,8 @@ const cartServices={
     },
     addToCart:async(cartdata)=>{
         try {
-            const responce =await axiosInstance.get("/orders/api/cart/addtocart",cartdata);
+            console.log("data",cartdata);
+            const responce =await axiosInstance.post("/order/api/cart/addtocart",cartdata);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
