@@ -1,7 +1,6 @@
 import axiosInstance from "./ApiClient";
 
 const orderServices={
-
     getAllOrders:async()=>{
         try {
             const responce =await axiosInstance.get("/orders/api/orders/allOrders");
