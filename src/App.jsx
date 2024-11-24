@@ -27,6 +27,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/address" element={<Address />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
       </CartProvider>
