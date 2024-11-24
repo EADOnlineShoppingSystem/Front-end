@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit  }) => {
+const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -13,6 +14,13 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit  }) => {
   const validateForm = () => {
     const newErrors = {};
     
+    // Username validation
+    if (!formData.username) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    }
+
     // Email validation
     if (!formData.email) {
       newErrors.email = 'Email is required';
@@ -62,13 +70,13 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit  }) => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/users/register', {
+      const response = await axios.post('http://localhost:3500/User/api/users/register', {
+        username: formData.username,
         email: formData.email,
         password: formData.password,
         confirmpassword: formData.confirmPassword
       });
 
-     
       // If successful, pass the data to parent component for OTP verification
       onSignupSubmit({
         email: formData.email,
@@ -96,6 +104,26 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit  }) => {
         </h2>
         
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-gray-700 mb-2" htmlFor="username">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className={`w-full p-3 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                errors.username ? 'border-red-500 border' : ''
+              }`}
+              placeholder="Enter your username"
+            />
+            {errors.username && (
+              <p className="mt-1 text-red-500 text-sm">{errors.username}</p>
+            )}
+          </div>
+
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="email">
               Email

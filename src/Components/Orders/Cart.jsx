@@ -3,7 +3,7 @@ import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
-import { useOrder } from '../../contexts/OrderContext';
+import { useOrder } from '../../contexts/orderContext';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();

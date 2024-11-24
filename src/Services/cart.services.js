@@ -2,9 +2,9 @@ import axiosInstance from "./ApiClient";
 
 const cartServices={
 
-    getCartDetailsByUserID:async(userId)=>{
+    getCartDetailsByUserID:async()=>{
         try {
-            const responce =await axiosInstance.get(`/order/api/cart/getCartsByuser/${userId}`);
+            const responce =await axiosInstance.get(`/order/api/cart/getCartsByuser`);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
