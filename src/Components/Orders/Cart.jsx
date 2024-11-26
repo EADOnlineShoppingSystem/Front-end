@@ -1,45 +1,36 @@
-
 import React, { useState } from 'react';
 import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
+import { useOrder } from '../../contexts/orderContext';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, removeMultipleFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
   const [voucherCode, setVoucherCode] = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
   const [location, setLocation] = useState('Weligama, Matara,Southern');
-  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const navigate = useNavigate();
 
-  const toggleSelectAll = () => {
-    if (selectedItems.size === cartItems.length) {
-      setSelectedItems(new Set());
-    } else {
-      setSelectedItems(new Set(cartItems.map(item => item.id)));
+  const { setOrderData } = useOrder();
+  
+  const handleOrders = () => {
+    const selectedItem = cartItems.find(item => item.id === selectedItemId);
+    if (selectedItem) {
+      const orderData = {
+        productId: selectedItem.id,
+        quantity: selectedItem.quantity,
+        price: selectedItem.price
+      };
+      setOrderData(orderData);
+      navigate('/checkout');
+      console.log("Order Data", orderData);
     }
   };
 
-  const toggleSelectItem = (itemId) => {
-    const newSelected = new Set(selectedItems);
-    if (newSelected.has(itemId)) {
-      newSelected.delete(itemId);
-    } else {
-      newSelected.add(itemId);
-    }
-    setSelectedItems(newSelected);
-  };
-
-  const calculateSelectedSubtotal = () => {
-    return cartItems
-      .filter(item => selectedItems.has(item.id))
-      .reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const handleDeleteSelected = () => {
-    removeMultipleFromCart(Array.from(selectedItems));
-    setSelectedItems(new Set());
+  const handleSelectItem = (itemId) => {
+    setSelectedItemId(itemId === selectedItemId ? null : itemId);
   };
 
   const handleQuantityChange = (item, newQuantity) => {
@@ -54,12 +45,13 @@ const Cart = () => {
     }
   };
 
-  const handleCheckout = () => {
-    navigate('/checkout');
+  const calculateSelectedSubtotal = () => {
+    const selectedItem = cartItems.find(item => item.id === selectedItemId);
+    return selectedItem ? selectedItem.price * selectedItem.quantity : 0;
   };
 
-  // Shipping fee is 280 when items are selected, 0 otherwise
-  const shippingFee = selectedItems.size > 0 ? 280 : 0;
+  // Shipping fee is 280 when an item is selected, 0 otherwise
+  const shippingFee = selectedItemId ? 280 : 0;
 
   // Calculate total with voucher discount
   const calculateTotal = () => {
@@ -79,29 +71,6 @@ const Cart = () => {
           {/* Cart Items Section */}
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <input 
-                    type="checkbox" 
-                    className="rounded"
-                    checked={selectedItems.size === cartItems.length && cartItems.length > 0}
-                    onChange={toggleSelectAll}
-                    disabled={cartItems.length === 0}
-                  />
-                  <span className="text-gray-600">
-                    SELECT ALL ({selectedItems.size}/{cartItems.length} ITEMS)
-                  </span>
-                </div>
-                <button 
-                  className="flex items-center gap-2 text-gray-600"
-                  onClick={handleDeleteSelected}
-                  disabled={selectedItems.size === 0}
-                >
-                  <Trash2 className="w-4 h-4" />
-                  DELETE
-                </button>
-              </div>
-
               {cartItems.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 text-lg mb-6">There are no items in this cart</p>
@@ -113,15 +82,14 @@ const Cart = () => {
                   </button>
                 </div>
               ) : (
-                /* Cart Items */
                 cartItems.map((item) => (
                   <div key={item.id} className="border-t py-4">
                     <div className="flex items-start gap-4">
                       <input 
-                        type="checkbox" 
-                        className="mt-2 rounded"
-                        checked={selectedItems.has(item.id)}
-                        onChange={() => toggleSelectItem(item.id)}
+                        type="radio" 
+                        className="mt-2"
+                        checked={selectedItemId === item.id}
+                        onChange={() => handleSelectItem(item.id)}
                       />
                       <div className="w-24 h-24">
                         <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
@@ -164,11 +132,9 @@ const Cart = () => {
                               className="text-gray-400 hover:text-gray-600"
                               onClick={() => {
                                 removeFromCart(item.id);
-                                setSelectedItems(prev => {
-                                  const newSet = new Set(prev);
-                                  newSet.delete(item.id);
-                                  return newSet;
-                                });
+                                if (selectedItemId === item.id) {
+                                  setSelectedItemId(null);
+                                }
                               }}
                             >
                               <Trash2 className="w-4 h-4" />
@@ -198,7 +164,7 @@ const Cart = () => {
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal ({selectedItems.size} items)</span>
+                    <span className="text-gray-600">Subtotal ({selectedItemId ? 1 : 0} item)</span>
                     <span>Rs. {calculateSelectedSubtotal().toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
@@ -248,10 +214,10 @@ const Cart = () => {
 
                 <button 
                   className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
-                  disabled={selectedItems.size === 0}
-                  onClick={handleCheckout}
+                  disabled={!selectedItemId}
+                  onClick={handleOrders}
                 >
-                  PROCEED TO CHECKOUT ({selectedItems.size})
+                  PROCEED TO CHECKOUT
                 </button>
               </div>
             </div>
@@ -263,4 +229,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
