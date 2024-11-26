@@ -1,10 +1,13 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import categoriesData from "./Data/appleWatch.json";
+import productServices from "../../Services/product.services";
 
 const AppleWatch = () => {
   const [hoveredStates, setHoveredStates] = useState({});
+  const [watches, setWatches] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleMouseEnter = (index) => {
     setHoveredStates((prev) => ({ ...prev, [index]: true }));
@@ -13,6 +16,33 @@ const AppleWatch = () => {
   const handleMouseLeave = (index) => {
     setHoveredStates((prev) => ({ ...prev, [index]: false }));
   };
+
+  // Fetch Watches from Backend
+  const fetchWatches = async () => {
+    try {
+      setIsLoading(true);
+      const response = await productServices.getAllWatches();
+
+      if (response && response.products) {
+        setWatches(response.products);
+        setError(null);
+      } else {
+        throw new Error("No watches found");
+      }
+    } catch (error) {
+      console.error("Error fetching watches:", error);
+      setError("Failed to load watches");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWatches();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="w-full">
@@ -44,8 +74,8 @@ const AppleWatch = () => {
               1536: { slidesPerView: 4, spaceBetween: 8 },
             }}
           >
-            {categoriesData.map((category, productIndex) => (
-              <SwiperSlide key={productIndex}>
+            {watches.map((watch, productIndex) => (
+              <SwiperSlide key={watch._id}>
                 <div className="m-2 transform transition-all duration-300 hover:scale-103">
                   <div className="bg-white rounded-xl shadow-sm w-full p-5 transition-shadow duration-300 hover:shadow-md">
                     <div
@@ -53,47 +83,40 @@ const AppleWatch = () => {
                       onMouseEnter={() => handleMouseEnter(productIndex)}
                       onMouseLeave={() => handleMouseLeave(productIndex)}
                     >
-                      <a
-                        href={category.href}
-                        className="block flex-1 flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
-                        aria-label={`View ${category.title} category`}
-                      >
+                      <div className="block flex-1 flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300">
                         <div className="relative h-48 sm:h-60 md:h-72 overflow-hidden bg-white flex items-center justify-center">
                           <div className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out transform group-hover:scale-110">
-                            <img
-                              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ease-in-out ${
-                                hoveredStates[productIndex]
-                                  ? "opacity-0"
-                                  : "opacity-100"
-                              }`}
-                              src={category.defaultImage}
-                              alt={`${category.title} default view`}
-                              loading="lazy"
-                            />
-                            <img
-                              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ease-in-out ${
-                                hoveredStates[productIndex]
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
-                              src={category.defaultHoverImage}
-                              alt={`${category.title} hover view`}
-                              loading="lazy"
-                            />
+                            {watch.images && watch.images.length > 0 && (
+                              <>
+                                <img
+                                  className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ease-in-out ${
+                                    hoveredStates[productIndex]
+                                      ? "opacity-0"
+                                      : "opacity-100"
+                                  }`}
+                                  src={watch.images[0].url}
+                                  alt={`${watch.productTitle} default view`}
+                                  loading="lazy"
+                                />
+                                {/* You might want to add a hover image if available */}
+                              </>
+                            )}
                           </div>
                         </div>
 
                         <div className="text-center transform transition-transform duration-300">
                           <h3 className="text-md font-semibold text-shadow-lg text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                            {category.title}
+                            {watch.productTitle}
                           </h3>
                         </div>
-                      </a>
+                      </div>
                       <div className="text-center">
                         <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300 transition-colors duration-300">
-                          {category.price}
+                          LKR {parseFloat(watch.lowestPrice).toFixed(2)} - LKR{" "}
+                          {parseFloat(watch.largestPrice).toFixed(2)}
                         </p>
                       </div>
+
                       <div className="w-full flex justify-center mt-2">
                         <button
                           type="button"
