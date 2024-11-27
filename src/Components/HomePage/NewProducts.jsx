@@ -23,102 +23,93 @@ const NewProducts = () => {
   };
 
   // Fetch the newest products
-  const fetchNewProducts = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await productServices.getAllProducts();
+const fetchNewProducts = async () => {
+  try {
+    setIsLoading(true);
+    setError(null);
+    const response = await productServices.getAllProducts();
 
-      if (response && response.products && response.products.length > 0) {
-        // Transform and sort products
-        const transformedProducts = response.products
-          .map((product) => {
-            // Robust color parsing
-            const parseColors = (colors) => {
-              // Handle different possible input formats
-              if (Array.isArray(colors)) {
-                // If it's an array of strings that might be JSON
-                return colors.flatMap((color) => {
-                  try {
-                    // parsing if it looks like a JSON string
-                    const parsed = JSON.parse(color);
-                    return Array.isArray(parsed) ? parsed : [parsed];
-                  } catch {
-                    // If not JSON, return the original color
-                    return color.startsWith("#") ? [color] : [];
-                  }
-                });
-              }
-
-              // If colors is a string, try parsing
-              if (typeof colors === "string") {
+    if (response && response.products && response.products.length > 0) {
+      // Transform and sort products
+      const transformedProducts = response.products
+        .map((product) => {
+          // Robust color parsing
+          const parseColors = (colors) => {
+            if (Array.isArray(colors)) {
+              return colors.flatMap((color) => {
                 try {
-                  const parsed = JSON.parse(colors);
+                  const parsed = JSON.parse(color);
                   return Array.isArray(parsed) ? parsed : [parsed];
                 } catch {
-                  return colors.startsWith("#") ? [colors] : [];
+                  return color.startsWith("#") ? [color] : [];
                 }
+              });
+            }
+            if (typeof colors === "string") {
+              try {
+                const parsed = JSON.parse(colors);
+                return Array.isArray(parsed) ? parsed : [parsed];
+              } catch {
+                return colors.startsWith("#") ? [colors] : [];
               }
+            }
+            return [];
+          };
 
-              return [];
-            };
+          // Parse colors and images
+          const colors = parseColors(product.colors);
+          const images = product.images || [];
 
-            // Parse colors
-            const colors = parseColors(product.colors);
+          return {
+            id: product._id,
+            title: product.productTitle || "Unnamed Product",
+            href: `/product/${product._id}`,
+            defaultImage:
+              images.length > 0
+                ? images[0].url || "/placeholder.jpg"
+                : "/placeholder.jpg",
+            defaultHoverImage:
+              images.length > 1
+                ? images[1].url || "/placeholder.jpg"
+                : "/placeholder.jpg",
+            price: `LKR ${parseFloat(product.lowestPrice).toFixed(
+              2
+            )} - LKR ${parseFloat(product.largestPrice).toFixed(2)}`,
+            createdAt: product.createdAt, // Include createdAt for sorting
+            updatedAt: product.createdAt
+              ? new Date(product.createdAt).toLocaleDateString()
+              : "No update date",
+            variants: colors.map((color, index) => ({
+              color: color,
+              colorHex: color, // Directly use the color code
+              variantImage: images[index]
+                ? images[index].url
+                : "/placeholder.jpg",
+            })),
+          };
+        })
+        // most recently created products first
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        // top 10 newest products
+        .slice(0, 10);
 
-            // Parse images with fallback
-            const images = product.images || [];
-
-            return {
-              id: product._id,
-              title: product.productTitle || "Unnamed Product",
-              href: `/product/${product._id}`,
-              defaultImage:
-                images.length > 0
-                  ? images[0].url || "/placeholder.jpg"
-                  : "/placeholder.jpg",
-              defaultHoverImage:
-                images.length > 1
-                  ? images[1].url || "/placeholder.jpg"
-                  : "/placeholder.jpg",
-              price: `LKR ${parseFloat(product.lowestPrice).toFixed(
-                2
-              )} - LKR ${parseFloat(product.largestPrice).toFixed(2)}`,
-              updatedAt: product.createdAt
-                ? new Date(product.createdAt).toLocaleDateString()
-                : "No update date",
-              variants: colors.map((color, index) => ({
-                color: color,
-                colorHex: color, // Directly use the color code
-                variantImage: images[index]
-                  ? images[index].url
-                  : "/placeholder.jpg",
-              })),
-            };
-          })
-          // Sort by most recently created if createdAt is available
-          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-          // Limit to top 10 newest products
-          .slice(0, 10);
-
-        setNewProducts(transformedProducts);
-      } else {
-        throw new Error("No products found");
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setError("Failed to load products. Please try again later.");
-      setNewProducts([]);
-    } finally {
-      setIsLoading(false);
+      setNewProducts(transformedProducts);
+    } else {
+      throw new Error("No products found");
     }
-  };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    setError("Failed to load products. Please try again later.");
+    setNewProducts([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchNewProducts();
   }, []);
 
-  // Render loading state
   if (isLoading) {
     return (
       <div className="w-full flex justify-center items-center py-12">
@@ -127,7 +118,6 @@ const NewProducts = () => {
     );
   }
 
-  // Render error state
   if (error) {
     return <div className="w-full text-center py-12 text-red-500">{error}</div>;
   }
