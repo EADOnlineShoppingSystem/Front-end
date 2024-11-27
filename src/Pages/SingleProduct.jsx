@@ -1,21 +1,58 @@
-import { useState } from "react";
-import Color from "../Components/ProductCard/Color";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import productServices  from "../services/product.services";
 import { FaRegHeart } from "react-icons/fa";
 import { TbGitCompare } from "react-icons/tb";
-import pro1 from "/images/pro1.webp";
 import ReactStars from "react-stars";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal } from "react-icons/fa";
 import NavBar from "../Components/NavBar/NavBar";
 
 const SingleProduct = () => {
-  const productImages = [pro1];
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch product details
+  const fetchProductDetails = async () => {
+    if (!id) {
+      setError("Invalid Product ID");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await productServices.getProductDetailsByProductId(id);
+
+      if (response && response.product) {
+        setProduct(response.product);
+        setError(null);
+      } else {
+        throw new Error("Product not found");
+      }
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+      setError("Failed to load product details");
+      // Optionally redirect if product not found
+      // navigate('/products');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductDetails();
+  }, [id]);
 
   const handleIncrement = () => {
-    if (quantity < 10) setQuantity(quantity + 1);
+    if (product && quantity < product.quantity) setQuantity(quantity + 1);
   };
 
   const handleDecrement = () => {
@@ -29,6 +66,55 @@ const SingleProduct = () => {
     const y = ((e.clientY - bounds.top) / bounds.height) * 100;
     setMousePosition({ x, y });
   };
+
+  // Parse storage and color options
+  const parseStorages = () => {
+    try {
+      return JSON.parse(product.storages[0] || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  const parseColors = () => {
+    try {
+      return JSON.parse(product.colors[0] || "[]");
+    } catch {
+      return [];
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen text-red-500">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">{error}</h2>
+          <button
+            onClick={() => navigate("/products")}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Go to Products
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        No product found
+      </div>
+    );
+  }
 
   return (
     <>
@@ -48,7 +134,7 @@ const SingleProduct = () => {
                   onMouseLeave={() => setIsZoomed(false)}
                 >
                   <img
-                    src={pro1}
+                    src={product.images[selectedImageIndex]?.url || ""}
                     alt="product"
                     className="w-full h-full object-cover"
                   />
@@ -56,7 +142,9 @@ const SingleProduct = () => {
                     <div
                       className="absolute inset-0 w-full h-full"
                       style={{
-                        backgroundImage: `url(${productImages[selectedImageIndex]})`,
+                        backgroundImage: `url(${
+                          product.images[selectedImageIndex]?.url || ""
+                        })`,
                         backgroundPosition: `${mousePosition.x}% ${mousePosition.y}%`,
                         backgroundSize: "200%",
                         backgroundRepeat: "no-repeat",
@@ -68,7 +156,7 @@ const SingleProduct = () => {
 
               <div className="bg-white p-5">
                 <div className="flex flex-wrap gap-4">
-                  {productImages.map((image, index) => (
+                  {product.images.map((image, index) => (
                     <div
                       key={index}
                       className={`w-24 h-24 cursor-pointer ${
@@ -79,7 +167,7 @@ const SingleProduct = () => {
                       onClick={() => setSelectedImageIndex(index)}
                     >
                       <img
-                        src={image}
+                        src={image.url}
                         alt={`thumbnail ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
@@ -132,9 +220,12 @@ const SingleProduct = () => {
             {/* Right Column - Product Details */}
             <div className="bg-white p-6 rounded-lg">
               <div className="border-b border-gray-200 pb-4">
-                <h3 className="text-xl font-semibold">iPhone 16 pro max</h3>
+                <h3 className="text-xl font-semibold">
+                  {product.productTitle}
+                </h3>
                 <p className="text-blue-600 text-xl font-semibold mt-2">
-                  LKR 400,000.00 - 500,000.00
+                  LKR {parseFloat(product.lowestPrice).toFixed(2)} - LKR{" "}
+                  {parseFloat(product.largestPrice).toFixed(2)}
                 </p>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="font-bold">Rating :</span>
@@ -151,9 +242,11 @@ const SingleProduct = () => {
 
               <div className="py-4 space-y-6">
                 <div>
-                  <h3 className="font-bold mb-2">Storage : 256GB</h3>
+                  <h3 className="font-bold mb-2">
+                    Storage : {parseStorages()[0] || "N/A"}
+                  </h3>
                   <div className="flex gap-2">
-                    {["64GB", "128GB", "256GB", "512GB", "1TB"].map((size) => (
+                    {parseStorages().map((size) => (
                       <span
                         key={size}
                         className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer"
@@ -166,15 +259,23 @@ const SingleProduct = () => {
 
                 <div>
                   <h3 className="font-bold mb-2">Color :</h3>
-                  <Color />
+                  <div className="flex gap-2">
+                    {parseColors().map((color) => (
+                      <div
+                        key={color}
+                        className="w-8 h-8 rounded-full border"
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
                 </div>
 
                 <div>
                   <h3 className="font-bold mb-2">
-                    Warranty : 1 Year Apple Care Warranty
+                    Warranty : {product.warranty} Year Warranty
                   </h3>
                   <span className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer">
-                    1 Year Apple Care Warranty
+                    {product.warranty} Year Warranty
                   </span>
                 </div>
 
@@ -203,7 +304,9 @@ const SingleProduct = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-bold mb-2">Availability : 10</h3>
+                  <h3 className="font-bold mb-2">
+                    Availability : {product.quantity}
+                  </h3>
                 </div>
 
                 <div className="flex flex-col gap-4 mt-8">
@@ -218,114 +321,15 @@ const SingleProduct = () => {
                 <div className="mt-6">
                   <details className="bg-white rounded-lg shadow-sm">
                     <summary className="cursor-pointer p-4 font-medium">
-                      Delivery Information
+                      Product Description
                     </summary>
                     <div className="p-4 text-sm text-gray-600">
-                      We partner with trusted and reliable courier services to
-                      ensure your order is delivered safely and on time. All
-                      domestic orders are typically delivered within 4-8
-                      business days, with deliveries taking place from Monday to
-                      Saturday (excluding Sundays and public holidays). Please
-                      note that delivery charges apply.
-                      <br />
-                      <br />
-                      While we strive to accommodate any special delivery
-                      instructions, doing so may cause slight delays beyond our
-                      standard delivery timeframe.
-                      <br />
-                      We aim to meet our delivery deadlines, but unforeseen
-                      circumstances may occasionally cause delays. If this
-                      happens, we sincerely apologize and will work to get your
-                      order to you as quickly as possible.
+                      {product.productDescription}
                     </div>
                   </details>
-                  <div>
-                    <h3 className="product-heading">Send a message </h3>
-
-                    <form
-                      action="/submit"
-                      method="POST"
-                      enctype="multipart/form-data"
-                    >
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Enter please your name"
-                        required
-                      />
-
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="Enter please your email address"
-                        required
-                      />
-
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        placeholder="Enter please your phone number"
-                        required
-                      />
-
-                      <textarea
-                        id="message"
-                        name="message"
-                        placeholder="Enter please your message"
-                        required
-                      ></textarea>
-
-                      <label htmlFor="image" className="file-label">
-                        Upload an image (optional):
-                      </label>
-                      <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/*"
-                      />
-
-                      <button type="submit">SUBMIT</button>
-                    </form>
-                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-[rgba(206,227,231,0.3)] py-5">
-        <div className="max-w-7xl mx-auto px-4">
-          <h4 className="text-2xl font-semibold mb-4">
-            Description & Product Information
-          </h4>
-          <div className="bg-white p-6 rounded-lg">
-            <p className="text-gray-600 text-sm">
-              The iPhone 16 Pro Max is Apple's latest powerhouse, offering
-              significant advancements in photography, video quality, and
-              processing. The device features a 48MP Fusion camera with
-              ultra-wide and telephoto capabilities, allowing for crisp,
-              detailed shots, even in low light. It supports 4K video recording
-              at an impressive 120 frames per second in Dolby Vision, setting a
-              new standard for cinematic quality on a smartphone. The A18 Pro
-              chip enhances performance and energy efficiency, while new
-              AI-driven tools like “Apple Intelligence” make Siri more intuitive
-              and secure, adapting to personal needs. With USB-C fast charging
-              and up to 5x optical zoom, the iPhone 16 Pro Max is crafted for
-              users who demand top-tier creativity and functionality in a sleek
-              design.
-            </p>
-            <p className="text-sm mt-4">
-              <strong>PLEASE NOTE -</strong> Please note that the actual product
-              color may vary slightly from the image due to lighting conditions
-              or differences in display settings. We appreciate your
-              understanding, as achieving an exact color match in product images
-              is beyond our control.
-            </p>
           </div>
         </div>
       </div>

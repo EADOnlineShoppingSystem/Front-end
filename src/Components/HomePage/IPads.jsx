@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import "swiper/css";
 import productServices from "../../Services/product.services";
 
 const IPads = () => {
+  const navigate = useNavigate(); // Initialize navigation
   const [hoveredStates, setHoveredStates] = useState({});
   const [selectedColors, setSelectedColors] = useState({});
   const [ipads, setIpads] = useState([]);
@@ -22,14 +24,23 @@ const IPads = () => {
     setSelectedColors((prev) => ({ ...prev, [productIndex]: variantIndex }));
   };
 
-  // Fetch iPads from Backend
+  // Fetch iPads from Backend with improved data transformation
   const fetchIpads = async () => {
     try {
       setIsLoading(true);
       const response = await productServices.getAllIpads();
 
       if (response && response.products) {
-        setIpads(response.products);
+        // Transform iPad data to include href for navigation
+        const transformedIpads = response.products.map((ipad) => ({
+          ...ipad,
+          href: `/product/${ipad._id}`, // Add href for navigation
+          productPrice: `LKR ${parseFloat(ipad.lowestPrice).toFixed(
+            2
+          )} - LKR ${parseFloat(ipad.largestPrice).toFixed(2)}`,
+        }));
+
+        setIpads(transformedIpads);
         setError(null);
       } else {
         throw new Error("No iPads found");
@@ -40,6 +51,11 @@ const IPads = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle product click navigation
+  const handleProductClick = (href) => {
+    navigate(href);
   };
 
   useEffect(() => {
@@ -84,7 +100,10 @@ const IPads = () => {
 
               return (
                 <SwiperSlide key={ipad._id}>
-                  <div className="m-2">
+                  <div
+                    className="m-2 transform transition-all duration-300 hover:scale-103 cursor-pointer"
+                    onClick={() => handleProductClick(ipad.href)}
+                  >
                     <div className="bg-white rounded-xl shadow-lg w-full p-2">
                       <div
                         className="w-full aspect-square group flex flex-col mb-5"
@@ -97,8 +116,10 @@ const IPads = () => {
                               {ipad.images && ipad.images.length > 0 && (
                                 <img
                                   className="w-full h-full object-contain p-2"
-                                  src={ipad.images[0].url}
-                                  alt={`${ipad.productTitle}`}
+                                  src={
+                                    ipad.images[0].url || "/default-image.jpg"
+                                  }
+                                  alt={ipad.productTitle}
                                   loading="lazy"
                                 />
                               )}
@@ -114,15 +135,16 @@ const IPads = () => {
                             </p>
                           </div>
 
-                          {/* Color Selection Circles - Modify as needed based on backend data */}
+                          {/* Color Selection Circles */}
                           <div className="flex justify-center gap-2 mt-2 mb-4">
                             {ipad.colors &&
                               JSON.parse(ipad.colors[0]).map((color, index) => (
                                 <button
                                   key={index}
-                                  onClick={() =>
-                                    handleColorSelect(productIndex, index)
-                                  }
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // Prevent triggering parent click
+                                    handleColorSelect(productIndex, index);
+                                  }}
                                   className={`w-6 h-6 rounded-full m-1 cursor-pointer transition-transform duration-800 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 ${
                                     selectedVariantIndex === index
                                       ? "ring-2 ring-gray-200 ring-offset-2 focus:ring-gray-400"
@@ -141,13 +163,16 @@ const IPads = () => {
                           </div>
                           <div className="text-center">
                             <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300">
-                              LKR {parseFloat(ipad.lowestPrice).toFixed(2)} -
-                              LKR {parseFloat(ipad.largestPrice).toFixed(2)}
+                              {ipad.productPrice}
                             </p>
                           </div>
                           <div className="w-full flex justify-center mt-2">
                             <button
                               type="button"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent triggering parent click
+                                // Add cart functionality here
+                              }}
                               className="mt-3 mb-2 inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-auto sm:w-auto"
                             >
                               <svg

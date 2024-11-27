@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import "swiper/css";
 import productServices from "../../Services/product.services";
 
 const MacProducts = () => {
+  const navigate = useNavigate(); // Initialize navigation
   const [hoveredStates, setHoveredStates] = useState({});
   const [macs, setMacs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,14 +19,23 @@ const MacProducts = () => {
     setHoveredStates((prev) => ({ ...prev, [index]: false }));
   };
 
-  // Fetch products from Backend
+  // Fetch Mac products from Backend with improved data transformation
   const fetchMacs = async () => {
     try {
       setIsLoading(true);
       const response = await productServices.getAllMacProducts();
 
       if (response && response.products) {
-        setMacs(response.products);
+        // Transform mac data to include href for navigation
+        const transformedMacs = response.products.map((mac) => ({
+          ...mac,
+          href: `/product/${mac._id}`, // Add href for navigation
+          productPrice: `LKR ${parseFloat(mac.lowestPrice).toFixed(
+            2
+          )} - LKR ${parseFloat(mac.largestPrice).toFixed(2)}`,
+        }));
+
+        setMacs(transformedMacs);
         setError(null);
       } else {
         throw new Error("No products found");
@@ -35,6 +46,11 @@ const MacProducts = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle product click navigation
+  const handleProductClick = (href) => {
+    navigate(href);
   };
 
   useEffect(() => {
@@ -76,7 +92,10 @@ const MacProducts = () => {
           >
             {macs.map((mac, productIndex) => (
               <SwiperSlide key={mac._id}>
-                <div className="m-2">
+                <div
+                  className="m-2 transform transition-all duration-300 hover:scale-103 cursor-pointer"
+                  onClick={() => handleProductClick(mac.href)}
+                >
                   <div className="bg-white rounded-xl shadow-lg w-full p-2">
                     <div
                       className="w-full aspect-square group flex flex-col mb-5"
@@ -89,7 +108,7 @@ const MacProducts = () => {
                             {mac.images && mac.images.length > 0 && (
                               <img
                                 className="w-full h-full object-contain p-2"
-                                src={mac.images[0].url || "/default-image.jpg"} // Handle no image case
+                                src={mac.images[0].url || "/default-image.jpg"}
                                 alt={mac.productTitle}
                                 loading="lazy"
                               />
@@ -104,13 +123,16 @@ const MacProducts = () => {
                         </div>
                         <div className="text-center">
                           <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300">
-                            LKR {parseFloat(mac.lowestPrice).toFixed(2)} - LKR{" "}
-                            {parseFloat(mac.largestPrice).toFixed(2)}
+                            {mac.productPrice}
                           </p>
                         </div>
                         <div className="w-full flex justify-center mt-2">
                           <button
                             type="button"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering parent click
+                              // Add cart functionality here
+                            }}
                             className="mt-3 mb-2 inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-auto sm:w-auto"
                           >
                             <svg

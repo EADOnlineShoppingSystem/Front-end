@@ -15,24 +15,24 @@ import HomePage from "./Components/HomePage/HomePage";
 
 function App() {
   return (
-    <> 
-    <OrderProvider>
-    <CartProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/product/:id" element={<SingleProduct />} />
-          <Route path="/categories" element={<ProductCategories />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/review/:id" element={<Review />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/address" element={<Address />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </BrowserRouter>
-      </CartProvider>
+    <>
+      <OrderProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/product/:id" element={<SingleProduct />} />
+              <Route path="/categories" element={<ProductCategories />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/review/:id" element={<Review />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
+              <Route path="/address" element={<Address />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
       </OrderProvider>
     </>
   );
