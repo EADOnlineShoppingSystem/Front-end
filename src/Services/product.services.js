@@ -148,21 +148,21 @@ const productServices = {
     }
   },
 
-  // // Fetch Product Details by Product ID
-  // getProductDetailsByProductId: async (productId) => {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/products/api/products/product/${productId}`
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       console.error("An error occurred:", error.message);
-  //     } else {
-  //       console.error("An unknown error occurred");
-  //     }
-  //   }
-  // },
+  // Fetch Product Details by Product ID
+  getProductDetailsByProductId: async (productId) => {
+    try {
+      const response = await axiosInstance.get(
+        `/Product/api/products/product/${productId}`
+      );
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  },
 };
 
 export default productServices;

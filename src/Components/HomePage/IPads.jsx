@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useNavigate } from "react-router-dom";
 import "swiper/css";
 import productServices from "../../Services/product.services";
 
 const IPads = () => {
+  const navigate = useNavigate();
   const [hoveredStates, setHoveredStates] = useState({});
   const [selectedColors, setSelectedColors] = useState({});
   const [ipads, setIpads] = useState([]);
@@ -22,14 +24,64 @@ const IPads = () => {
     setSelectedColors((prev) => ({ ...prev, [productIndex]: variantIndex }));
   };
 
-  // Fetch iPads from Backend
+  // Fetch iPads from Backend with improved data transformation
   const fetchIpads = async () => {
     try {
       setIsLoading(true);
       const response = await productServices.getAllIpads();
 
       if (response && response.products) {
-        setIpads(response.products);
+        const transformedIpads = response.products
+          .map((ipad) => {
+            // Parse colors array
+            const parseColors = (colors) => {
+              if (Array.isArray(colors)) {
+                return colors.flatMap((color) => {
+                  try {
+                    const parsed = JSON.parse(color);
+                    return Array.isArray(parsed) ? parsed : [parsed];
+                  } catch {
+                    return color.startsWith("#") ? [color] : [];
+                  }
+                });
+              }
+              return [];
+            };
+
+            // Get the colors array
+            const colors = parseColors(ipad.colors);
+
+            // Create variants array with colors and corresponding images
+            const variants = colors.map((color, index) => ({
+              color: color,
+              colorHex: color,
+              variantImage:
+                ipad.images && ipad.images[index]
+                  ? ipad.images[index].url
+                  : "/placeholder.jpg",
+            }));
+
+            return {
+              ...ipad,
+              href: `/product/${ipad._id}`,
+              productPrice: `LKR ${parseFloat(ipad.lowestPrice).toFixed(
+                2
+              )} - LKR ${parseFloat(ipad.largestPrice).toFixed(2)}`,
+              variants: variants,
+              defaultImage:
+                ipad.images && ipad.images[0]
+                  ? ipad.images[0].url
+                  : "/placeholder.jpg",
+              defaultHoverImage:
+                ipad.images && ipad.images[1]
+                  ? ipad.images[1].url
+                  : "/placeholder.jpg",
+            };
+          })
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 10);
+
+        setIpads(transformedIpads);
         setError(null);
       } else {
         throw new Error("No iPads found");
@@ -40,6 +92,10 @@ const IPads = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleProductClick = (href) => {
+    navigate(href);
   };
 
   useEffect(() => {
@@ -55,7 +111,7 @@ const IPads = () => {
         <div className="pb-4 sm:pb-6 lg:pb-8">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
             Touch, draw, and type on{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text ">
+            <span className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text">
               one magical device
             </span>{" "}
             .
@@ -81,10 +137,15 @@ const IPads = () => {
           >
             {ipads.map((ipad, productIndex) => {
               const selectedVariantIndex = selectedColors[productIndex] || 0;
+              const selectedVariant =
+                ipad.variants[selectedVariantIndex] || ipad.variants[0];
 
               return (
                 <SwiperSlide key={ipad._id}>
-                  <div className="m-2">
+                  <div
+                    className="m-2 transform transition-all duration-300 hover:scale-103 cursor-pointer"
+                    onClick={() => handleProductClick(ipad.href)}
+                  >
                     <div className="bg-white rounded-xl shadow-lg w-full p-2">
                       <div
                         className="w-full aspect-square group flex flex-col mb-5"
@@ -94,14 +155,32 @@ const IPads = () => {
                         <div className="block flex-1 flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                           <div className="relative flex-1 overflow-hidden bg-white flex items-center justify-center">
                             <div className="transition-transform duration-900 ease-in-out group-hover:scale-110 w-full h-full flex items-center justify-center">
-                              {ipad.images && ipad.images.length > 0 && (
+                              {selectedVariant && (
                                 <img
                                   className="w-full h-full object-contain p-2"
-                                  src={ipad.images[0].url}
-                                  alt={`${ipad.productTitle}`}
+                                  src={selectedVariant.variantImage}
+                                  alt={`${ipad.productTitle} in ${selectedVariant.color}`}
                                   loading="lazy"
                                 />
                               )}
+                              {hoveredStates[productIndex] &&
+                                !selectedVariant && (
+                                  <img
+                                    className="w-full h-full object-contain p-2"
+                                    src={ipad.defaultHoverImage}
+                                    alt={`${ipad.productTitle} hover view`}
+                                    loading="lazy"
+                                  />
+                                )}
+                              {!hoveredStates[productIndex] &&
+                                !selectedVariant && (
+                                  <img
+                                    className="w-full h-full object-contain p-2"
+                                    src={ipad.defaultImage}
+                                    alt={`${ipad.productTitle} default view`}
+                                    loading="lazy"
+                                  />
+                                )}
                             </div>
                           </div>
 
@@ -114,40 +193,45 @@ const IPads = () => {
                             </p>
                           </div>
 
-                          {/* Color Selection Circles - Modify as needed based on backend data */}
-                          <div className="flex justify-center gap-2 mt-2 mb-4">
-                            {ipad.colors &&
-                              JSON.parse(ipad.colors[0]).map((color, index) => (
-                                <button
-                                  key={index}
-                                  onClick={() =>
-                                    handleColorSelect(productIndex, index)
-                                  }
-                                  className={`w-6 h-6 rounded-full m-1 cursor-pointer transition-transform duration-800 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 ${
-                                    selectedVariantIndex === index
-                                      ? "ring-2 ring-gray-200 ring-offset-2 focus:ring-gray-400"
-                                      : ""
-                                  }`}
-                                  style={{
-                                    backgroundColor: color,
-                                    border:
-                                      color === "#F5F5F0"
-                                        ? "1px solid #E5E5E5"
-                                        : "none",
-                                  }}
-                                  aria-label={`Select ${color} color`}
-                                />
-                              ))}
+                          <div className="flex justify-center gap-2 mt-2 mb-2">
+                            {ipad.variants.map((variant, variantIndex) => (
+                              <button
+                                key={variantIndex}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleColorSelect(productIndex, variantIndex);
+                                }}
+                                className={`w-6 h-6 rounded-full m-1 cursor-pointer transition-transform duration-800 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 ${
+                                  selectedVariantIndex === variantIndex
+                                    ? "ring-2 ring-gray-200 ring-offset-2 focus:ring-gray-400"
+                                    : ""
+                                }`}
+                                style={{
+                                  backgroundColor: variant.colorHex,
+                                  border:
+                                    variant.colorHex === "#FFFFFF" ||
+                                    variant.colorHex === "#F5F5F0"
+                                      ? "1px solid #E5E5E5"
+                                      : "none",
+                                }}
+                                aria-label={`Select ${variant.color} color`}
+                              />
+                            ))}
                           </div>
+
                           <div className="text-center">
                             <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300">
-                              LKR {parseFloat(ipad.lowestPrice).toFixed(2)} -
-                              LKR {parseFloat(ipad.largestPrice).toFixed(2)}
+                              {ipad.productPrice}
                             </p>
                           </div>
+
                           <div className="w-full flex justify-center mt-2">
                             <button
                               type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Add cart functionality here
+                              }}
                               className="mt-3 mb-2 inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-auto sm:w-auto"
                             >
                               <svg
