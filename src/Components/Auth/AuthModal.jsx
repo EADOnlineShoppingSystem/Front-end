@@ -237,19 +237,19 @@ const AuthModal = ({ isOpen, onClose, initialView }) => {
             onClick={handleClose}
           />
 
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-2">
             <motion.div
               variants={modalVariants}
               initial="initial"
               animate="animate"
               exit="exit"
-              className="bg-white rounded-xl shadow-2xl p-6 w-full md:w-1/3 max-h-[90vh] overflow-y-auto relative"
+              className="bg-white rounded-xl shadow-2xl p-4 w-full md:w-1/3 max-h-[90vh] overflow-y-auto relative"
               style={{ 
                 perspective: "1000px",
                 backfaceVisibility: "hidden"
               }}
             >
-              <div className="flex justify-end mb-6">
+              <div className="flex justify-end mb-2">
                 <motion.button
                   variants={closeButtonVariants}
                   initial="initial"
