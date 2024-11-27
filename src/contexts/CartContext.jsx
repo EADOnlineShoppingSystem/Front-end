@@ -20,8 +20,9 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (product) => {
     const adding ={
       
-      productId:"674195cbc36bd2ccee6e1205",
-      quantity:2241
+      productId:"6742013a837dcad81c35d5d8",
+      quantity:2241,
+      cartId:"67438db40f4672c5df9be481"
   
       }
      const data = await cartServices.addToCart(adding)

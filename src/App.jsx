@@ -8,7 +8,7 @@ import Review from "./Components/Orders/Review"
 import Cart from "./Components/Orders/Cart";
 import Wishlist from "./Components/Orders/Wishlist";
 import {CartProvider} from "./contexts/CartContext"
-import {OrderProvider} from "./contexts/orderContext"
+import {OrderProvider} from "./contexts/OrderContext"
 import Address from "./Components/Orders/Address";
 import Profile from "./Components/Profile/Profile";
 import HomePage from "./Components/HomePage/HomePage";

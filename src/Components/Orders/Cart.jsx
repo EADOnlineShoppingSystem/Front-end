@@ -19,9 +19,9 @@ const Cart = () => {
     const selectedItem = cartItems.find(item => item.id === selectedItemId);
     if (selectedItem) {
       const orderData = {
-        productId: selectedItem.id,
+        productId: "6742013a837dcad81c35d5d8",
         quantity: selectedItem.quantity,
-        price: selectedItem.price
+        price: calculateTotal()
       };
       setOrderData(orderData);
       navigate('/checkout');

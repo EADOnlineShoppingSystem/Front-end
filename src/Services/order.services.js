@@ -27,7 +27,7 @@ const orderServices={
     },
     createOrder :async(order)=>{
         try {
-            const responce =await axiosInstance.post("/orders/api/orders/createOrder",order);
+            const responce =await axiosInstance.post("/order/api/orders/createOrder",order);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {

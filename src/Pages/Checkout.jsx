@@ -9,7 +9,8 @@ import { axiosInstance } from "../utils/axiosConfig";
 import { createAnOrder } from "../features/user/userSlice";
 import orderServices from "../Services/order.services"
 import md5 from "md5";
-import { useOrder } from "../contexts/orderContext";
+import { useOrder } from '../contexts/OrderContext';
+import cartServices from "../Services/cart.services";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -171,10 +172,9 @@ const Checkout = () => {
   }, [isError]);
 
   const {orderData} = useOrder();
-console.log("context data ",orderData);
   const orderId = "123456";
   const name = "Iphone16";
-  const amount = 1000;
+  const amount = orderData.price;
   const merchantId = "1228659";
   const merchantSecret = "MjY0OTk5MTk1MjI3MzM3MDY5NDIyODQ5ODU0NDM5MjAwOTMxMzEwNg==";
 
@@ -195,7 +195,7 @@ console.log("context data ",orderData);
   const paymentData = {
     sandbox: true,
     merchant_id: "1228659",
-    return_url: "http://localhost:5173",
+    return_url: "http://localhost:5173/cart",
     cancel_url: "http://sample.com/cancel",
     notify_url: "http://sample.com/notify",
     order_id: orderId,
@@ -213,7 +213,15 @@ console.log("context data ",orderData);
   };
 
   const oderCompleteApi = async (oderData) => {
-    const res = await orderServices.createOrder(oderData);
+    try {
+      const res = await orderServices.createOrder(oderData);
+      const data = await cartServices.deleteCart(oderData.cartId);
+      navigate("/cart");
+    } catch (error) {
+      console.log("error", error);
+    }
+    
+    
   }
 
  
@@ -221,11 +229,11 @@ useEffect(() => {
    window.payhere.onCompleted = function onCompleted(paymentId) {
     console.log("Payment completed. Payment Id:" + paymentId);
       const oderData={
-      productId:"12334",
-      userId:"633333",   
-      quantity:2,
-      price:2333333
+      productId:orderData.productId,
+      quantity:orderData.quantity,
+      price:orderData.price
     }
+    console.log("order daaataaa",oderData);
     oderCompleteApi(oderData);
   
   
