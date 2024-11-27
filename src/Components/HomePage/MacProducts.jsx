@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import categoriesData from "./Data/mac.json";
+import productServices from "../../Services/product.services";
 
 const MacProducts = () => {
   const [hoveredStates, setHoveredStates] = useState({});
+  const [macs, setMacs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleMouseEnter = (index) => {
     setHoveredStates((prev) => ({ ...prev, [index]: true }));
@@ -14,15 +17,42 @@ const MacProducts = () => {
     setHoveredStates((prev) => ({ ...prev, [index]: false }));
   };
 
+  // Fetch products from Backend
+  const fetchMacs = async () => {
+    try {
+      setIsLoading(true);
+      const response = await productServices.getAllMacProducts();
+
+      if (response && response.products) {
+        setMacs(response.products);
+        setError(null);
+      } else {
+        throw new Error("No products found");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setError("Failed to load products");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMacs();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div className="w-full">
-      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 ">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="pb-4 sm:pb-6 lg:pb-8">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
             If you can dream it,{" "}
             <span className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text transition-all duration-700 ease-in-out hover:from-pink-600 hover:to-blue-600">
               Mac can do it
-            </span>{" "}
+            </span>
             .
           </h2>
         </div>
@@ -44,76 +74,61 @@ const MacProducts = () => {
               1536: { slidesPerView: 4, spaceBetween: 8 },
             }}
           >
-            {categoriesData.map((category, productIndex) => (
-              <SwiperSlide key={productIndex}>
-                <div className="m-2 transform transition-all duration-300 hover:scale-103">
-                  <div className="bg-white rounded-xl shadow-sm w-full p-5 transition-shadow duration-300 hover:shadow-md">
+            {macs.map((mac, productIndex) => (
+              <SwiperSlide key={mac._id}>
+                <div className="m-2">
+                  <div className="bg-white rounded-xl shadow-lg w-full p-2">
                     <div
-                      className="w-full aspect-square group flex flex-col"
+                      className="w-full aspect-square group flex flex-col mb-5"
                       onMouseEnter={() => handleMouseEnter(productIndex)}
                       onMouseLeave={() => handleMouseLeave(productIndex)}
                     >
-                      <a
-                        href={category.href}
-                        className="block flex-1 flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
-                        aria-label={`View ${category.title} category`}
-                      >
-                        <div className="relative h-48 sm:h-60 md:h-72 overflow-hidden bg-white flex items-center justify-center">
-                          <div className="absolute inset-0 w-full h-full transition-all duration-700 ease-in-out transform group-hover:scale-110">
-                            <img
-                              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ease-in-out ${
-                                hoveredStates[productIndex]
-                                  ? "opacity-0"
-                                  : "opacity-100"
-                              }`}
-                              src={category.defaultImage}
-                              alt={`${category.title} default view`}
-                              loading="lazy"
-                            />
-                            <img
-                              className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-700 ease-in-out ${
-                                hoveredStates[productIndex]
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
-                              src={category.defaultHoverImage}
-                              alt={`${category.title} hover view`}
-                              loading="lazy"
-                            />
+                      <div className="block flex-1 flex flex-col focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <div className="relative flex-1 overflow-hidden bg-white flex items-center justify-center">
+                          <div className="transition-transform duration-900 ease-in-out group-hover:scale-110 w-full h-full flex items-center justify-center">
+                            {mac.images && mac.images.length > 0 && (
+                              <img
+                                className="w-full h-full object-contain p-2"
+                                src={mac.images[0].url || "/default-image.jpg"} // Handle no image case
+                                alt={mac.productTitle}
+                                loading="lazy"
+                              />
+                            )}
                           </div>
                         </div>
 
-                        <div className="text-center transform transition-transform duration-300">
-                          <h3 className="text-md font-semibold text-shadow-lg text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                            {category.title}
+                        <div className="mt-4 text-center">
+                          <h3 className="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                            {mac.productTitle}
                           </h3>
                         </div>
-                      </a>
-                      <div className="text-center">
-                        <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300 transition-colors duration-300">
-                          {category.price}
-                        </p>
-                      </div>
-                      <div className="w-full flex justify-center mt-2">
-                        <button
-                          type="button"
-                          className="mt-3 mb-2 inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-auto sm:w-auto"
-                        >
-                          <svg
-                            className="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:scale-110"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                        <div className="text-center">
+                          <p className="mt-1 text-md font-semibold text-blue-500 dark:text-gray-300">
+                            LKR {parseFloat(mac.lowestPrice).toFixed(2)} - LKR{" "}
+                            {parseFloat(mac.largestPrice).toFixed(2)}
+                          </p>
+                        </div>
+                        <div className="w-full flex justify-center mt-2">
+                          <button
+                            type="button"
+                            className="mt-3 mb-2 inline-flex items-center justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 ease-in-out transform hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-auto sm:w-auto"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                            />
-                          </svg>
-                          <span className="ml-2">Add to Cart</span>
-                        </button>
+                            <svg
+                              className="h-4 w-4 transition-transform duration-300 ease-in-out group-hover:scale-110"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                              />
+                            </svg>
+                            <span className="ml-2">Add to Cart</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
