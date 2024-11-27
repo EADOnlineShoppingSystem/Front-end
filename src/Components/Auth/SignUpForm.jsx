@@ -189,7 +189,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
               <p className="text-red-500 text-sm text-center">{errors.submit}</p>
             </div>
           )}
-
+          <div className="flex justify-center mt-4">
           <button
             type="submit"
             disabled={isSubmitting}
@@ -197,6 +197,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </button>
+          </div>
         </form>
 
         <div className="mt-4 flex items-center justify-center gap-2">
@@ -205,7 +206,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
           <div className="h-px bg-gray-300 w-full" />
         </div>
 
-        <div className="mt-4 text-center">
+        <div className="mt-2 text-center">
           <span className="text-gray-500">Already have an account? </span>
           <button
             onClick={onSwitchToSignIn}
