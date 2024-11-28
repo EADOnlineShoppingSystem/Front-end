@@ -4,7 +4,9 @@ const cartServices={
 
     getCartDetailsByUserID:async()=>{
         try {
-            const responce =await axiosInstance.get(`/order/api/cart/getCartsByuser`);
+            console.log("get data from api");
+            const responce =await axiosInstance.get("/order/api/cart/getCartsByuser");
+            console.log(responce.data);
             return responce.data;
         } catch (error) {
              if (error instanceof Error) {
