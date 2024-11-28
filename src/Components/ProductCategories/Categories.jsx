@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   X,
   ExternalLink,
+  Filter,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../HomePage/Footer.jsx";
@@ -21,6 +22,7 @@ const Categories = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
   const [priceRange, setPriceRange] = useState([0, 4000]);
+  const [minMaxPrices, setMinMaxPrices] = useState({ min: 0, max: 4000 });
   const [selectedColor, setSelectedColor] = useState("all");
   const [resultsPerPage, setResultsPerPage] = useState(12);
   const [sortBy, setSortBy] = useState("relevance");
@@ -28,6 +30,8 @@ const Categories = () => {
   const [error, setError] = useState(null);
   const { categoryName } = useParams();
   const { addToCart } = useCart();
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(
@@ -46,7 +50,50 @@ const Categories = () => {
     { name: "Pink", value: "#E7D1CF" },
   ];
 
-  // Fetch categories
+  // Calculate the price range of the products dynamically
+  const calculatePriceRange = (products) => {
+    if (!products.length) return { min: 0, max: 4000 };
+
+    const prices = products.reduce(
+      (acc, product) => {
+        acc.min = Math.min(acc.min, product.lowestPrice);
+        acc.max = Math.max(acc.max, product.largestPrice);
+        return acc;
+      },
+      { min: Infinity, max: -Infinity }
+    );
+
+    if (prices.min === Infinity) prices.min = 0;
+    if (prices.max === -Infinity) prices.max = 4000;
+    if (prices.min === prices.max) prices.max += 1000;
+
+    return prices;
+  };
+
+
+  // Mobile Filter Toggle
+  const toggleMobileFilter = () => {
+    if (isMobileFilterOpen) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setIsMobileFilterOpen(false);
+        setIsClosing(false);
+        document.body.style.overflow = "unset";
+      }, 400);
+    } else {
+      setIsMobileFilterOpen(true);
+      document.body.style.overflow = "hidden";
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
+
+  // Fetch All Categories
   const fetchCategories = async () => {
     try {
       const response = await productServices.getAllCategories();
@@ -58,7 +105,7 @@ const Categories = () => {
     }
   };
 
-  // Fetch products based on category
+  // Fetch Products by Category Name
   const fetchProductsByCategory = async (category) => {
     try {
       setIsLoading(true);
@@ -76,6 +123,11 @@ const Categories = () => {
           ...product,
           colors: JSON.parse(product.colors[0] || "[]"),
         }));
+
+        const prices = calculatePriceRange(parsedProducts);
+        setMinMaxPrices(prices);
+        setPriceRange([prices.min, prices.max]);
+
         setProducts(parsedProducts);
         applyFilters(parsedProducts);
       } else {
@@ -91,7 +143,6 @@ const Categories = () => {
     }
   };
 
-  // Initial fetch of categories and products
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -100,25 +151,23 @@ const Categories = () => {
     fetchProductsByCategory(selectedCategory);
   }, [selectedCategory]);
 
-  // Function to apply all filters
+
+  // Apply Filters
   const applyFilters = (productsToFilter) => {
     let tempProducts = [...productsToFilter];
 
-    // Filter by color
     if (selectedColor !== "all") {
       tempProducts = tempProducts.filter((product) =>
         product.colors.includes(selectedColor)
       );
     }
 
-    // Filter by price range
     tempProducts = tempProducts.filter(
       (product) =>
         product.lowestPrice >= priceRange[0] &&
         product.largestPrice <= priceRange[1]
     );
 
-    // Sort products
     switch (sortBy) {
       case "price-low-high":
         tempProducts.sort((a, b) => a.lowestPrice - b.lowestPrice);
@@ -140,23 +189,22 @@ const Categories = () => {
         break;
     }
 
-    // Apply results per page
     setFilteredProducts(tempProducts.slice(0, resultsPerPage));
   };
 
-  // Apply filters whenever filter criteria change
   useEffect(() => {
     if (products.length > 0) {
       applyFilters(products);
     }
   }, [selectedColor, priceRange, sortBy, resultsPerPage, products]);
 
-  // Handle category selection with navigation
   const handleCategorySelect = (category, e) => {
     e.preventDefault();
     setSelectedCategory(category);
+    if (isMobileFilterOpen) {
+      toggleMobileFilter();
+    }
 
-    // Update URL without full page refresh
     const newUrl =
       category === "all"
         ? "/categories"
@@ -169,8 +217,13 @@ const Categories = () => {
     setSelectedColor(color === selectedColor ? "all" : color);
   };
 
+  const handlePriceRangeChange = (e) => {
+    const newMax = parseInt(e.target.value);
+    setPriceRange([minMaxPrices.min, newMax]);
+  };
+
   const handleAddToCart = (product, e) => {
-    e.stopPropagation(); // Prevent navigation when clicking add to cart
+    e.stopPropagation();
     const cartItem = {
       id: product._id,
       name: product.productTitle,
@@ -182,90 +235,136 @@ const Categories = () => {
     message.info("Added to cart");
   };
 
-  // Handle product click navigation
+  // Handle Product Click - Redirect to Product Page
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
 
+
+  // Filter Content Component for Mobile and Desktop
+  const FilterContent = () => (
+    <div className="p-4">
+      {/* Categories Filter */}
+      <div className="mb-6">
+        <h3 className="font-semibold mb-3">Categories</h3>
+        <div className="space-y-2">
+          <button
+            onClick={(e) => handleCategorySelect("all", e)}
+            className={`w-full text-left px-3 py-2 rounded-lg transition ${
+              selectedCategory === "all"
+                ? "bg-blue-500 text-white"
+                : "hover:bg-gray-100"
+            }`}
+          >
+            All Categories
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category._id}
+              onClick={(e) => handleCategorySelect(category.name, e)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition ${
+                selectedCategory === category.name
+                  ? "bg-blue-500 text-white"
+                  : "hover:bg-gray-100"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Colors Filter */}
+      <div className="mb-6">
+        <h3 className="font-semibold mb-3">Colors</h3>
+        <div className="grid grid-cols-5 gap-2">
+          {colorOptions.map((color) => (
+            <button
+              key={color.name}
+              onClick={() => handleColorSelect(color.value)}
+              className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
+                selectedColor === color.value
+                  ? "ring-2 ring-gray-200 ring-offset-2"
+                  : ""
+              }`}
+              style={{
+                backgroundColor: color.value,
+                border: color.name === "White" ? "1px solid #e5e7eb" : "none",
+              }}
+              title={color.name}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Price Range Filter */}
+      <div className="mb-6">
+        <h3 className="font-semibold mb-3">Price Range</h3>
+        <div className="space-y-4">
+          <input
+            type="range"
+            min={minMaxPrices.min}
+            max={minMaxPrices.max}
+            value={priceRange[1]}
+            onChange={handlePriceRangeChange}
+            className="w-full"
+          />
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>LKR {priceRange[0].toLocaleString()}</span>
+            <span>LKR {priceRange[1].toLocaleString()}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100/65 px-4 md:px-20 py-6 md:py-20 md:pb-3">
       <NavBar />
-      <div className="flex flex-1 sm:mb-14 md:mb-14 lg:mb-14 lx:mb-14">
-        <aside className="hidden md:block w-64 transition-all duration-300 bg-white shadow-lg overflow-hidden">
-          <div className="p-4">
-            {/* Categories Filter */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3">Categories</h3>
-              <div className="space-y-2">
-                <button
-                  onClick={(e) => handleCategorySelect("all", e)}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                    selectedCategory === "all"
-                      ? "bg-blue-500 text-white"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  All Categories
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category._id}
-                    onClick={(e) => handleCategorySelect(category.name, e)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition ${
-                      selectedCategory === category.name
-                        ? "bg-blue-500 text-white"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
-              </div>
-            </div>
 
-            {/* Colors Filter */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3">Colors</h3>
-              <div className="grid grid-cols-5 gap-2">
-                {colorOptions.map((color) => (
-                  <button
-                    key={color.name}
-                    onClick={() => handleColorSelect(color.value)}
-                    className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
-                      selectedColor === color.value
-                        ? "ring-2 ring-blue-500 ring-offset-2"
-                        : ""
-                    }`}
-                    style={{
-                      backgroundColor: color.value,
-                      border:
-                        color.name === "White" ? "1px solid #e5e7eb" : "none",
-                    }}
-                    title={color.name}
-                  />
-                ))}
-              </div>
-            </div>
+      {/* Mobile Filter Button */}
+      <div className="md:hidden sticky top-0 z-20 bg-white shadow mb-4 rounded-lg">
+        <button
+          onClick={toggleMobileFilter}
+          className="w-full p-4 flex items-center justify-center gap-2 text-gray-700"
+        >
+          <Filter size={20} />
+          <span>Filter Products</span>
+        </button>
+      </div>
 
-            {/* Price Range Filter */}
-            <div className="mb-6">
-              <h3 className="font-semibold mb-3">Price Range</h3>
-              <input
-                type="range"
-                min="0"
-                max="4000"
-                value={priceRange[1]}
-                onChange={(e) =>
-                  setPriceRange([priceRange[0], parseInt(e.target.value)])
-                }
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-gray-600">
-                <span>LKR {priceRange[0]}.00</span>
-                <span>LKR {priceRange[1]}.00</span>
-              </div>
-            </div>
+      {/* Mobile Filter Drawer */}
+      <div
+        className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
+          isMobileFilterOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50"
+          onClick={toggleMobileFilter}
+        ></div>
+        <div
+          className={`fixed inset-y-0 left-0 w-4/5 max-w-sm bg-white overflow-y-auto transform transition-transform duration-300 ease-in-out ${
+            isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
+            <h2 className="text-lg font-semibold">Filters</h2>
+            <button
+              onClick={toggleMobileFilter}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+            >
+              <X size={24} />
+            </button>
           </div>
+          <FilterContent />
+        </div>
+      </div>
+
+      <div className="flex flex-1 sm:mb-14 md:mb-14 lg:mb-14 lx:mb-14">
+        {/* Desktop Filter Sidebar */}
+        <aside className="hidden md:block w-64 transition-all duration-300 bg-white shadow-lg overflow-hidden">
+          <FilterContent />
         </aside>
 
         <main className="flex-1 p-2 md:p-6 md:pt-0 md:pb-0">
@@ -329,20 +428,19 @@ const Categories = () => {
                       alt={product.productTitle}
                       className="w-full h-48 object-contain"
                     />
-                    
                   </div>
-                  <div className="p-5">
+                  <div className="p-5 text-center">
                     <h3 className="font-semibold text-lg mb-2 text-gray-800">
                       {product.productTitle}
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      Price: LKR {product.lowestPrice} - LKR{" "}
-                      {product.largestPrice}
+                    <p className="text-sm text-blue-600 font-semibold">
+                      Price: LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
+                      {product.largestPrice.toLocaleString()}
                     </p>
                     <div className="mt-4 flex items-center space-x-2">
                       <button
                         onClick={(e) => handleAddToCart(product, e)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
+                        className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition flex items-center gap-2 w-full justify-center"
                       >
                         <ShoppingCart size={20} />
                         Add to Cart
