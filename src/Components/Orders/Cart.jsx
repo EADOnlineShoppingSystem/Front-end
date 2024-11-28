@@ -34,6 +34,7 @@ const Cart = () => {
     setSelectedItemId(itemId === selectedItemId ? null : itemId);
   };
 
+
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity >= 1) {
       updateQuantity(item._id, newQuantity);
@@ -131,12 +132,7 @@ const Cart = () => {
                           <div className="flex items-center gap-4">
                             <button 
                               className="text-gray-400 hover:text-gray-600"
-                              onClick={() => {
-                                removeFromCart(item._id);
-                                if (selectedItemId === item._id) {
-                                  setSelectedItemId(null);
-                                }
-                              }}
+                              onClick={() => {removeFromCart(item._id)}}
                             >  
                               <Trash2 className="w-4 h-4" />
                             </button>

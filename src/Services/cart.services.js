@@ -28,5 +28,22 @@ const cartServices={
             }
         }
     },
+  deleteFromCart:async(cartId)=>{
+    try {
+        console.log("remove from cart");
+        const responce =await axiosInstance.delete(`/order/api/cart/deleteCart/${cartId}`);
+        console.log(responce.data);
+        return responce.data;
+       
+    } catch (error) {
+         if (error instanceof Error) {
+            console.error('An error occurred:', error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
+    }
+  }
+
+
 }
 export default cartServices;
