@@ -7,47 +7,30 @@ import {
   X,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
-import sampleProducts from "./Data/sampleProducts.json";
-import categories from "./Data/categories.json";
 import Footer from "../HomePage/Footer.jsx";
-import { useCart } from "../../contexts/CartContext";
 import { message } from "antd";
-
+import productServices from "../../Services/product.services.js";
+import { useParams } from "react-router-dom";
+import { useCart } from "../../contexts/CartContext";
 
 const Categories = () => {
-  const [products, setProducts] = useState(sampleProducts);
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
   const [priceRange, setPriceRange] = useState([0, 4000]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedSubCategory, setSelectedSubCategory] = useState("all");
   const [selectedColor, setSelectedColor] = useState("all");
   const [resultsPerPage, setResultsPerPage] = useState(12);
   const [sortBy, setSortBy] = useState("relevance");
-  const [expandedCategories, setExpandedCategories] = useState({});
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { categoryName } = useParams();
+  const { addToCart } = useCart();
 
-  const { addToCart, cartItems } = useCart();
-  const handleAddToCart = (product) => {
-    console.log('Adding product to cart:', product); // Debug log
-
-    const cartItem = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: getVariantImage(product, selectedColor),
-      color: selectedColor !== 'all' ? selectedColor : product.color,
-      brand: product.brand || 'No Brand', 
-      storage: product.storage || 'N/A', 
-      quantity: 1
-    };
-
-    console.log('Formatted cart item:', cartItem); 
-    addToCart(cartItem);
-    console.log('Current cart items:', cartItems); 
-    message.info("Add to cart"); 
-  };
-
+  // New state for categories
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryName || "all"
+  );
 
   const colorOptions = [
     { name: "Silver", value: "#C0C0C0" },
@@ -61,307 +44,246 @@ const Categories = () => {
     { name: "Pink", value: "#E7D1CF" },
   ];
 
-  // find the variant image based on selected color
-  const getVariantImage = (product, color) => {
-    if (product.variants) {
-      const variant = product.variants.find(
-        (v) => v.color.toLowerCase() === color.toLowerCase()
-      );
-      if (variant) {
-        return variant.variantImage;
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await productServices.getAllCategories();
+      if (response && response.categories) {
+        setCategories(response.categories);
       }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
     }
-    return product.image; 
+  };
+
+  // Fetch products from backend
+  const fetchProducts = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      let response;
+      if (selectedCategory === "all") {
+        response = await productServices.getAllProducts();
+      } else {
+        response = await productServices.getProductsByCategoryName(
+          selectedCategory
+        );
+      }
+
+      if (response && response.products) {
+        const parsedProducts = response.products.map((product) => ({
+          ...product,
+          colors: JSON.parse(product.colors[0] || "[]"),
+        }));
+
+        setProducts(parsedProducts);
+        setFilteredProducts(parsedProducts);
+      } else {
+        setProducts([]);
+        setFilteredProducts([]);
+        setError("No products found.");
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to fetch products. Please try again later.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    let filteredProducts = [...sampleProducts];
-    if (selectedCategory !== "all") {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-    if (selectedSubCategory !== "all") {
-      filteredProducts = filteredProducts.filter(
-        (product) => product.subCategory === selectedSubCategory
-      );
-    }
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory]);
+
+  // Apply filters
+  useEffect(() => {
+    let tempProducts = [...products];
+
+    // Filter by color
     if (selectedColor !== "all") {
-      filteredProducts = filteredProducts.filter(
-        (product) =>
-          product.color?.toLowerCase() === selectedColor.toLowerCase()
+      tempProducts = tempProducts.filter((product) =>
+        product.colors.includes(selectedColor)
       );
     }
-    filteredProducts = filteredProducts.filter(
+
+    // Filter by price range
+    tempProducts = tempProducts.filter(
       (product) =>
-        product.price >= priceRange[0] && product.price <= priceRange[1]
+        product.lowestPrice >= priceRange[0] &&
+        product.largestPrice <= priceRange[1]
     );
 
+    // Sort products
     switch (sortBy) {
       case "price-low-high":
-        filteredProducts.sort((a, b) => a.price - b.price);
+        tempProducts.sort((a, b) => a.lowestPrice - b.lowestPrice);
         break;
       case "price-high-low":
-        filteredProducts.sort((a, b) => b.price - a.price);
+        tempProducts.sort((a, b) => b.lowestPrice - a.lowestPrice);
         break;
       case "name-a-z":
-        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        tempProducts.sort((a, b) =>
+          a.productTitle.localeCompare(b.productTitle)
+        );
         break;
       case "name-z-a":
-        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+        tempProducts.sort((a, b) =>
+          b.productTitle.localeCompare(a.productTitle)
+        );
         break;
       default:
         break;
     }
 
-    setProducts(filteredProducts.slice(0, resultsPerPage));
-  }, [
-    priceRange,
-    sortBy,
-    selectedCategory,
-    selectedSubCategory,
-    selectedColor,
-    resultsPerPage,
-  ]);
-
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
-    setSelectedSubCategory("all");
-    toggleCategory(category);
-  };
-
-  const handleSubCategorySelect = (subCategory) => {
-    setSelectedSubCategory(subCategory);
-    if (window.innerWidth < 768) {
-      setIsMobileFilterOpen(false);
-    }
-  };
+    // Limit results per page
+    setFilteredProducts(tempProducts.slice(0, resultsPerPage));
+  }, [products, selectedColor, priceRange, sortBy, resultsPerPage]);
 
   const handleColorSelect = (color) => {
     setSelectedColor(color === selectedColor ? "all" : color);
   };
 
-  const toggleCategory = (category) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
   };
 
-  const FilterSidebar = () => (
-    <div className="p-4">
-      <div className="pb-2">
-        <h2 className="text-xl font-semibold">Product categories</h2>
-      </div>
-      <div className="flex justify-between items-center md:hidden mb-4">
-        <button
-          onClick={() => setIsMobileFilterOpen(false)}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
+  const handleAddToCart = (product) => {
+    const cartItem = {
+      id: product._id,
+      name: product.productTitle,
+      price: product.lowestPrice,
+      image: product.images[0]?.url || "/placeholder.jpg",
+      color: selectedColor !== "all" ? selectedColor : product.colors[0],
+    };
+    addToCart(cartItem);
+    message.info("Added to cart");
+  };
 
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3">Colors</h3>
-        <div className="grid grid-cols-5 gap-2">
-          {colorOptions.map((color) => (
-            <button
-              key={color.name}
-              onClick={() => handleColorSelect(color.name)}
-              className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
-                selectedColor === color.name
-                  ? "ring-2 ring-blue-500 ring-offset-2"
-                  : ""
-              }`}
-              style={{
-                backgroundColor: color.value,
-                border: color.name === "White" ? "1px solid #e5e7eb" : "none",
-              }}
-              title={color.name}
-            />
-          ))}
-        </div>
-        {selectedColor !== "all" && (
-          <button
-            onClick={() => setSelectedColor("all")}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-700"
-          >
-            Clear color
-          </button>
-        )}
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
       </div>
+    );
+  }
 
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3">Price Range</h3>
-        <div className="space-y-2">
-          <input
-            type="range"
-            min="0"
-            max="4000"
-            value={priceRange[1]}
-            onChange={(e) =>
-              setPriceRange([priceRange[0], parseInt(e.target.value)])
-            }
-            className="w-full"
-          />
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>LKR {priceRange[0]}.00</span>
-            <span>LKR {priceRange[1]}.00</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="font-semibold mb-3">Categories</h3>
-        <button
-          onClick={() => {
-            setSelectedCategory("all");
-            setSelectedSubCategory("all");
-          }}
-          className={`w-full text-left p-2 mb-2 rounded ${
-            selectedCategory === "all"
-              ? "bg-blue-50 text-blue-600"
-              : "hover:bg-gray-50"
-          }`}
-        >
-          All Products
-        </button>
-        {Object.entries(categories).map(([key, category]) => (
-          <div key={key} className="mb-2">
-            <button
-              onClick={() => handleCategorySelect(key)}
-              className={`flex items-center justify-between w-full p-2 text-left rounded ${
-                selectedCategory === key
-                  ? "bg-blue-50 text-blue-600"
-                  : "hover:bg-gray-50"
-              }`}
-            >
-              <span>{category.name}</span>
-              <ChevronDown
-                className={`w-4 h-4 transition-transform ${
-                  expandedCategories[key] ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            {expandedCategories[key] && (
-              <div className="ml-4 mt-1 space-y-1">
-                {category.subCategories.map((sub) => (
-                  <button
-                    key={sub}
-                    onClick={() => handleSubCategorySelect(sub)}
-                    className={`block w-full text-left p-1.5 text-sm rounded ${
-                      selectedSubCategory === sub
-                        ? "bg-blue-50 text-blue-600 font-medium"
-                        : "text-gray-600 hover:bg-gray-50"
-                    }`}
-                  >
-                    {sub}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  if (error) {
+    return <div className="w-full text-center py-12 text-red-500">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 px-4 md:px-20 py-6 md:py-20 md:pb-3">
-      <div>
-        <NavBar />
-      </div>
+      <NavBar />
+
       <div className="flex flex-1">
-        {/* Desktop Sidebar */}
-        <aside
-          className={`hidden md:block ${
-            isFilterOpen ? "w-64" : "w-0"
-          } transition-all duration-300 bg-white shadow-lg overflow-hidden`}
-        >
-          <FilterSidebar />
-        </aside>
-
-        {/* Mobile Filter Overlay */}
-        <div
-          className={`fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity ${
-            isMobileFilterOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-          onClick={() => setIsMobileFilterOpen(false)}
-        />
-
-        {/* Mobile Sidebar */}
-        <aside
-          className={`fixed inset-y-0 left-0 w-80 bg-white shadow-lg z-50 md:hidden transform transition-transform duration-300 ${
-            isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <FilterSidebar />
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-2 md:p-6 md:pt-0 md:pb-0">
-          {/* Controls Bar */}
-          <div className="bg-white rounded-lg shadow-sm mb-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between p-4 space-y-4 md:space-y-0">
-              <div className="flex items-center space-x-4">
+        <aside className="hidden md:block w-64 transition-all duration-300 bg-white shadow-lg overflow-hidden">
+          <div className="p-4">
+            {/* Categories Filter */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Categories</h3>
+              <div className="space-y-2">
                 <button
-                  onClick={() => {
-                    if (window.innerWidth >= 768) {
-                      setIsFilterOpen(!isFilterOpen);
-                    } else {
-                      setIsMobileFilterOpen(true);
-                    }
-                  }}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  onClick={() => handleCategorySelect("all")}
+                  className={`w-full text-left px-3 py-2 rounded-lg transition ${
+                    selectedCategory === "all"
+                      ? "bg-blue-500 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
                 >
-                  <SlidersHorizontal className="w-5 h-5" />
+                  All Categories
                 </button>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="border p-2 rounded-lg text-sm md:text-base flex-1 md:flex-none"
-                >
-                  <option value="relevance">Relevance</option>
-                  <option value="price-low-high">Price: Low to High</option>
-                  <option value="price-high-low">Price: High to Low</option>
-                  <option value="name-a-z">Name: A to Z</option>
-                  <option value="name-z-a">Name: Z to A</option>
-                </select>
+                {categories.map((category) => (
+                  <button
+                    key={category._id}
+                    onClick={() => handleCategorySelect(category.name)}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition ${
+                      selectedCategory === category.name
+                        ? "bg-blue-500 text-white"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
               </div>
-              <div className="flex items-center justify-between md:justify-end space-x-4">
-                <select
-                  value={resultsPerPage}
-                  onChange={(e) => setResultsPerPage(parseInt(e.target.value))}
-                  className="border p-2 rounded-lg text-sm md:text-base"
-                >
-                  <option value="12">12 per page</option>
-                  <option value="24">24 per page</option>
-                  <option value="48">48 per page</option>
-                </select>
-                <div className="flex items-center space-x-2">
+            </div>
+
+            {/* Colors Filter */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Colors</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {colorOptions.map((color) => (
                   <button
-                    onClick={() => setViewMode("grid")}
-                    className={`p-2 rounded-lg ${
-                      viewMode === "grid" ? "bg-gray-100" : "hover:bg-gray-100"
+                    key={color.name}
+                    onClick={() => handleColorSelect(color.value)}
+                    className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
+                      selectedColor === color.value
+                        ? "ring-2 ring-blue-500 ring-offset-2"
+                        : ""
                     }`}
-                  >
-                    <GridIcon className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={`p-2 rounded-lg ${
-                      viewMode === "list" ? "bg-gray-100" : "hover:bg-gray-100"
-                    }`}
-                  >
-                    <List className="w-5 h-5" />
-                  </button>
-                </div>
+                    style={{
+                      backgroundColor: color.value,
+                      border:
+                        color.name === "White" ? "1px solid #e5e7eb" : "none",
+                    }}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Price Range Filter */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-3">Price Range</h3>
+              <input
+                type="range"
+                min="0"
+                max="4000"
+                value={priceRange[1]}
+                onChange={(e) =>
+                  setPriceRange([priceRange[0], parseInt(e.target.value)])
+                }
+                className="w-full"
+              />
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>LKR {priceRange[0]}.00</span>
+                <span>LKR {priceRange[1]}.00</span>
               </div>
             </div>
           </div>
+        </aside>
 
-          {/* Products Grid/List */}
+        <main className="flex-1 p-2 md:p-6 md:pt-0 md:pb-0">
+          <div className="bg-white rounded-lg shadow-sm mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between p-4 space-y-4 md:space-y-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border p-2 rounded-lg text-sm md:text-base flex-1 md:flex-none"
+              >
+                <option value="relevance">Relevance</option>
+                <option value="price-low-high">Price: Low to High</option>
+                <option value="price-high-low">Price: High to Low</option>
+                <option value="name-a-z">Name: A to Z</option>
+                <option value="name-z-a">Name: Z to A</option>
+              </select>
+              <select
+                value={resultsPerPage}
+                onChange={(e) => setResultsPerPage(parseInt(e.target.value))}
+                className="border p-2 rounded-lg text-sm md:text-base"
+              >
+                <option value="12">12 per page</option>
+                <option value="24">24 per page</option>
+                <option value="48">48 per page</option>
+              </select>
+            </div>
+          </div>
+
           <div
             className={
               viewMode === "grid"
@@ -369,41 +291,29 @@ const Categories = () => {
                 : "space-y-4"
             }
           >
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div
-                key={product.id}
-                className={`bg-white rounded-lg shadow-sm overflow-hidden ${
-                  viewMode === "list" ? "flex flex-col md:flex-row" : ""
-                } hover:shadow-md transition-shadow duration-200`}
+                key={product._id}
+                className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200`}
               >
                 <img
-                  src={getVariantImage(product, selectedColor)} // Use getVariantImage
-                  alt={product.name}
-                  className={`${
-                    viewMode === "list"
-                      ? "w-full md:w-48 h-48 object-contain"
-                      : "w-full h-48 object-contain"
-                  }`}
+                  src={product.images[0]?.url || "/placeholder.jpg"}
+                  alt={product.productTitle}
+                  className="w-full h-48 object-contain"
                 />
-                <div className="p-5 flex flex-col flex-1">
+                <div className="p-5">
                   <h3 className="font-semibold text-lg mb-2 text-gray-800">
-                    {product.name}
+                    {product.productTitle}
                   </h3>
-                  
-                  <p className="text-gray-600 text-sm mb-4 flex-1">
-                    Color: <span className="text-gray-900 font-semibold">{product.color}</span>
+                  <p className="text-sm text-gray-500">
+                    Price: LKR {product.lowestPrice} - LKR{" "}
+                    {product.largestPrice}
                   </p>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-auto space-y-2 sm:space-y-0">
-                    <span className="font-bold text-lg text-gray-900">
-                      LKR {product.price.toFixed(2)}
-                    </span>
+                  <div className="mt-4 flex items-center space-x-2">
                     <button
-                    
-                    onClick={() => {
-                      console.log('Add to cart clicked for product:', product); // Debug log
-                      handleAddToCart(product);
-                    }}
-                    className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 hover:shadow-md transition-colors duration-200">
+                      onClick={() => handleAddToCart(product)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                    >
                       Add to Cart
                     </button>
                   </div>
@@ -413,9 +323,8 @@ const Categories = () => {
           </div>
         </main>
       </div>
-      <div className="mt-20">
-        <Footer />
-      </div>
+
+      <Footer />
     </div>
   );
 };

@@ -88,7 +88,7 @@ const fetchNewProducts = async () => {
             })),
           };
         })
-        // most recently created products first
+        // most recently created products
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         // top 10 newest products
         .slice(0, 10);

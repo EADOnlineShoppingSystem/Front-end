@@ -136,7 +136,7 @@ const productServices = {
   getProductsByCategoryName: async (categoryName) => {
     try {
       const response = await axiosInstance.get(
-        `/products/api/products/category/${categoryName}`
+        `Product/api/products/getProducts/${categoryName}`
       );
       return response.data;
     } catch (error) {
