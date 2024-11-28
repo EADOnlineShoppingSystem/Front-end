@@ -4,21 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    try {
-      const savedCart = localStorage.getItem('cart');
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
   const[cartItem, setCartItem] = useState([]);
-
 
   const fetchcartaitems = async () => {
     try {
@@ -37,12 +23,12 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (product) => {
     const adding ={
       
-      productId:"6742013a837dcad81c35d5d8",
-      quantity:2241
+      productId:product.id,
+      quantity:1
   
       }
      const data = await cartServices.addToCart(adding)
-    setCartItems(prevItems => {
+    setCartItem(prevItems => {
       const existingItem = prevItems.find(item => item.id === product.id);
       
       if (existingItem) {
@@ -57,17 +43,17 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (productId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
+    setCartItem(prevItems => prevItems.filter(item => item._id !== productId));
   };
 
   const removeMultipleFromCart = (productIds) => {
-    setCartItems(prevItems => 
+    setCartItem(prevItems => 
       prevItems.filter(item => !productIds.includes(item.id))
     );
   };
 
   const updateQuantity = (productId, newQuantity) => {
-    setCartItems(prevItems =>
+    setCartItem(prevItems =>
       prevItems.map(item =>
         item.id === productId
           ? { ...item, quantity: newQuantity }
@@ -77,20 +63,19 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = () => {
-    setCartItems([]);
+    setCartItem([]);
   };
 
   const getCartTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cartItem.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const getCartCount = () => {
-    return cartItems.reduce((count, item) => count + item.quantity, 0);
+    return cartItem.reduce((count, item) => count + item.quantity, 0);
   };
 
   const value = {
     cartItem,
-    cartItems,
     addToCart,
     removeFromCart,
     removeMultipleFromCart,

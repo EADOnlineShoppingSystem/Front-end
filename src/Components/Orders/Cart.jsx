@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useOrder } from '../../contexts/orderContext';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity,cartItem } = useCart();
+  const { removeFromCart, updateQuantity,cartItem } = useCart();
   const [voucherCode, setVoucherCode] = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
   const [location, setLocation] = useState('Weligama, Matara,Southern');
@@ -17,7 +17,7 @@ const Cart = () => {
   console.log("cartItems",cartItem);
   
   const handleOrders = () => {
-    const selectedItem = cartItems.find(item => item.id === selectedItemId);
+    const selectedItem = cartItem.find(item => item._id === selectedItemId);
     if (selectedItem) {
       const orderData = {
         productId: "6742013a837dcad81c35d5d8",
@@ -36,7 +36,7 @@ const Cart = () => {
 
   const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity >= 1) {
-      updateQuantity(item.id, newQuantity);
+      updateQuantity(item._id, newQuantity);
     }
   };
 
@@ -47,7 +47,7 @@ const Cart = () => {
   };
 
   const calculateSelectedSubtotal = () => {
-    const selectedItem = cartItems.find(item => item.id === selectedItemId);
+    const selectedItem = cartItem.find(item => item._id === selectedItemId);
     return selectedItem ? selectedItem.price * selectedItem.quantity : 0;
   };
 
@@ -71,7 +71,7 @@ const Cart = () => {
           {/* Cart Items Section */}
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-              {cartItems.length === 0 ? (
+              {!cartItem || cartItem.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 text-lg mb-6">There are no items in this cart</p>
                   <button 
@@ -82,37 +82,32 @@ const Cart = () => {
                   </button>
                 </div>
               ) : (
-                // cartItem.map((item) => (
-                //   <>
-                //   <div key={item.id} className="border-t py-4">{item.quantity}</div>
-                //   <div key={item.id} className="border-t py-4">{item.productId}</div>
-                //   </>
-                // ))
-                cartItems.map((item) => (
-                  <div key={item.id} className="border-t py-4">
+
+                cartItem.map((item) => (
+                  <div key={item._id} className="border-t py-4">
                     <div className="flex items-start gap-4">
                       <input 
                         type="radio" 
                         className="mt-2"
-                        checked={selectedItemId === item.id}
-                        onChange={() => handleSelectItem(item.id)}
+                        checked={selectedItemId === item._id}
+                        onChange={() => handleSelectItem(item._id)}
                       />
                       <div className="w-24 h-24">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                        <img src={item.productDetails.product.images[0]?.url} alt={item.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between">
                           <div>
-                            <h3 className="font-medium">{item.name}</h3>
+                            <h3 className="font-medium">{item.productDetails.product.categoryName}</h3>
                             <p className="text-sm text-gray-500 mt-1">
                               {item.brand}, Color Family:{item.color}, Storage Capacity:{item.storage}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-orange-500 font-medium">Rs. {item.price.toLocaleString()}</p>
-                            {item.originalPrice && (
+                            <p className="text-orange-500 font-medium">Rs. {item.productDetails.product.lowestPrice}</p>
+                            {item.productDetails.product.lowestPrice && (
                               <p className="text-gray-400 line-through text-sm">
-                                Rs. {item.originalPrice.toLocaleString()}
+                                Rs. {item.productDetails.product.lowestPrice}
                               </p>
                             )}
                           </div>
@@ -137,12 +132,12 @@ const Cart = () => {
                             <button 
                               className="text-gray-400 hover:text-gray-600"
                               onClick={() => {
-                                removeFromCart(item.id);
-                                if (selectedItemId === item.id) {
+                                removeFromCart(item._id);
+                                if (selectedItemId === item._id) {
                                   setSelectedItemId(null);
                                 }
                               }}
-                            >
+                            >  
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
