@@ -17,10 +17,27 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
+  const[cartItem, setCartItem] = useState([]);
+
+
+  const fetchcartaitems = async () => {
+    try {
+      const response = await cartServices.getCartDetailsByUserID();
+      setCartItem(response);
+      console.log("get data",response);
+    } catch (error) {
+      console.error('Error fetching cart items:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchcartaitems();
+  }, []);
+
   const addToCart = async (product) => {
     const adding ={
       
-      productId:"674195cbc36bd2ccee6e1205",
+      productId:"6742013a837dcad81c35d5d8",
       quantity:2241
   
       }
@@ -72,6 +89,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const value = {
+    cartItem,
     cartItems,
     addToCart,
     removeFromCart,

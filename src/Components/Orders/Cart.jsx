@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useOrder } from '../../contexts/orderContext';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, updateQuantity,cartItem } = useCart();
   const [voucherCode, setVoucherCode] = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
   const [location, setLocation] = useState('Weligama, Matara,Southern');
@@ -14,14 +14,15 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const { setOrderData } = useOrder();
+  console.log("cartItems",cartItem);
   
   const handleOrders = () => {
     const selectedItem = cartItems.find(item => item.id === selectedItemId);
     if (selectedItem) {
       const orderData = {
-        productId: selectedItem.id,
-        quantity: selectedItem.quantity,
-        price: selectedItem.price
+        productId: "6742013a837dcad81c35d5d8",
+        quantity: "32",
+        price: "12123"
       };
       setOrderData(orderData);
       navigate('/checkout');
@@ -65,7 +66,6 @@ const Cart = () => {
       <div className="px-4 md:px-20 py-6">
         <NavBar />
       </div>
-
       <div className="flex-1 px-4 md:px-20 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Cart Items Section */}
@@ -82,6 +82,12 @@ const Cart = () => {
                   </button>
                 </div>
               ) : (
+                // cartItem.map((item) => (
+                //   <>
+                //   <div key={item.id} className="border-t py-4">{item.quantity}</div>
+                //   <div key={item.id} className="border-t py-4">{item.productId}</div>
+                //   </>
+                // ))
                 cartItems.map((item) => (
                   <div key={item.id} className="border-t py-4">
                     <div className="flex items-start gap-4">

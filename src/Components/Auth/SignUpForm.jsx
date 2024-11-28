@@ -99,11 +99,11 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
       <div className="h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-t-3xl" />
       
       <div className="p-6">
-        <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           Create Account
         </h2>
         
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-2" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-700 mb-2" htmlFor="username">
               Username
@@ -125,7 +125,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="email">
+            <label className="block text-gray-700 mb-1" htmlFor="email">
               Email
             </label>
             <input
@@ -145,7 +145,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="password">
+            <label className="block text-gray-700 mb-1" htmlFor="password">
               Password
             </label>
             <input
@@ -165,7 +165,7 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2" htmlFor="confirmPassword">
+            <label className="block text-gray-700 mb-1" htmlFor="confirmPassword">
               Confirm Password
             </label>
             <input
@@ -189,23 +189,24 @@ const SignUpForm = ({ onSwitchToSignIn, onSignupSubmit }) => {
               <p className="text-red-500 text-sm text-center">{errors.submit}</p>
             </div>
           )}
-
+          <div className="flex justify-center mt-4">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-3 rounded-lg font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full py-3 mt-4 rounded-lg font-medium text-white bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Signing Up...' : 'Sign Up'}
           </button>
+          </div>
         </form>
 
-        <div className="mt-6 flex items-center justify-center gap-2">
+        <div className="mt-4 flex items-center justify-center gap-2">
           <div className="h-px bg-gray-300 w-full" />
           <span className="text-gray-500 flex-shrink-0">or</span>
           <div className="h-px bg-gray-300 w-full" />
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-2 text-center">
           <span className="text-gray-500">Already have an account? </span>
           <button
             onClick={onSwitchToSignIn}

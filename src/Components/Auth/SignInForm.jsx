@@ -99,7 +99,7 @@ const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
       {/* Decorative header line */}
       <div className="h-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-t-3xl" />
       
-      <div className="p-6">
+      <div className="p-8">
         <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           Sign In
         </h2>
