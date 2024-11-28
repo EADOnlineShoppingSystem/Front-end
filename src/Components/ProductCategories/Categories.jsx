@@ -6,15 +6,17 @@ import {
   SlidersHorizontal,
   ShoppingCart,
   X,
+  ExternalLink,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../HomePage/Footer.jsx";
 import { message } from "antd";
 import productServices from "../../Services/product.services.js";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
 
 const Categories = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [viewMode, setViewMode] = useState("grid");
@@ -75,7 +77,6 @@ const Categories = () => {
           colors: JSON.parse(product.colors[0] || "[]"),
         }));
         setProducts(parsedProducts);
-        // Apply initial filtering
         applyFilters(parsedProducts);
       } else {
         setProducts([]);
@@ -150,17 +151,26 @@ const Categories = () => {
     }
   }, [selectedColor, priceRange, sortBy, resultsPerPage, products]);
 
-  // Handle category selection
+  // Handle category selection with navigation
   const handleCategorySelect = (category, e) => {
     e.preventDefault();
     setSelectedCategory(category);
+
+    // Update URL without full page refresh
+    const newUrl =
+      category === "all"
+        ? "/categories"
+        : `/categories/${encodeURIComponent(category)}`;
+
+    navigate(newUrl, { replace: true });
   };
 
   const handleColorSelect = (color) => {
     setSelectedColor(color === selectedColor ? "all" : color);
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation(); // Prevent navigation when clicking add to cart
     const cartItem = {
       id: product._id,
       name: product.productTitle,
@@ -172,12 +182,15 @@ const Categories = () => {
     message.info("Added to cart");
   };
 
-  // Rest of the JSX remains exactly the same as in your original code
+  // Handle product click navigation
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100/65 px-4 md:px-20 py-6 md:py-20 md:pb-3">
       <NavBar />
-
-      <div className="flex flex-1 mb-14">
+      <div className="flex flex-1 sm:mb-14 md:mb-14 lg:mb-14 lx:mb-14">
         <aside className="hidden md:block w-64 transition-all duration-300 bg-white shadow-lg overflow-hidden">
           <div className="p-4">
             {/* Categories Filter */}
@@ -307,13 +320,17 @@ const Categories = () => {
               filteredProducts.map((product) => (
                 <div
                   key={product._id}
-                  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200`}
+                  onClick={() => handleProductClick(product._id)}
+                  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer`}
                 >
-                  <img
-                    src={product.images[0]?.url || "/placeholder.jpg"}
-                    alt={product.productTitle}
-                    className="w-full h-48 object-contain"
-                  />
+                  <div className="relative">
+                    <img
+                      src={product.images[0]?.url || "/placeholder.jpg"}
+                      alt={product.productTitle}
+                      className="w-full h-48 object-contain"
+                    />
+                    
+                  </div>
                   <div className="p-5">
                     <h3 className="font-semibold text-lg mb-2 text-gray-800">
                       {product.productTitle}
@@ -324,7 +341,7 @@ const Categories = () => {
                     </p>
                     <div className="mt-4 flex items-center space-x-2">
                       <button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => handleAddToCart(product, e)}
                         className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
                       >
                         <ShoppingCart size={20} />
