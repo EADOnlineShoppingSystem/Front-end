@@ -21,7 +21,8 @@ const PopularCategories = () => {
           _id: category._id,
           image: `/popular/${getImageForCategory(category.name)}.png`,
           title: category.name,
-          href: `/category/${category.name.toLowerCase().replace(/\s+/g, "-")}`,
+          // Updated href to match the requested format
+          href: `/categories/${category.name}`,
         }));
 
         setCategories(transformedCategories);
@@ -116,7 +117,6 @@ const PopularCategories = () => {
                     <h3 className="text-sm sm:text-base font-medium text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {category.title}
                     </h3>
-                    
                   </div>
                 </a>
               </div>
