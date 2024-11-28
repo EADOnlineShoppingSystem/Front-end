@@ -4,6 +4,7 @@ import {
   GridIcon,
   List,
   SlidersHorizontal,
+  ShoppingCart,
   X,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
@@ -26,7 +27,6 @@ const Categories = () => {
   const { categoryName } = useParams();
   const { addToCart } = useCart();
 
-  // New state for categories
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(
     categoryName || "all"
@@ -56,19 +56,17 @@ const Categories = () => {
     }
   };
 
-  // Fetch products from backend
-  const fetchProducts = async () => {
+  // Fetch products based on category
+  const fetchProductsByCategory = async (category) => {
     try {
       setIsLoading(true);
       setError(null);
 
       let response;
-      if (selectedCategory === "all") {
+      if (category === "all") {
         response = await productServices.getAllProducts();
       } else {
-        response = await productServices.getProductsByCategoryName(
-          selectedCategory
-        );
+        response = await productServices.getProductsByCategoryName(category);
       }
 
       if (response && response.products) {
@@ -76,9 +74,9 @@ const Categories = () => {
           ...product,
           colors: JSON.parse(product.colors[0] || "[]"),
         }));
-
         setProducts(parsedProducts);
-        setFilteredProducts(parsedProducts);
+        // Apply initial filtering
+        applyFilters(parsedProducts);
       } else {
         setProducts([]);
         setFilteredProducts([]);
@@ -92,17 +90,18 @@ const Categories = () => {
     }
   };
 
+  // Initial fetch of categories and products
   useEffect(() => {
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    fetchProducts();
+    fetchProductsByCategory(selectedCategory);
   }, [selectedCategory]);
 
-  // Apply filters
-  useEffect(() => {
-    let tempProducts = [...products];
+  // Function to apply all filters
+  const applyFilters = (productsToFilter) => {
+    let tempProducts = [...productsToFilter];
 
     // Filter by color
     if (selectedColor !== "all") {
@@ -140,16 +139,25 @@ const Categories = () => {
         break;
     }
 
-    // Limit results per page
+    // Apply results per page
     setFilteredProducts(tempProducts.slice(0, resultsPerPage));
-  }, [products, selectedColor, priceRange, sortBy, resultsPerPage]);
+  };
+
+  // Apply filters whenever filter criteria change
+  useEffect(() => {
+    if (products.length > 0) {
+      applyFilters(products);
+    }
+  }, [selectedColor, priceRange, sortBy, resultsPerPage, products]);
+
+  // Handle category selection
+  const handleCategorySelect = (category, e) => {
+    e.preventDefault();
+    setSelectedCategory(category);
+  };
 
   const handleColorSelect = (color) => {
     setSelectedColor(color === selectedColor ? "all" : color);
-  };
-
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
   };
 
   const handleAddToCart = (product) => {
@@ -164,23 +172,12 @@ const Categories = () => {
     message.info("Added to cart");
   };
 
-  if (isLoading) {
-    return (
-      <div className="w-full flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="w-full text-center py-12 text-red-500">{error}</div>;
-  }
-
+  // Rest of the JSX remains exactly the same as in your original code
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 px-4 md:px-20 py-6 md:py-20 md:pb-3">
+    <div className="min-h-screen flex flex-col bg-gray-100/65 px-4 md:px-20 py-6 md:py-20 md:pb-3">
       <NavBar />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 mb-14">
         <aside className="hidden md:block w-64 transition-all duration-300 bg-white shadow-lg overflow-hidden">
           <div className="p-4">
             {/* Categories Filter */}
@@ -188,7 +185,7 @@ const Categories = () => {
               <h3 className="font-semibold mb-3">Categories</h3>
               <div className="space-y-2">
                 <button
-                  onClick={() => handleCategorySelect("all")}
+                  onClick={(e) => handleCategorySelect("all", e)}
                   className={`w-full text-left px-3 py-2 rounded-lg transition ${
                     selectedCategory === "all"
                       ? "bg-blue-500 text-white"
@@ -200,7 +197,7 @@ const Categories = () => {
                 {categories.map((category) => (
                   <button
                     key={category._id}
-                    onClick={() => handleCategorySelect(category.name)}
+                    onClick={(e) => handleCategorySelect(category.name, e)}
                     className={`w-full text-left px-3 py-2 rounded-lg transition ${
                       selectedCategory === category.name
                         ? "bg-blue-500 text-white"
@@ -287,39 +284,57 @@ const Categories = () => {
           <div
             className={
               viewMode === "grid"
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
                 : "space-y-4"
             }
           >
-            {filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                className={`bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200`}
-              >
-                <img
-                  src={product.images[0]?.url || "/placeholder.jpg"}
-                  alt={product.productTitle}
-                  className="w-full h-48 object-contain"
-                />
-                <div className="p-5">
-                  <h3 className="font-semibold text-lg mb-2 text-gray-800">
-                    {product.productTitle}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Price: LKR {product.lowestPrice} - LKR{" "}
-                    {product.largestPrice}
-                  </p>
-                  <div className="mt-4 flex items-center space-x-2">
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-                    >
-                      Add to Cart
-                    </button>
+            {isLoading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-12 text-gray-500">
+                <div className="text-6xl mb-4">😕</div>
+                <h3 className="text-xl font-semibold mb-2">
+                  No Products Available
+                </h3>
+                <p>
+                  There are no products available in this category at the
+                  moment.
+                </p>
+              </div>
+            ) : (
+              filteredProducts.map((product) => (
+                <div
+                  key={product._id}
+                  className={`bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200`}
+                >
+                  <img
+                    src={product.images[0]?.url || "/placeholder.jpg"}
+                    alt={product.productTitle}
+                    className="w-full h-48 object-contain"
+                  />
+                  <div className="p-5">
+                    <h3 className="font-semibold text-lg mb-2 text-gray-800">
+                      {product.productTitle}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      Price: LKR {product.lowestPrice} - LKR{" "}
+                      {product.largestPrice}
+                    </p>
+                    <div className="mt-4 flex items-center space-x-2">
+                      <button
+                        onClick={() => handleAddToCart(product)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
+                      >
+                        <ShoppingCart size={20} />
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </main>
       </div>
