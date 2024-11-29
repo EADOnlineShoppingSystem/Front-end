@@ -13,10 +13,12 @@ import {OrderProvider} from "./contexts/orderContext"
 import Address from "./Components/Orders/Address";
 import Profile from "./Components/Profile/Profile";
 import HomePage from "./Components/HomePage/HomePage";
+import { AuthContextProvider } from "./contexts/AthContext";
 
 function App() {
   return (
     <>
+    <AuthContextProvider>
       <OrderProvider>
         <CartProvider>
           <BrowserRouter>
@@ -36,6 +38,7 @@ function App() {
           </BrowserRouter>
         </CartProvider>
       </OrderProvider>
+      </AuthContextProvider>
     </>
   );
 }
