@@ -22,30 +22,56 @@ import { message } from "antd";
 import productServices from "../../Services/product.services.js";
 import { useCart } from "../../contexts/CartContext";
 
+/**
+ * Categories Component
+ *
+ * A comprehensive product catalog page that supports:
+ * - Product filtering by category, color, and price
+ * - Grid and list view layouts
+ * - Sorting by various criteria
+ * - Mobile-responsive design with a drawer for filters
+ * - Integration with shopping cart
+ *
+ * @component
+ */
 const Categories = () => {
+  // URL and navigation related states
   const [searchParams] = useSearchParams();
   const searchTerm = searchParams.get("search");
   const navigate = useNavigate();
+  const { categoryName } = useParams();
+
+  // Product data states
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
+
+  // UI state management
   const [viewMode, setViewMode] = useState("grid");
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Filter and sorting states
   const [priceRange, setPriceRange] = useState([0, 4000]);
   const [minMaxPrices, setMinMaxPrices] = useState({ min: 0, max: 4000 });
   const [selectedColor, setSelectedColor] = useState("all");
-  const [resultsPerPage, setResultsPerPage] = useState(12);
-  const [sortBy, setSortBy] = useState("relevance");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { categoryName } = useParams();
-  const { addToCart } = useCart();
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [availableColors, setAvailableColors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(
     categoryName || "all"
   );
+  const [resultsPerPage, setResultsPerPage] = useState(12);
+  const [sortBy, setSortBy] = useState("relevance");
 
+  // Cart context
+  const { addToCart } = useCart();
+
+  /**
+   * Formats a date string into a localized format
+   * @param {string} dateString - The date string to format
+   * @returns {string} Formatted date string
+   */
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -55,6 +81,11 @@ const Categories = () => {
     });
   };
 
+  /**
+   * Calculates the minimum and maximum prices from product list
+   * @param {Array} products - Array of product objects
+   * @returns {Object} Object containing min and max prices
+   */
   const calculatePriceRange = (products) => {
     if (!products.length) return { min: 0, max: 4000 };
     const prices = products.reduce(
@@ -71,6 +102,11 @@ const Categories = () => {
     return prices;
   };
 
+  /**
+   * Extracts unique colors from all products and formats them
+   * @param {Array} products - Array of product objects
+   * @returns {Array} Array of unique color objects
+   */
   const extractUniqueColors = (products) => {
     const colorSet = new Set();
     products.forEach((product) => {
@@ -87,6 +123,9 @@ const Categories = () => {
     }));
   };
 
+  /**
+   * Handles mobile filter drawer open/close animation
+   */
   const toggleMobileFilter = () => {
     if (isMobileFilterOpen) {
       setIsClosing(true);
@@ -101,12 +140,16 @@ const Categories = () => {
     }
   };
 
+  // Cleanup body overflow on component unmount
   useEffect(() => {
     return () => {
       document.body.style.overflow = "unset";
     };
   }, []);
 
+  /**
+   * Fetches all available product categories
+   */
   const fetchCategories = async () => {
     try {
       const response = await productServices.getAllCategories();
@@ -118,6 +161,10 @@ const Categories = () => {
     }
   };
 
+  /**
+   * Searches products based on search term
+   * @param {string} term - Search term
+   */
   const searchProducts = async (term) => {
     try {
       setIsLoading(true);
@@ -163,6 +210,10 @@ const Categories = () => {
     }
   };
 
+  /**
+   * Fetches products by category
+   * @param {string} category - Category name or 'all'
+   */
   const fetchProductsByCategory = async (category) => {
     try {
       setIsLoading(true);
@@ -200,10 +251,12 @@ const Categories = () => {
     }
   };
 
+  // Initial categories fetch
   useEffect(() => {
     fetchCategories();
   }, []);
 
+  // Fetch products when search term or category changes
   useEffect(() => {
     if (searchTerm) {
       searchProducts(searchTerm);
@@ -212,18 +265,28 @@ const Categories = () => {
     }
   }, [searchTerm, selectedCategory]);
 
+  /**
+   * Applies all active filters and sorting to products
+   * @param {Array} productsToFilter - Array of products to filter
+   */
   const applyFilters = (productsToFilter) => {
     let tempProducts = [...productsToFilter];
+
+    // Apply color filter
     if (selectedColor !== "all") {
       tempProducts = tempProducts.filter((product) =>
         product.colors.includes(selectedColor)
       );
     }
+
+    // Apply price range filter
     tempProducts = tempProducts.filter(
       (product) =>
         product.lowestPrice >= priceRange[0] &&
         product.largestPrice <= priceRange[1]
     );
+
+    // Apply sorting
     switch (sortBy) {
       case "price-low-high":
         tempProducts.sort((a, b) => a.lowestPrice - b.lowestPrice);
@@ -251,28 +314,24 @@ const Categories = () => {
           (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
         );
         break;
-      case "recently-updated":
-        tempProducts.sort(
-          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
-        );
-        break;
-      case "least-recently-updated":
-        tempProducts.sort(
-          (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
-        );
-        break;
       default:
         break;
     }
     setFilteredProducts(tempProducts.slice(0, resultsPerPage));
   };
 
+  // Apply filters when filter criteria change
   useEffect(() => {
     if (products.length > 0) {
       applyFilters(products);
     }
   }, [selectedColor, priceRange, sortBy, resultsPerPage, products]);
 
+  /**
+   * Handles category selection and URL update
+   * @param {string} category - Selected category
+   * @param {Event} e - Click event
+   */
   const handleCategorySelect = (category, e) => {
     e.preventDefault();
     setSelectedCategory(category);
@@ -286,15 +345,28 @@ const Categories = () => {
     navigate(newUrl, { replace: true });
   };
 
+  /**
+   * Handles color filter selection
+   * @param {string} color - Selected color
+   */
   const handleColorSelect = (color) => {
     setSelectedColor(color === selectedColor ? "all" : color);
   };
 
+  /**
+   * Handles price range slider change
+   * @param {Event} e - Change event
+   */
   const handlePriceRangeChange = (e) => {
     const newMax = parseInt(e.target.value);
     setPriceRange([minMaxPrices.min, newMax]);
   };
 
+  /**
+   * Handles adding product to cart
+   * @param {Object} product - Product to add
+   * @param {Event} e - Click event
+   */
   const handleAddToCart = (product, e) => {
     e.stopPropagation();
     const cartItem = {
@@ -308,12 +380,21 @@ const Categories = () => {
     message.success("Added to cart");
   };
 
+  /**
+   * Navigates to product detail page
+   * @param {string} productId - Product ID
+   */
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
 
+  /**
+   * Filter sidebar content component
+   * @component
+   */
   const FilterContent = () => (
     <div className="p-4">
+      {/* Categories Section */}
       <div className="mb-6">
         <h3 className="font-semibold mb-3">Categories</h3>
         <div className="space-y-2">
@@ -343,6 +424,7 @@ const Categories = () => {
         </div>
       </div>
 
+      {/* Colors Section */}
       <div className="mb-6">
         <h3 className="font-semibold mb-3">Colors</h3>
         <div className="bg-transparent rounded-lg p-2">
@@ -379,6 +461,7 @@ const Categories = () => {
         </div>
       </div>
 
+      {/* Price Range Section */}
       <div className="mb-6">
         <h3 className="font-semibold mb-3">Price Range</h3>
         <div className="space-y-4">
@@ -399,7 +482,12 @@ const Categories = () => {
     </div>
   );
 
+  /**
+   * Renders products based on current view mode and loading state
+   * @returns {JSX.Element} Rendered product grid or list
+   */
   const renderProducts = () => {
+    // Show loading spinner
     if (isLoading) {
       return (
         <div className="col-span-full flex justify-center py-12">
@@ -408,6 +496,7 @@ const Categories = () => {
       );
     }
 
+    // Show error or empty state
     if (error || products.length === 0) {
       return (
         <div className="col-span-full flex flex-col items-center justify-center py-12 text-gray-500">
@@ -424,6 +513,7 @@ const Categories = () => {
       );
     }
 
+    // Grid view
     if (viewMode === "grid") {
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -462,49 +552,51 @@ const Categories = () => {
           ))}
         </div>
       );
-    } else {
-      return (
-        <div className="space-y-4">
-          {filteredProducts.map((product) => (
-            <div
-              key={product._id}
-              onClick={() => handleProductClick(product._id)}
-              className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
-            >
-              <div className="flex flex-col md:flex-row items-center gap-6 w-full p-4">
-                <div className="w-48 h-48 flex-shrink-0 relative">
-                  <img
-                    src={product.images[0]?.url || "/placeholder.jpg"}
-                    alt={product.productTitle}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="flex-1 text-center md:text-left">
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">
-                    {product.productTitle}
-                  </h3>
-                  <p className="text-blue-600 font-semibold">
-                    LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
-                    {product.largestPrice.toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-end lg:mr-10 xl:mr-10 md:mr-10">
-                  <button
-                    onClick={(e) => handleAddToCart(product, e)}
-                    className="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition flex items-center gap-2"
-                  >
-                    <ShoppingCart size={20} />
-                    Add to Cart
-                  </button>
-                </div>
+    }
+
+    // List view
+    return (
+      <div className="space-y-4">
+        {filteredProducts.map((product) => (
+          <div
+            key={product._id}
+            onClick={() => handleProductClick(product._id)}
+            className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
+          >
+            <div className="flex flex-col md:flex-row items-center gap-6 w-full p-4">
+              <div className="w-48 h-48 flex-shrink-0 relative">
+                <img
+                  src={product.images[0]?.url || "/placeholder.jpg"}
+                  alt={product.productTitle}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800">
+                  {product.productTitle}
+                </h3>
+                <p className="text-blue-600 font-semibold">
+                  LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
+                  {product.largestPrice.toLocaleString()}
+                </p>
+              </div>
+              <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-end lg:mr-10 xl:mr-10 md:mr-10">
+                <button
+                  onClick={(e) => handleAddToCart(product, e)}
+                  className="bg-blue-400 text-white px-6 py-2 rounded-lg hover:bg-blue-500 transition flex items-center gap-2"
+                >
+                  <ShoppingCart size={20} />
+                  Add to Cart
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-      );
-    }
+          </div>
+        ))}
+      </div>
+    );
   };
 
+  // Main component render
   return (
     <div className="min-h-screen flex flex-col bg-gray-100/65 px-4 md:px-20 py-6 md:py-20 md:pb-3">
       <NavBar />
@@ -555,9 +647,10 @@ const Categories = () => {
         </aside>
 
         <main className="flex-1 p-2 md:p-6 md:pt-0 md:pb-0">
+          {/* Controls Bar */}
           <div className="bg-white rounded-lg shadow-sm mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between p-4 space-y-4 md:space-y-0">
-              {/* Left side */}
+              {/* Sort Controls */}
               <div className="w-full md:w-auto">
                 <select
                   value={sortBy}
@@ -569,16 +662,12 @@ const Categories = () => {
                   <option value="price-high-low">Price: High to Low</option>
                   <option value="name-a-z">Name: A to Z</option>
                   <option value="name-z-a">Name: Z to A</option>
-                  <option value="newest-first">Newest Products</option>
-                  <option value="oldest-first">Oldest Products</option>
-                  <option value="recently-updated">Recently Updated</option>
-                  <option value="least-recently-updated">
-                    Least Recently Updated
-                  </option>
+                  <option value="newest-first">Newly Listed </option>
+                  <option value="oldest-first">Old Products</option>
                 </select>
               </div>
 
-              {/* Right side */}
+              {/* View Controls */}
               <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
                 <select
                   value={resultsPerPage}
@@ -619,7 +708,7 @@ const Categories = () => {
             </div>
           </div>
 
-          {/* Products Grid/List View */}
+          {/* Search Results Info */}
           {searchTerm && (
             <div className="mb-4 bg-white p-4 rounded-lg">
               <p className="text-gray-600">
@@ -629,6 +718,7 @@ const Categories = () => {
             </div>
           )}
 
+          {/* Product Grid/List */}
           {renderProducts()}
         </main>
       </div>
