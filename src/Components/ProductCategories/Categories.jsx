@@ -1,21 +1,6 @@
 import { useState, useEffect } from "react";
-import {
-  ChevronDown,
-  GridIcon,
-  List,
-  SlidersHorizontal,
-  ShoppingCart,
-  X,
-  ExternalLink,
-  Filter,
-  Calendar,
-} from "lucide-react";
-import {
-  useSearchParams,
-  useParams,
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import { GridIcon, List, ShoppingCart, X, Filter } from "lucide-react";
+import { useSearchParams, useParams, useNavigate } from "react-router-dom";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../HomePage/Footer.jsx";
 import { message } from "antd";
@@ -97,7 +82,8 @@ const Categories = () => {
       { min: Infinity, max: -Infinity }
     );
     if (prices.min === Infinity) prices.min = 0;
-    if (prices.max === -Infinity) prices.max = 4000;
+    if (prices.max === -Infinity)
+      if (prices.max === -Infinity) prices.max = 4000;
     if (prices.min === prices.max) prices.max += 1000;
     return prices;
   };
