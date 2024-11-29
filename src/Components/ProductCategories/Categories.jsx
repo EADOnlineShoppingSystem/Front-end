@@ -330,7 +330,7 @@ const Categories = () => {
                   {product.productTitle}
                 </h3>
                 <p className="text-sm text-blue-600 font-semibold">
-                  Price: LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
+                  LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
                   {product.largestPrice.toLocaleString()}
                 </p>
                 <div className="mt-4 flex items-center space-x-2">
@@ -372,7 +372,7 @@ const Categories = () => {
                     {product.productTitle}
                   </h3>
                   <p className="text-blue-600 font-semibold">
-                    Price: LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
+                    LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
                     {product.largestPrice.toLocaleString()}
                   </p>
                 </div>
@@ -447,53 +447,59 @@ const Categories = () => {
         <main className="flex-1 p-2 md:p-6 md:pt-0 md:pb-0">
           <div className="bg-white rounded-lg shadow-sm mb-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between p-4 space-y-4 md:space-y-0">
-              {/* View Toggle Buttons - Only show on tablet and desktop */}
-              <div className="hidden md:flex items-center space-x-2">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === "grid"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                  aria-label="Grid View"
+              {/* Left side */}
+              <div className="w-full md:w-auto">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full md:w-auto border p-2 rounded-lg text-sm md:text-base"
                 >
-                  <GridIcon size={20} />
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-lg transition-colors ${
-                    viewMode === "list"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                  aria-label="List View"
-                >
-                  <List size={20} />
-                </button>
+                  <option value="relevance">Relevance</option>
+                  <option value="price-low-high">Price: Low to High</option>
+                  <option value="price-high-low">Price: High to Low</option>
+                  <option value="name-a-z">Name: A to Z</option>
+                  <option value="name-z-a">Name: Z to A</option>
+                </select>
               </div>
 
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border p-2 rounded-lg text-sm md:text-base flex-1 md:flex-none"
-              >
-                <option value="relevance">Relevance</option>
-                <option value="price-low-high">Price: Low to High</option>
-                <option value="price-high-low">Price: High to Low</option>
-                <option value="name-a-z">Name: A to Z</option>
-                <option value="name-z-a">Name: Z to A</option>
-              </select>
+              {/* Right side */}
+              <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                <select
+                  value={resultsPerPage}
+                  onChange={(e) => setResultsPerPage(parseInt(e.target.value))}
+                  className="border p-2 rounded-lg text-sm md:text-base"
+                >
+                  <option value="12">12 per page</option>
+                  <option value="24">24 per page</option>
+                  <option value="48">48 per page</option>
+                </select>
 
-              <select
-                value={resultsPerPage}
-                onChange={(e) => setResultsPerPage(parseInt(e.target.value))}
-                className="border p-2 rounded-lg text-sm md:text-base"
-              >
-                <option value="12">12 per page</option>
-                <option value="24">24 per page</option>
-                <option value="48">48 per page</option>
-              </select>
+                {/* View Toggle Buttons - Only show on tablet and desktop */}
+                <div className="hidden md:flex items-center space-x-2">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 rounded-lg transition-colors ${
+                      viewMode === "grid"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                    aria-label="Grid View"
+                  >
+                    <GridIcon size={20} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 rounded-lg transition-colors ${
+                      viewMode === "list"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                    aria-label="List View"
+                  >
+                    <List size={20} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
