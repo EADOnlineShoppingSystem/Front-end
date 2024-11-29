@@ -211,9 +211,7 @@ const fetchNewProducts = async () => {
                               <h3 className="text-lg font-medium text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                                 {product.title}
                               </h3>
-                              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                Available Colors
-                              </p>
+                              
                             </div>
                           </a>
                         </div>
