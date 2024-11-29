@@ -10,8 +10,7 @@ import {
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
 import orderServices from "../../Services/order.services";
-import { message, } from 'antd';
-
+import { message, Spin } from 'antd';
 const Address = () => {
   // const [addresses, setAddresses] = useState([
   //   {
@@ -43,6 +42,8 @@ const Address = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [errors, setErrors] = useState({});
   const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(null);
 
   const handleAdd = () => {
     setModalMode("add");
@@ -54,24 +55,32 @@ const Address = () => {
   //save address 
   const handleSaveAddress = async (address) => {
     try {
+        setLoading(true);
         console.log("Saving address:", address);
         await orderServices.createAddress(address);
+        await fetchAddresses(); // Fetch updated addresses
         message.success('Address saved successfully');
         setShowModal(false);
+        setLoading(false);
     } catch (error) {
         console.error("Error saving address:", error);
         message.error(error.message || 'Failed to save address');
-};
+    } finally {
+      setLoading(false);
+    }
   };
 
   //fetch address from database
    const fetchAddresses = async () => {
     try {
+      setLoading(true);
       const response = await orderServices.getAddressById();
       setAddresses(response);
       console.log("Fetched addresses:", response);
     } catch (error) {
       console.error("Error fetching addresses:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -94,12 +103,16 @@ const Address = () => {
   //delete address from database
   const handleDelete = async (id) => {
     try {
+      setDeleteLoading(id);
       await orderServices.deleteAddressByUserId(id);
       message.success('Address deleted successfully');
       fetchAddresses();
     } catch (error) {
       console.error("Error deleting address:", error);
       message.error(error.message || 'Failed to delete address');
+    }
+    finally {
+      setDeleteLoading(null);
     }
   };
 
@@ -181,7 +194,7 @@ const Address = () => {
             <X className="w-6 h-6" />
           </button>
         </div>
-
+        <Spin spinning={loading}>
         <form
           className="p-6 space-y-4"
           onSubmit={(e) => {
@@ -346,6 +359,7 @@ const Address = () => {
             </button>
           </div>
         </form>
+        </Spin>
       </div>
     </div>
   );
@@ -366,7 +380,7 @@ const Address = () => {
         </button>
       </div>
 
-     
+      <Spin spinning={loading}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {addresses.map((address) => (
           <div
@@ -442,6 +456,7 @@ const Address = () => {
           </div>
         ))}
       </div>
+      </Spin>
 
       {showModal && <AddressModal />}
     </div>
