@@ -1,3 +1,14 @@
+/**
+ * NavBar Component
+ * A responsive navigation bar with search functionality, user authentication, and category-based navigation
+ * Features include:
+ * - Responsive design for desktop and mobile
+ * - Search functionality with autocomplete
+ * - Category-based navigation with dropdowns
+ * - User authentication interface
+ * - Shopping cart integration
+ */
+
 import { useState, useEffect, useRef } from "react";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import {
@@ -23,18 +34,28 @@ import { useNavigate, useLocation } from "react-router-dom";
 import productServices from "../../Services/product.services";
 
 const NavBar = () => {
+  // Router hooks for navigation and location tracking
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Refs for managing click outside behavior
   const searchContainerRef = useRef(null);
+
+  // Cart context
   const { getCartCount } = useCart();
+
+  // Authentication and user state
   const [isLoggedIn] = useState(false);
   const [user] = useState({
     name: "John Doe",
     email: "john@example.com",
   });
 
+  // Product and category state management
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
+
+  // UI state management
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -46,15 +67,18 @@ const NavBar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
+  /**
+   * Effect hook to fetch categories and products on component mount
+   * Also sets up click outside listener for search container
+   */
   useEffect(() => {
     fetchCategoriesAndProducts();
 
-    // Add click outside listener
     const handleClickOutside = (event) => {
       if (
         searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target) &&
-        !searchTerm // Only hide if there's no search term
+        !searchTerm
       ) {
         setShowSearchInput(false);
       }
@@ -66,7 +90,9 @@ const NavBar = () => {
     };
   }, [searchTerm]);
 
-  // Reset search when changing routes
+  /**
+   * Effect hook to reset search state when changing routes
+   */
   useEffect(() => {
     if (!location.pathname.includes("/categories")) {
       setShowSearchInput(false);
@@ -75,6 +101,10 @@ const NavBar = () => {
     }
   }, [location]);
 
+  /**
+   * Fetches categories and their associated products from the API
+   * Organizes products by category and limits to 10 most recent products per category
+   */
   const fetchCategoriesAndProducts = async () => {
     try {
       const categoriesResponse = await productServices.getAllCategories();
@@ -85,6 +115,7 @@ const NavBar = () => {
         if (productsResponse && productsResponse.products) {
           const productsByCategory = {};
 
+          // Organize products by category
           productsResponse.products.forEach((product) => {
             if (!productsByCategory[product.categoryName]) {
               productsByCategory[product.categoryName] = [];
@@ -92,6 +123,7 @@ const NavBar = () => {
             productsByCategory[product.categoryName].push(product);
           });
 
+          // Sort products by date and limit to 10 per category
           Object.keys(productsByCategory).forEach((category) => {
             productsByCategory[category] = productsByCategory[category]
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -106,6 +138,11 @@ const NavBar = () => {
     }
   };
 
+  /**
+   * Performs search operation on products based on search term
+   * Filters products by title, category, and description
+   * @param {string} term - Search term
+   */
   const performSearch = async (term) => {
     if (!term.trim()) {
       setSearchResults([]);
@@ -136,12 +173,20 @@ const NavBar = () => {
     }
   };
 
+  /**
+   * Handles search input changes and triggers search
+   * @param {Event} e - Input change event
+   */
   const handleSearchInputChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
     performSearch(term);
   };
 
+  /**
+   * Handles search submission on Enter key press
+   * @param {Event} e - Keypress event
+   */
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim()) {
       navigate(`/categories?search=${encodeURIComponent(searchTerm.trim())}`);
@@ -151,6 +196,9 @@ const NavBar = () => {
     }
   };
 
+  /**
+   * Toggles search input visibility and handles search submission
+   */
   const handleSearchClick = () => {
     if (showSearchInput && searchTerm.trim()) {
       navigate(`/categories?search=${encodeURIComponent(searchTerm.trim())}`);
@@ -162,6 +210,10 @@ const NavBar = () => {
     }
   };
 
+  /**
+   * Handles click on search result item
+   * @param {string} productId - ID of selected product
+   */
   const handleSearchResultClick = (productId) => {
     setShowSearchInput(false);
     setSearchTerm("");
@@ -169,16 +221,25 @@ const NavBar = () => {
     navigate(`/product/${productId}`);
   };
 
+  /**
+   * Navigates to product detail page
+   * @param {string} productId - ID of selected product
+   */
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
 
+  /**
+   * Handles authentication modal view changes
+   * @param {string} view - View to display in auth modal
+   */
   const handleAuthAction = (view) => {
     setAuthModalView(view);
     setIsAuthModalOpen(true);
     setIsDrawerOpen(false);
   };
 
+  // UI state management functions
   const handleClose = () => {
     setIsAuthModalOpen(false);
     setAuthModalView("signin");
@@ -201,6 +262,10 @@ const NavBar = () => {
     setIsDrawerOpen(false);
   };
 
+  /**
+   * Returns navigation items based on authentication status
+   * @returns {Array} Array of navigation items
+   */
   const getAccountNavItems = () => {
     if (isLoggedIn) {
       return [
@@ -257,6 +322,12 @@ const NavBar = () => {
     ];
   };
 
+  /**
+   * Mobile menu item component
+   * @param {Object} props - Component props
+   * @param {Object} props.item - Menu item data
+   * @param {number} props.index - Item index
+   */
   const MobileMenuItem = ({ item, index }) => {
     const products = categoryProducts[item.name] || [];
 
@@ -305,7 +376,9 @@ const NavBar = () => {
     <>
       <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
         <header>
+          {/* Main Navigation */}
           <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
+            {/* Logo */}
             <div className="flex-shrink-0 ml-10">
               <a href="/" className="flex">
                 <img
@@ -316,6 +389,7 @@ const NavBar = () => {
               </a>
             </div>
 
+            {/* Desktop Category Navigation */}
             <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {categories.map((category, index) => (
                 <div key={index} className="relative group">
@@ -328,6 +402,7 @@ const NavBar = () => {
                       <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
                     </span>
                   </a>
+                  {/* Category Dropdown */}
                   <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
                     <div className="py-2">
                       {categoryProducts[category.name]?.map((product) => (
@@ -345,6 +420,7 @@ const NavBar = () => {
               ))}
             </div>
 
+            {/* Desktop Right Navigation */}
             <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
               {/* Search Container */}
               <div
@@ -417,6 +493,7 @@ const NavBar = () => {
                             </div>
                           </div>
                         ))}
+                        {/* View All Results Link */}
                         <div
                           onClick={() => {
                             if (searchTerm.trim()) {
@@ -444,6 +521,7 @@ const NavBar = () => {
                 )}
               </div>
 
+              {/* Shopping Cart */}
               <div className="inline-flex relative">
                 <a href="/cart">
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
@@ -455,6 +533,7 @@ const NavBar = () => {
                 </div>
               </div>
 
+              {/* User Profile Button */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={openDrawer}
@@ -493,18 +572,18 @@ const NavBar = () => {
             </button>
           </nav>
 
-          {/* Mobile Navigation */}
+          {/* Mobile Navigation Menu */}
           <nav
             className={`py-4 bg-gradient-to-b from-transparent to-gray-900 bg-opacity-40 lg:hidden ${
               isMenuOpen ? "block" : "hidden"
             }`}
           >
             <div className="px-4 mx-auto sm:px-6 lg:px-8">
+              {/* Mobile Menu Header */}
               <div className="flex items-center justify-between">
                 <p className="text-md font-semibold tracking-widest text-gray-100 uppercase">
                   {isLoggedIn ? `Welcome, ${user.name}` : "Menu"}
                 </p>
-
                 <button
                   type="button"
                   className="inline-flex p-2 text-white transition-all duration-200 rounded-md hover:bg-gray-800"
@@ -525,6 +604,7 @@ const NavBar = () => {
                     placeholder="Search products..."
                     className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-1 focus:ring-white"
                   />
+                  {/* Mobile Search Results */}
                   {searchTerm && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50">
                       {isSearchLoading ? (
@@ -587,6 +667,7 @@ const NavBar = () => {
                 </div>
               </div>
 
+              {/* Mobile Menu Items */}
               <div className="mt-4">
                 <div className="flex flex-col space-y-1">
                   {categories.map((category, index) => (
@@ -596,6 +677,7 @@ const NavBar = () => {
 
                 <hr className="my-4 border-gray-600" />
 
+                {/* Mobile Account Navigation */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 max-w-2xl">
                   {getAccountNavItems().map((item, index) => (
                     <a
@@ -615,7 +697,7 @@ const NavBar = () => {
           </nav>
         </header>
 
-        {/* User Drawer */}
+        {/* User Account Drawer */}
         <Dialog
           open={isDrawerOpen}
           onClose={closeDrawer}
@@ -679,7 +761,7 @@ const NavBar = () => {
         </Dialog>
       </div>
 
-      {/* Auth Modal */}
+      {/* Authentication Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={handleClose}
