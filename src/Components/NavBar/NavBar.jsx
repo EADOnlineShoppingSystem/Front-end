@@ -292,7 +292,7 @@ const NavBar = () => {
                 </div>
               </a>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">{getCartCount()}</span>
+                <span className="text-white text-xs">1</span>
               </div>
             </div>
 

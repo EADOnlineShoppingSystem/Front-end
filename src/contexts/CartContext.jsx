@@ -1,110 +1,86 @@
-import cartServices from '../Services/cart.services'
+import cartServices from '../Services/cart.services';
 import { createContext, useContext, useState, useEffect } from 'react';
-import {message} from 'antd'
+import { message } from 'antd';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const[cartItem, setCartItem] = useState([]);
+  const [cartItem, setCartItem] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchcartaitems = async () => {
+  // Fetch cart items
+  const fetchCartItems = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
       const response = await cartServices.getCartDetailsByUserID();
-      setCartItem(response);
-      console.log("get data",response);
+
+      // Ensure response is an array, even if null or undefined
+      setCartItem(Array.isArray(response) ? response : []);
+      console.log('Cart items fetched:', response);
     } catch (error) {
       console.error('Error fetching cart items:', error);
+      setError(error);
+      setCartItem([]); // Set to empty array if fetch fails
+      message.error('Failed to load cart items');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  
   useEffect(() => {
-    fetchcartaitems();
+    fetchCartItems();
   }, []);
 
+  // Add item to cart
   const addToCart = async (product) => {
-    const adding ={
-      
-      productId:product.id,
-      quantity:1
-  
-      }
-     const data = await cartServices.addToCart(adding)
-    setCartItem(prevItems => {
-      const existingItem = prevItems.find(item => item._id === product.id);
-      
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevItems, { ...product, quantity: 1 }];
-    });
+    try {
+      await cartServices.addToCart({
+        productId: product.id, // Send the product ID and quantity
+        quantity: 1, // Default quantity is 1
+      });
+      await fetchCartItems(); // Refresh cart
+      message.success('Item added to cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      message.error('Failed to add item to cart');
+    }
   };
 
+  // Remove item from cart
   const removeFromCart = async (productId) => {
     try {
-        // Call the service method to remove item from cart
-        const data = await cartServices.deleteFromCart(productId);
-        
-        // Update local state or trigger a cart refresh
-        //setCartItems(prevItems => prevItems.filter(item => item._id !== productId));
-        
-        // Optional: Show a success notification
-        message.success('Item removed from cart');
-        
-        // Return the response data if needed
-        return data;
+      await cartServices.deleteFromCart(productId); // Remove item by ID
+      await fetchCartItems(); // Refresh cart
+      message.success('Item removed from cart');
     } catch (error) {
-        // Log the error
-        console.error('Error removing item from cart:', error);
-        
-        // Optional: Show an error notification
-        message.error('Failed to remove item from cart');
-        
-        // Optionally rethrow or handle the error as needed
-        throw error;
+      console.error('Error removing item:', error);
+      message.error('Failed to remove item');
     }
-};
-
-  const removeMultipleFromCart = (productIds) => {
-    setCartItem(prevItems => 
-      prevItems.filter(item => !productIds.includes(item.id))
-    );
   };
 
-  const updateQuantity = (productId, newQuantity) => {
-    setCartItem(prevItems =>
-      prevItems.map(item =>
-        item.id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setCartItem([]);
-  };
-
-  const getCartTotal = () => {
-    return cartItem.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const getCartCount = () => {
-    return cartItem.reduce((count, item) => count + item.quantity, 0);
+  // Update quantity of an item in the cart
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      await cartServices.updateQuantity(productId, quantity); // Update product quantity
+      await fetchCartItems(); // Refresh cart
+      message.success('Quantity updated');
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      message.error('Failed to update quantity');
+    }
   };
 
   const value = {
     cartItem,
+    isLoading,
+    error,
+    fetchCartItems,
     addToCart,
     removeFromCart,
-    removeMultipleFromCart,
     updateQuantity,
-    clearCart,
-    getCartTotal,
-    getCartCount
   };
 
   return (

@@ -1,32 +1,60 @@
-import React, { useState } from 'react';
-import { Trash2, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Trash2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
 import { useOrder } from '../../contexts/orderContext';
+import { Spin } from 'antd'; 
 
 const Cart = () => {
-  const { removeFromCart, updateQuantity,cartItem } = useCart();
+  const { 
+    removeFromCart, 
+    updateQuantity, 
+    cartItem, 
+    isLoading 
+  } = useCart();
+  
   const [voucherCode, setVoucherCode] = useState('');
   const [voucherApplied, setVoucherApplied] = useState(false);
-  const [location, setLocation] = useState('Weligama, Matara,Southern');
+  const [location] = useState('Weligama, Matara, Southern');
   const [selectedItemId, setSelectedItemId] = useState(null);
-  const navigate = useNavigate();
-
-  const { setOrderData } = useOrder();
-  console.log("cartItems",cartItem);
   
+  const navigate = useNavigate();
+  const { setOrderData } = useOrder();
+
+  // Memoized calculations to prevent unnecessary re-renders
+  const cartSummary = useMemo(() => {
+    const selectedItem = cartItem.find(item => item._id === selectedItemId);
+    
+    const calculateSelectedSubtotal = () => {
+      if (!selectedItem) return 0;
+      return selectedItem.productDetails.product.lowestPrice * selectedItem.quantity;
+    };
+
+    const subtotal = calculateSelectedSubtotal();
+    const shippingFee = selectedItem ? 280 : 0;
+    const voucherDiscount = voucherApplied ? 500 : 0;
+    const total = subtotal + shippingFee - voucherDiscount;
+
+    return {
+      subtotal,
+      shippingFee,
+      voucherDiscount,
+      total,
+      selectedItemCount: selectedItem ? 1 : 0
+    };
+  }, [cartItem, selectedItemId, voucherApplied]);
+
   const handleOrders = () => {
     const selectedItem = cartItem.find(item => item._id === selectedItemId);
     if (selectedItem) {
       const orderData = {
-        productId: "6742013a837dcad81c35d5d8",
-        quantity: "32",
-        price: "12123"
+        productId: selectedItem._id,
+        quantity: selectedItem.quantity.toString(),
+        price: selectedItem.productDetails.product.lowestPrice.toString()
       };
       setOrderData(orderData);
       navigate('/checkout');
-      console.log("Order Data", orderData);
     }
   };
 
@@ -34,11 +62,23 @@ const Cart = () => {
     setSelectedItemId(itemId === selectedItemId ? null : itemId);
   };
 
-
   const handleQuantityChange = (item, newQuantity) => {
-    if (newQuantity >= 1) {
-      updateQuantity(item._id, newQuantity);
+    if (!item || !item._id) {
+      console.error('Invalid item');
+      return;
     }
+
+    if (newQuantity < 1) {
+      removeFromCart(item._id);
+      return;
+    }
+
+    if (newQuantity > 10) {
+      alert('Maximum quantity is 10');
+      return;
+    }
+
+    updateQuantity(item._id, newQuantity);
   };
 
   const handleApplyVoucher = () => {
@@ -47,20 +87,13 @@ const Cart = () => {
     }
   };
 
-  const calculateSelectedSubtotal = () => {
-    const selectedItem = cartItem.find(item => item._id === selectedItemId);
-    return selectedItem ? selectedItem.price * selectedItem.quantity : 0;
-  };
-
-  // Shipping fee is 280 when an item is selected, 0 otherwise
-  const shippingFee = selectedItemId ? 280 : 0;
-
-  // Calculate total with voucher discount
-  const calculateTotal = () => {
-    const subtotal = calculateSelectedSubtotal();
-    const voucherDiscount = voucherApplied ? 500 : 0;
-    return subtotal + shippingFee - voucherDiscount;
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -73,17 +106,19 @@ const Cart = () => {
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
               {!cartItem || cartItem.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 text-lg mb-6">There are no items in this cart</p>
+                <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow-sm p-8">
+                  <ShoppingCart className="w-20 h-20 text-gray-300 mb-4" />
+                  <p className="text-gray-500 text-lg mb-6 text-center">
+                    Your cart is currently empty
+                  </p>
                   <button 
                     onClick={() => navigate('/')} 
-                    className="px-8 py-3 border-2 border-orange-500 text-orange-500 rounded hover:bg-orange-50 font-medium"
+                    className="px-8 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 font-medium transition-colors"
                   >
                     CONTINUE SHOPPING
                   </button>
                 </div>
               ) : (
-
                 cartItem.map((item) => (
                   <div key={item._id} className="border-t py-4">
                     <div className="flex items-start gap-4">
@@ -94,18 +129,26 @@ const Cart = () => {
                         onChange={() => handleSelectItem(item._id)}
                       />
                       <div className="w-24 h-24">
-                        <img src={item.productDetails.product.images[0]?.url} alt={item.name} className="w-full h-full object-contain" />
+                        <img 
+                          src={item.productDetails.product.images[0]?.url} 
+                          alt={item.name} 
+                          className="w-full h-full object-contain" 
+                        />
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between">
                           <div>
-                            <h3 className="font-medium">{item.productDetails.product.categoryName}</h3>
+                            <h3 className="font-medium">
+                              {item.productDetails.product.categoryName}
+                            </h3>
                             <p className="text-sm text-gray-500 mt-1">
                               {item.brand}, Color Family:{item.color}, Storage Capacity:{item.storage}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-orange-500 font-medium">Rs. {item.productDetails.product.lowestPrice}</p>
+                            <p className="text-orange-500 font-medium">
+                              Rs. {item.productDetails.product.lowestPrice}
+                            </p>
                             {item.productDetails.product.lowestPrice && (
                               <p className="text-gray-400 line-through text-sm">
                                 Rs. {item.productDetails.product.lowestPrice}
@@ -117,14 +160,28 @@ const Cart = () => {
                           <div className="flex items-center gap-2">
                             <button 
                               onClick={() => handleQuantityChange(item, item.quantity - 1)}
-                              className="p-1 hover:bg-gray-100 rounded"
+                              className={`p-1 rounded ${
+                                item.quantity <= 1 
+                                  ? 'cursor-not-allowed opacity-50' 
+                                  : 'hover:bg-gray-100'
+                              }`}
+                              disabled={item.quantity <= 1}
+                              aria-label="Decrease quantity"
                             >
                               <ChevronDown className="w-4 h-4" />
                             </button>
+                            
                             <span className="w-8 text-center">{item.quantity}</span>
+                            
                             <button 
                               onClick={() => handleQuantityChange(item, item.quantity + 1)}
-                              className="p-1 hover:bg-gray-100 rounded"
+                              className={`p-1 rounded ${
+                                item.quantity >= 10 
+                                  ? 'cursor-not-allowed opacity-50' 
+                                  : 'hover:bg-gray-100'
+                              }`}
+                              disabled={item.quantity >= 10}
+                              aria-label="Increase quantity"
                             >
                               <ChevronUp className="w-4 h-4" />
                             </button>
@@ -132,7 +189,7 @@ const Cart = () => {
                           <div className="flex items-center gap-4">
                             <button 
                               className="text-gray-400 hover:text-gray-600"
-                              onClick={() => {removeFromCart(item._id)}}
+                              onClick={() => removeFromCart(item._id)}
                             >  
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -161,12 +218,14 @@ const Cart = () => {
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Subtotal ({selectedItemId ? 1 : 0} item)</span>
-                    <span>Rs. {calculateSelectedSubtotal().toLocaleString()}</span>
+                    <span className="text-gray-600">
+                      Subtotal ({cartSummary.selectedItemCount} item)
+                    </span>
+                    <span>Rs. {cartSummary.subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping Fee</span>
-                    <span>Rs. {shippingFee}</span>
+                    <span>Rs. {cartSummary.shippingFee}</span>
                   </div>
                   {voucherApplied && (
                     <div className="flex justify-between text-sm text-green-600">
@@ -198,14 +257,16 @@ const Cart = () => {
                     </button>
                   </div>
                   {voucherApplied && (
-                    <p className="text-green-600 text-sm mt-2">Voucher successfully applied!</p>
+                    <p className="text-green-600 text-sm mt-2">
+                      Voucher successfully applied!
+                    </p>
                   )}
                 </div>
 
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
                   <span className="text-orange-500 font-medium">
-                    Rs. {calculateTotal().toLocaleString()}
+                    Rs. {cartSummary.total.toLocaleString()}
                   </span>
                 </div>
 
