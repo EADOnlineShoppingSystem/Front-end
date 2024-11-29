@@ -8,6 +8,7 @@ import {
   X,
   ExternalLink,
   Filter,
+  Calendar,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
 import Footer from "../HomePage/Footer.jsx";
@@ -33,21 +34,19 @@ const Categories = () => {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(
     categoryName || "all"
   );
 
-  const colorOptions = [
-    { name: "Silver", value: "#C0C0C0" },
-    { name: "Yellow", value: "#FFC955" },
-    { name: "Space Gray", value: "#34303A" },
-    { name: "Blue", value: "#447690" },
-    { name: "Purple", value: "#BCB5E7" },
-    { name: "Red", value: "#FB1533" },
-    { name: "Green", value: "#AEBFAC" },
-    { name: "White", value: "#F9F9F9" },
-    { name: "Pink", value: "#E7D1CF" },
-  ];
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   const calculatePriceRange = (products) => {
     if (!products.length) return { min: 0, max: 4000 };
@@ -63,6 +62,22 @@ const Categories = () => {
     if (prices.max === -Infinity) prices.max = 4000;
     if (prices.min === prices.max) prices.max += 1000;
     return prices;
+  };
+
+  const extractUniqueColors = (products) => {
+    const colorSet = new Set();
+    products.forEach((product) => {
+      const colors = JSON.parse(product.colors[0] || "[]");
+      colors.forEach((color) => {
+        if (color && color.trim()) {
+          colorSet.add(color.trim());
+        }
+      });
+    });
+    return Array.from(colorSet).map((color) => ({
+      value: color,
+      name: color.charAt(0).toUpperCase() + color.slice(1).toLowerCase(),
+    }));
   };
 
   const toggleMobileFilter = () => {
@@ -115,6 +130,10 @@ const Categories = () => {
         setMinMaxPrices(prices);
         setPriceRange([prices.min, prices.max]);
         setProducts(parsedProducts);
+
+        const uniqueColors = extractUniqueColors(response.products);
+        setAvailableColors(uniqueColors);
+
         applyFilters(parsedProducts);
       } else {
         setProducts([]);
@@ -164,6 +183,26 @@ const Categories = () => {
       case "name-z-a":
         tempProducts.sort((a, b) =>
           b.productTitle.localeCompare(a.productTitle)
+        );
+        break;
+      case "newest-first":
+        tempProducts.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        break;
+      case "oldest-first":
+        tempProducts.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        break;
+      case "recently-updated":
+        tempProducts.sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+        );
+        break;
+      case "least-recently-updated":
+        tempProducts.sort(
+          (a, b) => new Date(a.updatedAt) - new Date(b.updatedAt)
         );
         break;
       default:
@@ -250,23 +289,37 @@ const Categories = () => {
 
       <div className="mb-6">
         <h3 className="font-semibold mb-3">Colors</h3>
-        <div className="grid grid-cols-5 gap-2">
-          {colorOptions.map((color) => (
-            <button
-              key={color.name}
-              onClick={() => handleColorSelect(color.value)}
-              className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
-                selectedColor === color.value
-                  ? "ring-2 ring-gray-200 ring-offset-2"
-                  : ""
-              }`}
-              style={{
-                backgroundColor: color.value,
-                border: color.name === "White" ? "1px solid #e5e7eb" : "none",
-              }}
-              title={color.name}
-            />
-          ))}
+        <div className="bg-transperant rounded-lg p-2">
+          <div
+            className="h-28 overflow-y-auto pr-2"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "#94A3B8 #E2E8F0",
+            }}
+          >
+            <div className="grid grid-cols-5 gap-2">
+              {availableColors.map((color) => (
+                <button
+                  key={color.value}
+                  onClick={() => handleColorSelect(color.value)}
+                  className={`w-8 h-8 rounded-full border-2 focus:outline-none ${
+                    selectedColor === color.value
+                      ? "ring-2 ring-gray-200 ring-offset-2"
+                      : ""
+                  }`}
+                  style={{
+                    backgroundColor: color.value,
+                    border:
+                      color.value.toLowerCase() === "#ffffff" ||
+                      color.value.toLowerCase() === "white"
+                        ? "1px solid #e5e7eb"
+                        : "none",
+                  }}
+                  title={color.name}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -324,6 +377,7 @@ const Categories = () => {
                   alt={product.productTitle}
                   className="w-full h-48 object-contain"
                 />
+                
               </div>
               <div className="p-5 text-center">
                 <h3 className="font-semibold text-lg mb-2 text-gray-800">
@@ -333,6 +387,7 @@ const Categories = () => {
                   LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
                   {product.largestPrice.toLocaleString()}
                 </p>
+               
                 <div className="mt-4 flex items-center space-x-2">
                   <button
                     onClick={(e) => handleAddToCart(product, e)}
@@ -356,17 +411,16 @@ const Categories = () => {
               onClick={() => handleProductClick(product._id)}
               className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200 cursor-pointer"
             >
-              <div className="flex flex-col md:flex-row items-center gap-6 w-full">
-                {/* Image - centered on mobile, left on desktop */}
-                <div className="w-48 h-48 flex-shrink-0">
+              <div className="flex flex-col md:flex-row items-center gap-6 w-full p-4">
+                <div className="w-48 h-48 flex-shrink-0 relative">
                   <img
                     src={product.images[0]?.url || "/placeholder.jpg"}
                     alt={product.productTitle}
                     className="w-full h-full object-contain"
                   />
+                  
                 </div>
 
-                {/* Product Info - centered text on mobile */}
                 <div className="flex-1 text-center md:text-left">
                   <h3 className="text-xl font-semibold mb-2 text-gray-800">
                     {product.productTitle}
@@ -375,9 +429,9 @@ const Categories = () => {
                     LKR {product.lowestPrice.toLocaleString()} - LKR{" "}
                     {product.largestPrice.toLocaleString()}
                   </p>
+                 
                 </div>
 
-                {/* Button - centered on mobile, right on desktop */}
                 <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-end lg:mr-10 xl:mr-10 md:mr-10">
                   <button
                     onClick={(e) => handleAddToCart(product, e)}
@@ -459,6 +513,9 @@ const Categories = () => {
                   <option value="price-high-low">Price: High to Low</option>
                   <option value="name-a-z">Name: A to Z</option>
                   <option value="name-z-a">Name: Z to A</option>
+                  <option value="newest-first">Newest Products</option>
+                  <option value="oldest-first">Oldest Products</option>
+                  
                 </select>
               </div>
 
