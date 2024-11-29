@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import {
   ShoppingBag,
@@ -19,11 +19,13 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import SignInDrawer from "./SignInDrawer";
 import AuthModal from "../Auth/AuthModal";
 import { useCart } from "../../contexts/CartContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import productServices from "../../Services/product.services";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchContainerRef = useRef(null);
   const { getCartCount } = useCart();
   const [isLoggedIn] = useState(false);
   const [user] = useState({
@@ -36,25 +38,51 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalView, setAuthModalView] = useState("signin");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   useEffect(() => {
     fetchCategoriesAndProducts();
-  }, []);
+
+    // Add click outside listener
+    const handleClickOutside = (event) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target) &&
+        !searchTerm // Only hide if there's no search term
+      ) {
+        setShowSearchInput(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchTerm]);
+
+  // Reset search when changing routes
+  useEffect(() => {
+    if (!location.pathname.includes("/categories")) {
+      setShowSearchInput(false);
+      setSearchTerm("");
+      setSearchResults([]);
+    }
+  }, [location]);
 
   const fetchCategoriesAndProducts = async () => {
     try {
-      // Fetch categories
       const categoriesResponse = await productServices.getAllCategories();
       if (categoriesResponse && categoriesResponse.categories) {
         setCategories(categoriesResponse.categories);
 
-        // Fetch all products
         const productsResponse = await productServices.getAllProducts();
         if (productsResponse && productsResponse.products) {
-          // Organize products by category
           const productsByCategory = {};
 
           productsResponse.products.forEach((product) => {
@@ -64,7 +92,6 @@ const NavBar = () => {
             productsByCategory[product.categoryName].push(product);
           });
 
-          // Sort products by date and limit to 10 for each category
           Object.keys(productsByCategory).forEach((category) => {
             productsByCategory[category] = productsByCategory[category]
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -77,6 +104,69 @@ const NavBar = () => {
     } catch (err) {
       console.error("Error fetching data:", err);
     }
+  };
+
+  const performSearch = async (term) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearchLoading(true);
+    try {
+      const response = await productServices.getAllProducts();
+      if (response && response.products) {
+        const results = response.products
+          .filter(
+            (product) =>
+              product.productTitle.toLowerCase().includes(term.toLowerCase()) ||
+              product.categoryName.toLowerCase().includes(term.toLowerCase()) ||
+              product.productDescription
+                .toLowerCase()
+                .includes(term.toLowerCase())
+          )
+          .slice(0, 5); // Limit to 5 quick results
+        setSearchResults(results);
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+      setSearchResults([]);
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
+
+  const handleSearchInputChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+    performSearch(term);
+  };
+
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      navigate(`/categories?search=${encodeURIComponent(searchTerm.trim())}`);
+      setShowSearchInput(false);
+      setSearchTerm("");
+      setSearchResults([]);
+    }
+  };
+
+  const handleSearchClick = () => {
+    if (showSearchInput && searchTerm.trim()) {
+      navigate(`/categories?search=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm("");
+      setShowSearchInput(false);
+      setSearchResults([]);
+    } else {
+      setShowSearchInput(!showSearchInput);
+    }
+  };
+
+  const handleSearchResultClick = (productId) => {
+    setShowSearchInput(false);
+    setSearchTerm("");
+    setSearchResults([]);
+    navigate(`/product/${productId}`);
   };
 
   const handleProductClick = (productId) => {
@@ -92,10 +182,6 @@ const NavBar = () => {
   const handleClose = () => {
     setIsAuthModalOpen(false);
     setAuthModalView("signin");
-  };
-
-  const handleSearchClick = () => {
-    setShowSearchInput(!showSearchInput);
   };
 
   const toggleMenu = () => {
@@ -230,7 +316,6 @@ const NavBar = () => {
               </a>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {categories.map((category, index) => (
                 <div key={index} className="relative group">
@@ -243,7 +328,6 @@ const NavBar = () => {
                       <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
                     </span>
                   </a>
-                  {/* Dropdown Menu */}
                   <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
                     <div className="py-2">
                       {categoryProducts[category.name]?.map((product) => (
@@ -262,16 +346,103 @@ const NavBar = () => {
             </div>
 
             <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
-              {showSearchInput && (
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="px-5 py-1 rounded bg-transparent text-white border border-gray-200 focus:outline-none focus:ring-1 focus:ring-white"
-                />
-              )}
-              <button className="text-white" onClick={handleSearchClick}>
-                <SearchOutlined />
-              </button>
+              {/* Search Container */}
+              <div
+                ref={searchContainerRef}
+                className="relative flex items-center"
+              >
+                <div className="relative flex items-center">
+                  {showSearchInput && (
+                    <div className="flex items-center bg-transparent border border-gray-200 rounded overflow-hidden">
+                      <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={handleSearchInputChange}
+                        onKeyPress={handleSearch}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => {
+                          setTimeout(() => setIsSearchFocused(false), 200);
+                        }}
+                        placeholder="Search products..."
+                        className="px-4 py-1 bg-transparent text-white focus:outline-none w-64"
+                        autoFocus
+                      />
+                      <button
+                        className="px-3 py-1 text-white transition-colors duration-200 h-full flex items-center"
+                        onClick={handleSearchClick}
+                        aria-label="Search"
+                      >
+                        <SearchOutlined />
+                      </button>
+                    </div>
+                  )}
+                  {!showSearchInput && (
+                    <button
+                      className="text-white p-1"
+                      onClick={handleSearchClick}
+                      aria-label="Search"
+                    >
+                      <SearchOutlined />
+                    </button>
+                  )}
+                </div>
+
+                {/* Search Results Dropdown */}
+                {isSearchFocused && searchTerm && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50">
+                    {isSearchLoading ? (
+                      <div className="p-4 text-center text-gray-500">
+                        Loading...
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      <>
+                        {searchResults.map((product) => (
+                          <div
+                            key={product._id}
+                            onClick={() => handleSearchResultClick(product._id)}
+                            className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                          >
+                            <img
+                              src={product.images[0]?.url || "/placeholder.jpg"}
+                              alt={product.productTitle}
+                              className="w-10 h-10 object-contain mr-2"
+                            />
+                            <div>
+                              <p className="text-sm text-gray-800">
+                                {product.productTitle}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                LKR {product.lowestPrice.toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                        <div
+                          onClick={() => {
+                            if (searchTerm.trim()) {
+                              navigate(
+                                `/categories?search=${encodeURIComponent(
+                                  searchTerm.trim()
+                                )}`
+                              );
+                              setShowSearchInput(false);
+                              setSearchTerm("");
+                              setSearchResults([]);
+                            }
+                          }}
+                          className="p-2 text-center text-blue-500 hover:bg-gray-100 cursor-pointer border-t"
+                        >
+                          View all results
+                        </div>
+                      </>
+                    ) : (
+                      <div className="p-4 text-center text-gray-500">
+                        No products found 😔
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
               <div className="inline-flex relative">
                 <a href="/cart">
@@ -343,16 +514,89 @@ const NavBar = () => {
                 </button>
               </div>
 
-              <div className="mt-2">
+              {/* Mobile Search */}
+              <div className="mt-4 mb-2">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearchInputChange}
+                    onKeyPress={handleSearch}
+                    placeholder="Search products..."
+                    className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-1 focus:ring-white"
+                  />
+                  {searchTerm && (
+                    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50">
+                      {isSearchLoading ? (
+                        <div className="p-4 text-center text-gray-500">
+                          Loading...
+                        </div>
+                      ) : searchResults.length > 0 ? (
+                        <>
+                          {searchResults.map((product) => (
+                            <div
+                              key={product._id}
+                              onClick={() =>
+                                handleSearchResultClick(product._id)
+                              }
+                              className="p-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                            >
+                              <img
+                                src={
+                                  product.images[0]?.url || "/placeholder.jpg"
+                                }
+                                alt={product.productTitle}
+                                className="w-10 h-10 object-contain mr-2"
+                              />
+                              <div>
+                                <p className="text-sm text-gray-800">
+                                  {product.productTitle}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  LKR {product.lowestPrice.toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                          <div
+                            onClick={() => {
+                              if (searchTerm.trim()) {
+                                navigate(
+                                  `/categories?search=${encodeURIComponent(
+                                    searchTerm.trim()
+                                  )}`
+                                );
+                                setShowSearchInput(false);
+                                setSearchTerm("");
+                                setSearchResults([]);
+                                toggleMenu();
+                              }
+                            }}
+                            className="p-2 text-center text-blue-500 hover:bg-gray-100 cursor-pointer border-t"
+                          >
+                            View all results
+                          </div>
+                        </>
+                      ) : (
+                        <div className="p-4 text-center text-gray-500">
+                          No products found 😔
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-4">
                 <div className="flex flex-col space-y-1">
                   {categories.map((category, index) => (
                     <MobileMenuItem key={index} item={category} index={index} />
                   ))}
                 </div>
 
-                <hr className="my-1 border-gray-300" />
+                <hr className="my-4 border-gray-600" />
 
-                <div className="grid grid-cols-3 grid-rows-2 gap-2 sm:gap-4 p-2 sm:p-4 max-w-2xl">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 max-w-2xl">
                   {getAccountNavItems().map((item, index) => (
                     <a
                       key={index}
