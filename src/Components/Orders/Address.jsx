@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PlusCircle,
   Trash2,
@@ -9,37 +9,40 @@ import {
   CheckCircle,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
+import orderServices from "../../Services/order.services";
+import { message, } from 'antd';
 
 const Address = () => {
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "Jaden Johnson",
-      street: "123 Main St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94105",
-      phone: "(555) 123-4567",
-      isDefault: true,
-      isProfessional: false,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      street: "456 Market St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94102",
-      phone: "(555) 987-6543",
-      isDefault: false,
-      isProfessional: true,
-    },
-  ]);
+  // const [addresses, setAddresses] = useState([
+  //   {
+  //     id: 1,
+  //     name: "Jaden Johnson",
+  //     street: "123 Main St",
+  //     city: "San Francisco",
+  //     state: "CA",
+  //     zip: "94105",
+  //     phone: "(555) 123-4567",
+  //     isDefault: true,
+  //     isProfessional: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Jane Smith",
+  //     street: "456 Market St",
+  //     city: "San Francisco",
+  //     state: "CA",
+  //     zip: "94102",
+  //     phone: "(555) 987-6543",
+  //     isDefault: false,
+  //     isProfessional: true,
+  //   },
+  // ]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [errors, setErrors] = useState({});
+  const [addresses, setAddresses] = useState([]);
 
   const handleAdd = () => {
     setModalMode("add");
@@ -48,6 +51,35 @@ const Address = () => {
     setShowModal(true);
   };
 
+  //save address 
+  const handleSaveAddress = async (address) => {
+    try {
+        console.log("Saving address:", address);
+        await orderServices.createAddress(address);
+        message.success('Address saved successfully');
+        setShowModal(false);
+    } catch (error) {
+        console.error("Error saving address:", error);
+        message.error(error.message || 'Failed to save address');
+};
+  };
+
+  //fetch address from database
+   const fetchAddresses = async () => {
+    try {
+      const response = await orderServices.getAddressById();
+      setAddresses(response);
+      console.log("Fetched addresses:", response);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+
   const handleEdit = (address) => {
     setModalMode("edit");
     setSelectedAddress(address);
@@ -55,15 +87,27 @@ const Address = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
-    setAddresses(addresses.filter((address) => address.id !== id));
+  // const handleDelete = (id) => {
+  //   setAddresses(addresses.filter((address) => address._id !== id));
+  // };
+
+  //delete address from database
+  const handleDelete = async (id) => {
+    try {
+      await orderServices.deleteAddressByUserId(id);
+      message.success('Address deleted successfully');
+      fetchAddresses();
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      message.error(error.message || 'Failed to delete address');
+    }
   };
 
   const handleSetDefault = (id) => {
     setAddresses(
       addresses.map((address) => ({
         ...address,
-        isDefault: address.id === id,
+        isDefault: address._id === id,
       }))
     );
   };
@@ -87,10 +131,11 @@ const Address = () => {
 
     // Phone validation
     const phone = formData.get("phone").trim();
-    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-    if (!phoneRegex.test(phone)) {
-      newErrors.phone = "Phone must be in format (XXX) XXX-XXXX";
-    }
+    const phoneRegex = /^\d{10}$/; // Matches exactly 10 digits
+   if (!phoneRegex.test(phone)) {
+     newErrors.phone = "Phone number must contain exactly 10 digits.";
+}
+
 
     // Street validation
     const street = formData.get("street").trim();
@@ -142,13 +187,13 @@ const Address = () => {
           onSubmit={(e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            
 
             if (!validateForm(formData)) {
               return;
             }
 
             const newAddress = {
-              id: selectedAddress?.id || Date.now(),
               name: formData.get("name").trim(),
               street: formData.get("street").trim(),
               city: formData.get("city").trim(),
@@ -158,16 +203,19 @@ const Address = () => {
               isDefault: selectedAddress?.isDefault || false,
               isProfessional: formData.get("isProfessional") === "true",
             };
+            console.log("saveksabd",newAddress);
 
-            if (modalMode === "add") {
-              setAddresses((prev) => [...prev, newAddress]);
-            } else {
-              setAddresses((prev) =>
-                prev.map((addr) =>
-                  addr.id === selectedAddress.id ? newAddress : addr
-                )
-              );
-            }
+            handleSaveAddress(newAddress)
+
+            // if (modalMode === "add") {
+            //   setAddresses((prev) => [...prev, newAddress]);
+            // } else {
+            //   setAddresses((prev) =>
+            //     prev.map((addr) =>
+            //       addr.id === selectedAddress.id ? newAddress : addr
+            //     )
+            //   );
+            // }
             setShowModal(false);
           }}
         >
@@ -255,7 +303,7 @@ const Address = () => {
                 ZIP Code
               </label>
               <input
-                type="text"
+                type="number"
                 name="zip"
                 defaultValue={selectedAddress?.zip || ""}
                 placeholder="12345 or 12345-6789"
@@ -318,10 +366,11 @@ const Address = () => {
         </button>
       </div>
 
+     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {addresses.map((address) => (
           <div
-            key={address.id}
+            key={address._id}
             className={`p-4 rounded-lg border ${
               address.isDefault
                 ? "border-blue-500 bg-blue-50"
@@ -361,7 +410,7 @@ const Address = () => {
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDelete(address.id)}
+                  onClick={() => handleDelete(address._id)}
                   className="p-1 text-gray-500 hover:text-red-600"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -376,7 +425,7 @@ const Address = () => {
             <div className="mt-3 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
               {!address.isDefault && (
                 <button
-                  onClick={() => handleSetDefault(address.id)}
+                  onClick={() => handleSetDefault(address._id)}
                   className="text-sm text-blue-600 hover:text-blue-700"
                 >
                   Set as default
