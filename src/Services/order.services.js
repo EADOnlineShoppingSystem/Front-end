@@ -101,5 +101,20 @@ const orderServices = {
       }
     }
   },
+changeDeleveryStatus:async (orderId) => {
+    try {
+      const responce = await axiosInstance.put(
+        `/order/api/orders/deleveryStatusTrue/${orderId}`
+      );
+      return responce.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+  }
+}
 };
+
 export default orderServices;
