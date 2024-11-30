@@ -14,8 +14,25 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
   const { isLoading, isError } = useSelector((state) => state.auth);
-  const { isLoading, isError,  } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
+
+  const [email, setEmail] = useState("");
+
+  const {state:stt } = useAuthContext();
+  const {user:LoggedUser}=stt;
+
+  
+
+  useEffect(() => {
+    if(LoggedUser && LoggedUser.email){
+  console.log("user",LoggedUser.email);
+  const email = LoggedUser.email;
+  // setEmail(email);
+  console.log("email",email);
+  setEmail(email);
+  // setEmail(LoggedUser.email);
+  }
+  }, [LoggedUser]);
   const { cartItem } = useCart();
 
   const {state} =useAuthContext();
@@ -36,25 +53,6 @@ const Checkout = () => {
       total,
     };
   }, [cartItem]);
-
-  const [email, setEmail] = useState("");
-
-  const {state:stt } = useAuthContext();
-  const {user:LoggedUser}=stt;
-
-  
-
-  useEffect(() => {
-    if(LoggedUser && LoggedUser.email){
-  console.log("user",LoggedUser.email);
-  const email = LoggedUser.email;
-  // setEmail(email);
-  console.log("email",email);
-  setEmail(email);
-  // setEmail(LoggedUser.email);
-  }
-  }, [LoggedUser]);
-
 
   const [addresses] = useState([
     {
