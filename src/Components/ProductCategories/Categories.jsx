@@ -6,6 +6,8 @@ import Footer from "../HomePage/Footer.jsx";
 import { message } from "antd";
 import productServices from "../../Services/product.services.js";
 import { useCart } from "../../contexts/CartContext";
+import AuthModal from "../Auth/AuthModal.jsx";
+import { useAuthContext } from "../../hooks/useAuthContext.js";
 
 /**
  * Categories Component
@@ -347,7 +349,9 @@ const Categories = () => {
     const newMax = parseInt(e.target.value);
     setPriceRange([minMaxPrices.min, newMax]);
   };
-
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { state } = useAuthContext();
+  const { isLoggedIn } = state;
   /**
    * Handles adding product to cart
    * @param {Object} product - Product to add
@@ -355,6 +359,11 @@ const Categories = () => {
    */
   const handleAddToCart = (product, e) => {
     e.stopPropagation();
+    if (!isLoggedIn) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     const cartItem = {
       id: product._id,
       name: product.productTitle,
@@ -446,6 +455,12 @@ const Categories = () => {
           </div>
         </div>
       </div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialView="signin"
+      />
 
       {/* Price Range Section */}
       <div className="mb-6">

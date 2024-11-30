@@ -30,7 +30,7 @@ const SignInDrawer = ({
             <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
               Welcome back!
             </h2>
-            <p className="text-lg text-gray-600">{user.name}</p>
+            <p className="text-lg text-gray-600">{user.username}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
           </div>
 

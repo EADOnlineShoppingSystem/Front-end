@@ -1,33 +1,42 @@
-import { useState } from "react";
-import {
-  Camera,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  Edit2,
-  X,
-  Check,
-} from "lucide-react";
-
+import { useState, useEffect } from "react";
+import { Camera, Mail, Phone, MapPin, Calendar, Edit2, X, Check } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
-import {useAuthContext} from "../../hooks/useAuthContext"
+import { useAuthContext } from "../../hooks/useAuthContext";
+import axios from "axios"; // For API calls
+
 const Profile = () => {
   const [profileData, setProfileData] = useState({
-    name: "John Doe",
-    role: "Premium Member",
-    email: "john@example.com",
-    phone: "+1 234-567-8900",
-    location: "San Francisco, CA",
-    joinDate: "Member since 2024",
+    name: "",
+    role: "",
+    email: "",
+    phone: "",
+    location: "",
+    joinDate: "",
     profilePic: null,
     bio: "Fashion enthusiast and regular shopper. Love exploring new styles and trends.",
   });
 
   const [isEditing, setIsEditing] = useState(false);
-const {state} = useAuthContext();
-const {isLoggedIn} = state;
-console.log("kanishka",state);
+  const { state } = useAuthContext();
+  const { user } = state;
+
+  // Load profile data
+  useEffect(() => {
+    if (user) {
+      setProfileData((prevData) => ({
+        ...prevData,
+        name: user.username || prevData.name,
+        email: user.email || prevData.email,
+        phone: user.phoneNumber || prevData.phone,
+        location: user.address || prevData.location,
+        joinDate: user.createdAt ? new Date(user.createdAt).getFullYear() : prevData.joinDate,
+        profilePic: user.imageUrl || prevData.profilePic,
+        bio: user.bio || prevData.bio,
+      }));
+    }
+  }, [user]);
+
+  // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -39,10 +48,33 @@ console.log("kanishka",state);
     }
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    setIsEditing(false);
-  };
+
+    const formData = new FormData();
+    formData.append("username", profileData.name);
+    formData.append("address", profileData.location);
+    formData.append("phoneNumber", profileData.phone);
+
+    // If an image is selected, append it as well
+    if (profileData.profilePic && profileData.profilePic !== user.imageUrls) {
+      const file = profileData.profilePic;
+      formData.append("image", file); // Append the image file
+    }
+
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/users/update-profile/${user._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      console.log("Profile updated:", response.data);
+      setIsEditing(false);  // Exit editing mode
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
+};
+
 
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
@@ -66,14 +98,8 @@ console.log("kanishka",state);
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-[#F5F5F7]">
                       <Camera size={24} className="text-gray-400 sm:hidden" />
-                      <Camera
-                        size={28}
-                        className="text-gray-400 hidden sm:block md:hidden"
-                      />
-                      <Camera
-                        size={32}
-                        className="text-gray-400 hidden md:block"
-                      />
+                      <Camera size={28} className="text-gray-400 hidden sm:block md:hidden" />
+                      <Camera size={32} className="text-gray-400 hidden md:block" />
                     </div>
                   )}
                   <label className="absolute bottom-1 right-1 bg-indigo-600 p-1.5 sm:p-2 rounded-full cursor-pointer hover:bg-indigo-700 transition-all duration-300 shadow-lg">
@@ -153,31 +179,21 @@ console.log("kanishka",state);
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 flex items-center justify-center">
                     <Mail size={16} className="text-indigo-600 sm:hidden" />
-                    <Mail
-                      size={20}
-                      className="text-indigo-600 hidden sm:block"
-                    />
+                    <Mail size={20} className="text-indigo-600 hidden sm:block" />
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm text-gray-500">Email</p>
-                    <p className="text-sm sm:text-base text-gray-900">
-                      {profileData.email}
-                    </p>
+                    <p className="text-sm sm:text-base text-gray-900">{profileData.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 flex items-center justify-center">
                     <Phone size={16} className="text-indigo-600 sm:hidden" />
-                    <Phone
-                      size={20}
-                      className="text-indigo-600 hidden sm:block"
-                    />
+                    <Phone size={20} className="text-indigo-600 hidden sm:block" />
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm text-gray-500">Phone</p>
-                    <p className="text-sm sm:text-base text-gray-900">
-                      {profileData.phone}
-                    </p>
+                    <p className="text-sm sm:text-base text-gray-900">{profileData.phone}</p>
                   </div>
                 </div>
               </div>
@@ -185,33 +201,21 @@ console.log("kanishka",state);
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 flex items-center justify-center">
                     <MapPin size={16} className="text-indigo-600 sm:hidden" />
-                    <MapPin
-                      size={20}
-                      className="text-indigo-600 hidden sm:block"
-                    />
+                    <MapPin size={20} className="text-indigo-600 hidden sm:block" />
                   </div>
                   <div>
                     <p className="text-xs sm:text-sm text-gray-500">Location</p>
-                    <p className="text-sm sm:text-base text-gray-900">
-                      {profileData.location}
-                    </p>
+                    <p className="text-sm sm:text-base text-gray-900">{profileData.location}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3 sm:space-x-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-indigo-50 flex items-center justify-center">
                     <Calendar size={16} className="text-indigo-600 sm:hidden" />
-                    <Calendar
-                      size={20}
-                      className="text-indigo-600 hidden sm:block"
-                    />
+                    <Calendar size={20} className="text-indigo-600 hidden sm:block" />
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-500">
-                      Member Since
-                    </p>
-                    <p className="text-sm sm:text-base text-gray-900">
-                      {profileData.joinDate}
-                    </p>
+                    <p className="text-xs sm:text-sm text-gray-500">Member Since</p>
+                    <p className="text-sm sm:text-base text-gray-900">{profileData.joinDate}</p>
                   </div>
                 </div>
               </div>
@@ -220,49 +224,32 @@ console.log("kanishka",state);
             <form onSubmit={handleSave}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
                   <input
                     type="email"
                     value={profileData.email}
-                    onChange={(e) =>
-                      setProfileData((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
-                    }
+                    readOnly
                     className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base bg-white border border-gray-200 rounded-lg focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                    Phone
-                  </label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Phone</label>
                   <input
                     type="tel"
                     value={profileData.phone}
                     onChange={(e) =>
-                      setProfileData((prev) => ({
-                        ...prev,
-                        phone: e.target.value,
-                      }))
+                      setProfileData((prev) => ({ ...prev, phone: e.target.value }))
                     }
                     className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base bg-white border border-gray-200 rounded-lg focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                    Location
-                  </label>
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Location</label>
                   <input
                     type="text"
                     value={profileData.location}
                     onChange={(e) =>
-                      setProfileData((prev) => ({
-                        ...prev,
-                        location: e.target.value,
-                      }))
+                      setProfileData((prev) => ({ ...prev, location: e.target.value }))
                     }
                     className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base bg-white border border-gray-200 rounded-lg focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none transition-all duration-300"
                   />

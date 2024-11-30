@@ -6,6 +6,8 @@ import orderServices from "../Services/order.services";
 import md5 from "md5";
 import { useCart } from "../contexts/CartContext";
 import { useAuthContext } from "../hooks/useAuthContext";	
+import {message} from "antd";
+import { m } from "framer-motion";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -13,13 +15,45 @@ const Checkout = () => {
   const [error, setError] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-  const { isLoading, isError,  } = useSelector((state) => state.auth);
+  const { isLoading, isError } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
+
+
+  const [email, setEmail] = useState("");
+
+  const {state:stt } = useAuthContext();
+  const {user:LoggedUser}=stt;
+  useEffect(() => {
+    if(LoggedUser && LoggedUser.email){
+  console.log("user",LoggedUser.email);
+  const email = LoggedUser.email;
+  // setEmail(email);
+  console.log("email",email);
+  setEmail(email);
+  // setEmail(LoggedUser.email);
+  }
+  }, [LoggedUser]);
   const { cartItem } = useCart();
 
   const {state} =useAuthContext();
   const {user} =state;
   
+  
+  const [orderDataArray, setOrderDataArray] = useState([]);
+
+  useEffect(() => {
+    if (cartItem && cartItem.length > 0) {
+      const mappedOrders = cartItem.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.productDetails?.product?.price || 0, // Use `price` if available
+      }));
+
+      setOrderDataArray(mappedOrders);
+    }
+  }, [cartItem]);
+
+  console.log("orderDataArray",orderDataArray);
  // Calculate cart summary
   const cartSummary = useMemo(() => {
     const subtotal = cartItem.reduce(
@@ -51,8 +85,8 @@ const Checkout = () => {
 
   // Payment configuration
   const orderId = "123456";
-  const name = "Iphone16";
-  const amount = cartSummary.total;
+  const name = email;
+  const amount = 1000;
   const merchantId = "1228659";
   const merchantSecret = "MjY0OTk5MTk1MjI3MzM3MDY5NDIyODQ5ODU0NDM5MjAwOTMxMzEwNg==";
   const currency = "LKR";
@@ -73,7 +107,7 @@ const Checkout = () => {
     currency: currency,
     first_name: "kanishka",
     last_name: "udayanga",
-    email: "mskanihskaudayang@gmail.com",
+    email: email,
     phone: "0784657729",
     address: "kurunda",
     city: "city",
@@ -94,26 +128,34 @@ const Checkout = () => {
     }
   }, [cartState]);
 
+
   useEffect(() => {
-    window.payhere.onCompleted = function onCompleted(paymentId) {
+    try {
+    if(orderDataArray && orderDataArray.length > 0){
+          window.payhere.onCompleted = function onCompleted(paymentId) {
       console.log("Payment completed. Payment Id:" + paymentId);
-      const orderData = {
-        productId: "12334",
-        userId: "633333",
-        quantity: 2,
-        price: 2333333
-      };
-      orderServices.createOrder(orderData);
-    };
+      console.log("Order Data Array", orderDataArray);
+      const response =orderServices.createOrder(orderDataArray);
+      if(response){ 
+        message.success("Order Placed Successfully");
+        navigate("/");
 
-    window.payhere.onDismissed = function onDismissed() {
-      console.log("Payment dismissed");
+      }
     };
-
-    window.payhere.onError = function onError(error) {
-      console.log("Error:" + error);
-    };
-  }, []);
+    
+    
+  }
+  window.payhere.onDismissed = function onDismissed() {
+    console.log("Payment dismissed");
+  };
+  
+  window.payhere.onError = function onError(error) {
+    console.log("Error:" + error);
+  };
+} catch (error) {
+  message.error("Error in Payment");
+}
+  }, [orderDataArray]);
 
   const payment = () => {
     window.payhere.startPayment(paymentData);
@@ -130,7 +172,7 @@ const Checkout = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Contact Information</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700">Supun Ishara (supun20000207@gmail.com)</p>
+                  <p className="text-gray-700">Supun Ishara ({email})</p>
                 </div>
               </div>
 
