@@ -4,7 +4,7 @@ const orderServices={
     getAllOrders:async()=>{
         try {
             const responce =await axiosInstance.get("/order/api/orders/allOrders");
-            return responce.data;
+            return responce;
         } catch (error) {
              if (error instanceof Error) {
                 console.error('An error occurred:', error.message);
@@ -13,10 +13,12 @@ const orderServices={
             }
         }
     },
-    getOrderByUserId:async(id)=>{
+    getOrderByUserId:async()=>{
         try {
-            const responce =await axiosInstance.get(`/order/api/orders/getOdersByUserId/${id}`);
-            return responce.data;
+            console.log("getOrderByUserId")
+            const responce =await axiosInstance.get(`/order/api/orders/getOdersByUserId`);
+            console.log("getOrderByUserId",responce)
+            return responce;
         } catch (error) {
              if (error instanceof Error) {
                 console.error('An error occurred:', error.message);
