@@ -36,15 +36,10 @@ const Profile = () => {
     }
   }, [user]);
 
-  // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileData((prev) => ({ ...prev, profilePic: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      setProfileData((prev) => ({ ...prev, profilePic: file })); // Set the file object here
     }
   };
 
@@ -57,9 +52,9 @@ const Profile = () => {
     formData.append("phoneNumber", profileData.phone);
 
     // If an image is selected, append it as well
-    if (profileData.profilePic && profileData.profilePic !== user.imageUrls) {
+    if (profileData.profilePic) {
       const file = profileData.profilePic;
-      formData.append("image", file); // Append the image file
+      formData.append("image", file); // Append the image file to the formData
     }
 
     try {
@@ -73,7 +68,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
-};
+  };
 
 
   return (
