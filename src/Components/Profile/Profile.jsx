@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import NavBar from "../NavBar/NavBar";
-
+import {useAuthContext} from "../../hooks/useAuthContext"
 const Profile = () => {
   const [profileData, setProfileData] = useState({
     name: "John Doe",
@@ -25,7 +25,9 @@ const Profile = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-
+const {state} = useAuthContext();
+const {isLoggedIn} = state;
+console.log("kanishka",state);
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {

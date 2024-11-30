@@ -1,6 +1,6 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosResponse }from "axios"
-
+import { getAuthToken } from "../utils/encript"
 const API_BASE_URL = "http://localhost:3500"
 
 const axiosInstance:AxiosInstance = axios.create({
@@ -12,7 +12,8 @@ const axiosInstance:AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config)=>{
-        const token = sessionStorage.getItem("token")
+        const token = getAuthToken();
+        console.log(token);
         if(token){
             config.headers["Authorization"] = `Bearer ${token}`
         }
