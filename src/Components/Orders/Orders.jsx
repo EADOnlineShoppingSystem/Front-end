@@ -86,12 +86,21 @@ const Orders = () => {
     setSelectedOrderId(null);
   };
 
-  const handleFinishOrder = (orderId) => {
+  const handleFinishOrder = async(orderId) => {
     setOrders(
       orders.map((order) =>
         order.id === orderId ? { ...order, isFinished: true } : order
       )
     );
+    try {
+      const data = await orderServices.changeDeleveryStatus(orderId);
+      console.log("Order finished:", data);
+    } catch (error) {
+      console.error("Error finishing order:", error);
+      setError(true);
+      
+    }
+
   };
 
   const filteredOrders = orders.filter((order) => {
