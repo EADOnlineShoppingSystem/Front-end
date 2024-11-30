@@ -535,6 +535,7 @@ const NavBar = () => {
                       authState.user.email[0].toUpperCase()
                     ) : (
                       <UserOutlined />
+                    //  <Image src={authState.user.ImageUrl} alt="User" width={24} height={24} />
                     )}
                   </Avatar>
                   {authState.isLoggedIn && (
