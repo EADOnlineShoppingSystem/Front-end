@@ -518,26 +518,27 @@ const NavBar = () => {
                   onClick={openDrawer}
                   className="flex items-center gap-2"
                 >
-                  <Avatar
-                    size={34}
-                    style={{
-                      background: authState.isLoggedIn
-                        ? "linear-gradient(to right, #f7198e,#2e18e8)"
-                        : "transparent",
-                      verticalAlign: "middle",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: authState.isLoggedIn ? "white" : "white",
-                    }}
-                  >
-                    {authState.isLoggedIn && authState.user.email ? (
-                      authState.user.email[0].toUpperCase()
-                    ) : (
-                      <UserOutlined />
-                    //  <Image src={authState.user.ImageUrl} alt="User" width={24} height={24} />
-                    )}
-                  </Avatar>
+                 <Avatar
+          size={34}
+          style={{
+            backgroundImage: authState.isLoggedIn
+              ? `url(${authState.user.imageUrl})`
+              : null,
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "34px",
+            height: "34px",
+            borderRadius: "50%",
+            backgroundSize: "cover", // Ensures the image fully covers the Avatar
+            backgroundPosition: "center",
+          }}
+        >
+          {!authState.isLoggedIn || !authState.user.imageUrl ? (
+            <UserOutlined />
+          ) : null}
+        </Avatar>
                   {authState.isLoggedIn && (
                     <span className="text-white text-sm">
                       {/* {authState.user.email} */}

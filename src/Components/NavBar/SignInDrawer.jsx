@@ -1,4 +1,12 @@
-import { ShoppingBag ,ShoppingCart ,Heart, User, MapPin, LogOut } from "lucide-react";
+import {
+  ShoppingBag,
+  ShoppingCart,
+  Heart,
+  User,
+  MapPin,
+  LogOut,
+  Apple,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const SignInDrawer = ({
@@ -51,15 +59,6 @@ const SignInDrawer = ({
               <ShoppingCart className="w-5 h-5 text-gray-600" />
               <span>Shopping Cart</span>
             </button>
-
-            <button
-              onClick={() => handleNavigation("/wishlist")}
-              className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <Heart className="w-5 h-5 text-gray-600" />
-              <span>Wishlist</span>
-            </button>
-
             <button
               onClick={() => handleNavigation("/profile")}
               className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors"
@@ -120,15 +119,48 @@ const SignInDrawer = ({
           </div>
 
           <div>
-            <div className="mt-8 space-y-4">
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <button
-                onClick={() => handleNavigation("/wishlist")}
-                className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Heart className="w-5 h-5 text-gray-600" />
-                <span>View Wishlist</span>
-              </button>
+            <div className="mt-8 space-y-6 max-w-xl">
+              <h3 className="text-2xl font-semibold mb-6 flex items-center gap-2">
+                <Apple className="w-6 h-6" />
+                Discover the Magic of Apple
+              </h3>
+
+              <div className="space-y-4">
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                  <p className="text-lg font-medium">
+                    🌟 Experience Innov at Your Fingertips
+                  </p>
+                  
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                  <p className="text-lg font-medium">
+                    📱 iPhone - Beyond Brilliant
+                  </p>
+                  
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                  <p className="text-lg font-medium">
+                    💻 MacBook - Power Meets Beauty
+                  </p>
+                  
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                  <p className="text-lg font-medium">
+                    ⌚ Apple Watch - Your Health Guardian
+                  </p>
+                  
+                </div>
+
+                <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                  <p className="text-lg font-medium">
+                    🎧 AirPods - Sound Perfected
+                  </p>
+                 
+                </div>
+              </div>
             </div>
           </div>
         </div>

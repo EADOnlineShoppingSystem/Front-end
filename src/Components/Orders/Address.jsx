@@ -70,6 +70,24 @@ const Address = () => {
     }
   };
 
+  ///update assress
+  const handleUpdateAddress = async (address) => {
+    try {
+        setLoading(true);
+        console.log("Updating address:", address);
+        await orderServices.updateAddressByAddressId(address);
+        await fetchAddresses(); // Fetch updated addresses
+        message.success('Address updated successfully');
+        setShowModal(false);
+        setLoading(false);
+    } catch (error) {
+        console.error("Error updating address:", error);
+        message.error(error.message || 'Failed to update address');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   //fetch address from database
    const fetchAddresses = async () => {
     try {
@@ -196,42 +214,34 @@ const Address = () => {
         </div>
         <Spin spinning={loading}>
         <form
-          className="p-6 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            
+  className="p-6 space-y-4"
+  onSubmit={(e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-            if (!validateForm(formData)) {
-              return;
-            }
+    if (!validateForm(formData)) {
+      return;
+    }
 
-            const newAddress = {
-              name: formData.get("name").trim(),
-              street: formData.get("street").trim(),
-              city: formData.get("city").trim(),
-              state: formData.get("state").trim().toUpperCase(),
-              zip: formData.get("zip").trim(),
-              phone: formData.get("phone").trim(),
-              isDefault: selectedAddress?.isDefault || false,
-              isProfessional: formData.get("isProfessional") === "true",
-            };
-            console.log("saveksabd",newAddress);
+    const addressData = {
+      ...selectedAddress, // Spread existing address to preserve _id
+      name: formData.get("name").trim(),
+      street: formData.get("street").trim(),
+      city: formData.get("city").trim(),
+      state: formData.get("state").trim().toUpperCase(),
+      zip: formData.get("zip").trim(),
+      phone: formData.get("phone").trim(),
+      isDefault: selectedAddress?.isDefault || false,
+      isProfessional: formData.get("isProfessional") === "true",
+    };
 
-            handleSaveAddress(newAddress)
-
-            // if (modalMode === "add") {
-            //   setAddresses((prev) => [...prev, newAddress]);
-            // } else {
-            //   setAddresses((prev) =>
-            //     prev.map((addr) =>
-            //       addr.id === selectedAddress.id ? newAddress : addr
-            //     )
-            //   );
-            // }
-            setShowModal(false);
-          }}
-        >
+    if (modalMode === "edit") {
+      handleUpdateAddress(addressData);
+    } else {
+      handleSaveAddress(addressData);
+    }
+  }}
+>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">

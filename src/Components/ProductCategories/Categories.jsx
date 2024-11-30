@@ -370,6 +370,7 @@ const Categories = () => {
       price: product.lowestPrice,
       image: product.images[0]?.url || "/placeholder.jpg",
       color: selectedColor !== "all" ? selectedColor : product.colors[0],
+      quantity: 1,
     };
     addToCart(cartItem);
   };
