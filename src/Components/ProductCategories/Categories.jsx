@@ -363,7 +363,6 @@ const Categories = () => {
       color: selectedColor !== "all" ? selectedColor : product.colors[0],
     };
     addToCart(cartItem);
-    message.success("Added to cart");
   };
 
   /**

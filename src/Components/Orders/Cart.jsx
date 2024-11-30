@@ -142,21 +142,21 @@ const Cart = () => {
                         <div className="flex justify-between">
                           <div>
                             <h3 className="font-medium">
-                              {item.productDetails.product.categoryName}
+                              {item.productDetails.product.productTitle}
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                              {item.brand}, Color Family:{item.color}, Storage Capacity:{item.storage}
+                            warranty: {item.productDetails.product.warranty} Years, Description: {item.productDetails.product.productDescription}
                             </p>
                           </div>
                           <div className="text-right">
                             <p className="text-orange-500 font-medium">
                               Rs. {item.productDetails.product.lowestPrice}
                             </p>
-                            {item.productDetails.product.lowestPrice && (
+                            {/* {item.productDetails.product.productDescription && (
                               <p className="text-gray-400 line-through text-sm">
-                                Rs. {item.productDetails.product.lowestPrice}
+                                Rs. {item.productDetails.product.productDescription}
                               </p>
-                            )}
+                            )} */}
                           </div>
                         </div>
                         <div className="flex justify-between items-center mt-4">
@@ -179,7 +179,7 @@ const Cart = () => {
                             <button 
                               onClick={() => handleQuantityChange(item, item.quantity + 1)}
                               className={`p-1 rounded ${
-                                item.quantity >= 10 
+                                item.quantity >= item.productDetails.product.quantity 
                                   ? 'cursor-not-allowed opacity-50' 
                                   : 'hover:bg-gray-100'
                               }`}
@@ -209,13 +209,7 @@ const Cart = () => {
           {/* Order Summary Section */}
           <div className="lg:w-80">
             <div className="bg-white rounded-lg shadow-sm p-4">
-              <div className="mb-4">
-                <h2 className="font-medium mb-4">Location</h2>
-                <div className="flex items-start gap-2">
-                  <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
-                  <p className="text-gray-600 text-sm flex-1">{location}</p>
-                </div>
-              </div>
+             
 
               <div className="border-t pt-4">
                 <h2 className="font-medium mb-4">Order Summary</h2>
