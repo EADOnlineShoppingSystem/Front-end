@@ -4,7 +4,7 @@ import { MdArrowBackIosNew, MdEdit, MdLocationPin } from "react-icons/md";
 import {  useSelector } from "react-redux";
 import orderServices from "../Services/order.services";
 import md5 from "md5";
-import { useOrderContext } from "../hooks/useOrderContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -12,11 +12,27 @@ const Checkout = () => {
   const [error, setError] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-  const { isLoading, isError, user } = useSelector((state) => state.auth);
+  const { isLoading, isError } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
-  const {state, dispatch} = useOrderContext();
-  const {order}=state;
-  console.log("state",order.order);
+
+  const [email, setEmail] = useState("");
+
+  const {state:stt } = useAuthContext();
+  const {user:LoggedUser}=stt;
+
+  
+
+  useEffect(() => {
+    if(LoggedUser && LoggedUser.email){
+  console.log("user",LoggedUser.email);
+  const email = LoggedUser.email;
+  // setEmail(email);
+  console.log("email",email);
+  setEmail(email);
+  // setEmail(LoggedUser.email);
+  }
+  }, [LoggedUser]);
+
 
   const [addresses] = useState([
     {
@@ -112,7 +128,7 @@ const Checkout = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Contact Information</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700">Supun Ishara (supun20000207@gmail.com)</p>
+                  <p className="text-gray-700">Supun Ishara ({email})</p>
                 </div>
               </div>
 
