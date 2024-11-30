@@ -8,8 +8,12 @@ export const CartProvider = ({ children }) => {
   const [cartItem, setCartItem] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [totalQuentity ,setTotalQuentity] = useState(0);
+  const [totalQuentity, setTotalQuentity] = useState(0);
 
+  // Calculated values
+  const [subtotal, setSubtotal] = useState(0);
+  const [shippingFee, setShippingFee] = useState(0);
+  const [total, setTotal] = useState(0);
 
   // Fetch cart items
   const fetchCartItems = async () => {
@@ -17,33 +21,44 @@ export const CartProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       const response = await cartServices.getCartDetailsByUserID();
-      console.log('Cart items fetched:', response);
-      // Ensure response is an array, even if null or undefined
       setCartItem(Array.isArray(response) ? response : []);
-      console.log('Cart items fetched:', response);
     } catch (error) {
       console.error('Error fetching cart items:', error);
       setError(error);
-      setCartItem([]); // Set to empty array if fetch fails
+      setCartItem([]);
       message.error('Failed to load cart items');
     } finally {
       setIsLoading(false);
     }
   };
 
-  
+  // Recalculate totals when cart items change
   useEffect(() => {
-    fetchCartItems();
-  }, []);
+    const calculateCartTotals = () => {
+      const subtotal = cartItem.reduce(
+        (sum, item) =>
+          sum + item.productDetails.product.lowestPrice * item.quantity,
+        0
+      );
+      const shippingFee = cartItem.length > 0 ? 280 : 0; // Add shipping fee conditionally
+      const total = subtotal + shippingFee;
+
+      setSubtotal(subtotal);
+      setShippingFee(shippingFee);
+      setTotal(total);
+    };
+
+    calculateCartTotals();
+  }, [cartItem]);
 
   // Add item to cart
   const addToCart = async (product) => {
     try {
       await cartServices.addToCart({
-        productId: product.id, // Send the product ID and quantity
-        quantity: 1, // Default quantity is 1
+        productId: product.id,
+        quantity: 1,
       });
-      await fetchCartItems(); // Refresh cart
+      await fetchCartItems();
       message.success('Item added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -54,8 +69,8 @@ export const CartProvider = ({ children }) => {
   // Remove item from cart
   const removeFromCart = async (productId) => {
     try {
-      await cartServices.deleteFromCart(productId); // Remove item by ID
-      await fetchCartItems(); // Refresh cart
+      await cartServices.deleteFromCart(productId);
+      await fetchCartItems();
       message.success('Item removed from cart');
     } catch (error) {
       console.error('Error removing item:', error);
@@ -67,8 +82,8 @@ export const CartProvider = ({ children }) => {
   const updateQuantity = async (productId, quantity) => {
     try {
       console.log('Update quantity:', productId, quantity);
-      await cartServices.updateCartQuantity(productId, quantity); // Update product quantity
-      await fetchCartItems(); // Refresh cart
+      await cartServices.updateCartQuantity(productId, quantity);
+      await fetchCartItems();
       message.success('Quantity updated');
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -76,16 +91,15 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-
-  //fetch all quntity 
+  // Fetch total quantity
   const fetchupdateAllQuantity = async () => {
     try {
-     const responce =   await cartServices.getAllQuantityByUsers(); 
-     setTotalQuentity(responce);
-     await fetchCartItems(); // Refresh cart
+      const response = await cartServices.getAllQuantityByUsers();
+      setTotalQuentity(response);
+      await fetchCartItems();
     } catch (error) {
-      console.error('Error updating quantity:', error);
-      message.error('Failed to update quantity');
+      console.error('Error fetching total quantity:', error);
+      message.error('Failed to fetch total quantity');
     }
   };
 
@@ -93,12 +107,14 @@ export const CartProvider = ({ children }) => {
     fetchupdateAllQuantity();
   }, []);
 
-
   const value = {
     cartItem,
     isLoading,
     error,
     totalQuentity,
+    subtotal,
+    shippingFee,
+    total,
     fetchCartItems,
     addToCart,
     removeFromCart,

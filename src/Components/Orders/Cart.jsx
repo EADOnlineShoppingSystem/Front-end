@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trash2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronUp, ShoppingCart ,MapPin} from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
@@ -7,61 +7,41 @@ import { useOrderContext } from '../../hooks/useOrderContext';
 import { Spin } from 'antd'; 
 
 const Cart = () => {
-  const { 
-    removeFromCart, 
-    updateQuantity, 
-    cartItem, 
-    isLoading 
-  } = useCart();
-  
+  const { removeFromCart, updateQuantity, cartItem, isLoading,subtotal,shippingFee,total} = useCart();
   const [voucherCode, setVoucherCode] = useState('');
+  const [location, setLocation] = useState('Weligama, Matara,Southern');
   const [voucherApplied, setVoucherApplied] = useState(false);
-  const [location] = useState('Weligama, Matara, Southern');
-  const [selectedItemId, setSelectedItemId] = useState(null);
-  
   const navigate = useNavigate();
-  const {dispatch}=useOrderContext();
-  console.log("cartData",cartItem)
-  // Memoized calculations to prevent unnecessary re-renders
-  const cartSummary = useMemo(() => {
-  const selectedItem = cartItem.find(item => item._id === selectedItemId);
-    
-    const calculateSelectedSubtotal = () => {
-      if (!selectedItem) return 0;
-      return selectedItem.productDetails.product.lowestPrice * selectedItem.quantity;
-    };
+  const { dispatch } = useOrderContext();
 
-    const subtotal = calculateSelectedSubtotal();
-    const shippingFee = selectedItem ? 280 : 0;
-    const voucherDiscount = voucherApplied ? 500 : 0;
-    const total = subtotal + shippingFee - voucherDiscount;
+  // Calculate cart summary
+  // const cartSummary = useMemo(() => {
+  //   const subtotal = cartItem.reduce(
+  //     (sum, item) => sum + item.productDetails.product.lowestPrice * item.quantity,
+  //     0
+  //   );
+  //   const shippingFee = cartItem.length > 0 ? 280 : 0;
+  //   const voucherDiscount = voucherApplied ? 500 : 0;
+  //   const total = subtotal + shippingFee - voucherDiscount;
 
-    return {
-      subtotal,
-      shippingFee,
-      voucherDiscount,
-      total,
-      selectedItemCount: selectedItem ? 1 : 0
-    };
-  }, [cartItem, selectedItemId, voucherApplied]);
+  //   return {
+  //     subtotal,
+  //     shippingFee,
+  //     voucherDiscount,
+  //     total,
+  //   };
+  // }, [cartItem, voucherApplied]);
 
   const handleOrders = () => {
-    const selectedItem = cartItem.find(item => item._id === selectedItemId);
-    if (selectedItem) {
-      const orderData = {
-        productId: selectedItem._id,
-        quantity: selectedItem.quantity.toString(),
-        price: selectedItem.productDetails.product.lowestPrice.toString()
-      };
-      dispatch({type:"ADD_ORDER",payload:{
-        order:orderData
-      }})
-      navigate('/checkout'); 
-    }
-  };
 
-  const handleSelectItem = (itemId) => {
-    setSelectedItemId(itemId === selectedItemId ? null : itemId);
+    const orders = cartItem.map(item => ({
+      productId: item._id,
+      quantity: item.quantity.toString(),
+      price: item.productDetails.product.lowestPrice.toString(),
+    }));
+    dispatch({ type: "ADD_ORDER", payload: { order: orders } });
+    navigate('/checkout');
+
   };
 
   const handleQuantityChange = (item, newQuantity) => {
@@ -115,22 +95,15 @@ const Cart = () => {
                   </p>
                   <button 
                     onClick={() => navigate('/')} 
-                    className="px-8 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 font-medium transition-colors"
+                    className="px-8 py-3 bg-blue-400 text-white rounded hover:bg-orange-600 font-medium transition-colors"
                   >
                     CONTINUE SHOPPING
                   </button>
                 </div>
               ) : (
-              
                 cartItem.map((item) => (
                   <div key={item._id} className="border-t py-4">
                     <div className="flex items-start gap-4">
-                      <input 
-                        type="radio" 
-                        className="mt-2"
-                        checked={selectedItemId === item._id}
-                        onChange={() => handleSelectItem(item._id)}
-                      />
                       <div className="w-24 h-24">
                         <img 
                           src={item.productDetails.product.images[0]?.url} 
@@ -142,21 +115,17 @@ const Cart = () => {
                         <div className="flex justify-between">
                           <div>
                             <h3 className="font-medium">
-                              {item.productDetails.product.categoryName}
+                              {item.productDetails.product.productTitle}
                             </h3>
                             <p className="text-sm text-gray-500 mt-1">
-                              {item.brand}, Color Family:{item.color}, Storage Capacity:{item.storage}
+                              Warranty: {item.productDetails.product.warranty} Years, 
+                              Description: {item.productDetails.product.productDescription}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-orange-500 font-medium">
+                            <p className="text-blue-400 font-medium">
                               Rs. {item.productDetails.product.lowestPrice}
                             </p>
-                            {item.productDetails.product.lowestPrice && (
-                              <p className="text-gray-400 line-through text-sm">
-                                Rs. {item.productDetails.product.lowestPrice}
-                              </p>
-                            )}
                           </div>
                         </div>
                         <div className="flex justify-between items-center mt-4">
@@ -179,11 +148,11 @@ const Cart = () => {
                             <button 
                               onClick={() => handleQuantityChange(item, item.quantity + 1)}
                               className={`p-1 rounded ${
-                                item.quantity >= 10 
+                                item.quantity >= item.productDetails.product.quantity 
                                   ? 'cursor-not-allowed opacity-50' 
                                   : 'hover:bg-gray-100'
                               }`}
-                              disabled={item.quantity >= 10}
+                              disabled={item.quantity >= item.productDetails.product.quantity}
                               aria-label="Increase quantity"
                             >
                               <ChevronUp className="w-4 h-4" />
@@ -209,36 +178,33 @@ const Cart = () => {
           {/* Order Summary Section */}
           <div className="lg:w-80">
             <div className="bg-white rounded-lg shadow-sm p-4">
-              <div className="mb-4">
+            <div className="mb-4">
                 <h2 className="font-medium mb-4">Location</h2>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
                   <p className="text-gray-600 text-sm flex-1">{location}</p>
                 </div>
               </div>
-
               <div className="border-t pt-4">
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">
-                      Subtotal ({cartSummary.selectedItemCount} item)
-                    </span>
-                    <span>Rs. {cartSummary.subtotal.toLocaleString()}</span>
+                    <span className="text-gray-600">Subtotal</span>
+                    <span>Rs. {subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping Fee</span>
-                    <span>Rs. {cartSummary.shippingFee}</span>
+                    <span>Rs. {shippingFee}</span>
                   </div>
-                  {voucherApplied && (
+                  {/* {voucherApplied && (
                     <div className="flex justify-between text-sm text-green-600">
                       <span>Voucher Discount</span>
                       <span>- Rs. 500</span>
                     </div>
-                  )}
+                  )} */}
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                   <div className="flex gap-2">
                     <input
                       type="text"
@@ -264,18 +230,18 @@ const Cart = () => {
                       Voucher successfully applied!
                     </p>
                   )}
-                </div>
+                </div> */}
 
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
-                  <span className="text-orange-500 font-medium">
-                    Rs. {cartSummary.total.toLocaleString()}
+                  <span className="text-blue-400 font-medium">
+                    Rs. {total}
                   </span>
                 </div>
 
                 <button 
-                  className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
-                  disabled={!selectedItemId}
+                  className="bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
+                  disabled={cartItem.length === 0}
                   onClick={handleOrders}
                 >
                   PROCEED TO CHECKOUT
