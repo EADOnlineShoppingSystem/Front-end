@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trash2, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronUp, ShoppingCart ,MapPin} from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Spin } from 'antd';
 const Cart = () => {
   const { removeFromCart, updateQuantity, cartItem, isLoading,subtotal,shippingFee,total} = useCart();
   const [voucherCode, setVoucherCode] = useState('');
+  const [location, setLocation] = useState('Weligama, Matara,Southern');
   const [voucherApplied, setVoucherApplied] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useOrderContext();
@@ -94,7 +95,7 @@ const Cart = () => {
                   </p>
                   <button 
                     onClick={() => navigate('/')} 
-                    className="px-8 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 font-medium transition-colors"
+                    className="px-8 py-3 bg-blue-400 text-white rounded hover:bg-orange-600 font-medium transition-colors"
                   >
                     CONTINUE SHOPPING
                   </button>
@@ -122,7 +123,7 @@ const Cart = () => {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-orange-500 font-medium">
+                            <p className="text-blue-400 font-medium">
                               Rs. {item.productDetails.product.lowestPrice}
                             </p>
                           </div>
@@ -177,6 +178,13 @@ const Cart = () => {
           {/* Order Summary Section */}
           <div className="lg:w-80">
             <div className="bg-white rounded-lg shadow-sm p-4">
+            <div className="mb-4">
+                <h2 className="font-medium mb-4">Location</h2>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
+                  <p className="text-gray-600 text-sm flex-1">{location}</p>
+                </div>
+              </div>
               <div className="border-t pt-4">
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
@@ -226,13 +234,13 @@ const Cart = () => {
 
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
-                  <span className="text-orange-500 font-medium">
+                  <span className="text-blue-400 font-medium">
                     Rs. {total}
                   </span>
                 </div>
 
                 <button 
-                  className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
+                  className="bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
                   disabled={cartItem.length === 0}
                   onClick={handleOrders}
                 >
