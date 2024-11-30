@@ -1,103 +1,108 @@
-import cartServices from '../Services/cart.services'
+import cartServices from '../Services/cart.services';
 import { createContext, useContext, useState, useEffect } from 'react';
+import { message } from 'antd';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
+  const [cartItem, setCartItem] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalQuentity ,setTotalQuentity] = useState(0);
+
+
+  // Fetch cart items
+  const fetchCartItems = async () => {
     try {
-      const savedCart = localStorage.getItem('cart');
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const[cartItem, setCartItem] = useState([]);
-
-
-  const fetchcartaitems = async () => {
-    try {
+      setIsLoading(true);
+      setError(null);
       const response = await cartServices.getCartDetailsByUserID();
-      setCartItem(response);
-      console.log("get data",response);
+      console.log('Cart items fetched:', response);
+      // Ensure response is an array, even if null or undefined
+      setCartItem(Array.isArray(response) ? response : []);
+      console.log('Cart items fetched:', response);
     } catch (error) {
       console.error('Error fetching cart items:', error);
+      setError(error);
+      setCartItem([]); // Set to empty array if fetch fails
+      message.error('Failed to load cart items');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  // Add item to cart
+  const addToCart = async (product) => {
+    try {
+      await cartServices.addToCart({
+        productId: product.id, // Send the product ID and quantity
+        quantity: 1, // Default quantity is 1
+      });
+      await fetchCartItems(); // Refresh cart
+      message.success('Item added to cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      message.error('Failed to add item to cart');
+    }
+  };
+
+  // Remove item from cart
+  const removeFromCart = async (productId) => {
+    try {
+      await cartServices.deleteFromCart(productId); // Remove item by ID
+      await fetchCartItems(); // Refresh cart
+      message.success('Item removed from cart');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      message.error('Failed to remove item');
+    }
+  };
+
+  // Update quantity of an item in the cart
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      console.log('Update quantity:', productId, quantity);
+      await cartServices.updateCartQuantity(productId, quantity); // Update product quantity
+      await fetchCartItems(); // Refresh cart
+      message.success('Quantity updated');
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      message.error('Failed to update quantity');
+    }
+  };
+
+
+  //fetch all quntity 
+  const fetchupdateAllQuantity = async () => {
+    try {
+     const responce =   await cartServices.getAllQuantityByUsers(); 
+     setTotalQuentity(responce);
+     await fetchCartItems(); // Refresh cart
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      message.error('Failed to update quantity');
     }
   };
 
   useEffect(() => {
-    fetchcartaitems();
+    fetchupdateAllQuantity();
   }, []);
 
-  const addToCart = async (product) => {
-    const adding ={
-      
-      productId:"6742013a837dcad81c35d5d8",
-      quantity:2241
-  
-      }
-     const data = await cartServices.addToCart(adding)
-    setCartItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === product.id);
-      
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevItems, { ...product, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (productId) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId));
-  };
-
-  const removeMultipleFromCart = (productIds) => {
-    setCartItems(prevItems => 
-      prevItems.filter(item => !productIds.includes(item.id))
-    );
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === productId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
-
-  const getCartTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const getCartCount = () => {
-    return cartItems.reduce((count, item) => count + item.quantity, 0);
-  };
 
   const value = {
     cartItem,
-    cartItems,
+    isLoading,
+    error,
+    totalQuentity,
+    fetchCartItems,
     addToCart,
     removeFromCart,
-    removeMultipleFromCart,
     updateQuantity,
-    clearCart,
-    getCartTotal,
-    getCartCount
   };
 
   return (

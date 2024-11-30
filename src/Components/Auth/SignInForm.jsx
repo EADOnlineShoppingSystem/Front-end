@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
 const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
   const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
     password: false
   });
 
+  const { dispatch } = useAuthContext();
   // Validation functions
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,9 +85,18 @@ const SignInForm = ({ onSwitchToSignUp, onSwitchToForgotPassword }) => {
         email,
         password
       });
-
-      const { token } = response.data;
-      sessionStorage.setItem('token', token);
+      if(response.data.success) {
+        dispatch({
+          type: 'LOGIN',
+          payload: {
+            user: response.data.user,
+            token: response.data.token
+          }
+        })
+      }
+      else{
+        throw new Error(response.message);
+      }
       window.location.href = '/';
     } catch (err) {
       setApiError(err.response?.data?.message || 'An error occurred during login');

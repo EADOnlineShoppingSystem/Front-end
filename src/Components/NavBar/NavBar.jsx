@@ -23,6 +23,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import productServices from "../../Services/product.services";
 
 const NavBar = () => {
+
+  const { totalQuentity } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const searchContainerRef = useRef(null);
@@ -273,8 +275,189 @@ const NavBar = () => {
     ];
   };
 
-  const MobileMenuItem = ({ item, index }) => {
-    const products = categoryProducts[item.name] || [];
+  const menuItems = [
+    {
+      name: "iPhone",
+      items: [
+        "iPhone 16 Pro Max",
+        "iPhone 16 Pro",
+        "iPhone 16 plus",
+        "iPhone 16",
+        "iPhone 15 Pro Max",
+        "iPhone 15 Pro",
+        "iPhone 15 plus",
+        "iPhone 15",
+      ],
+    },
+    {
+      name: "Mac",
+      items: [
+        "MacBook Pro M4",
+        "MacBook Pro M3",
+        "MacBook Pro 13″ M2",
+        "Macbook Air M3 2024",
+        'MacBook Air 15" M2',
+      ],
+    },
+    {
+      name: "iPad",
+      items: [
+        "iPad Mini 7",
+        "iPad Air M2",
+        "iPad Pro M4",
+        "iPad ( 10th Gen )",
+        "iPad Pro M2",
+      ],
+    },
+    {
+      name: "Watch",
+      items: [
+        "Apple Watch Series 8",
+        "Apple Watch SE - 2nd",
+        "Apple Watch Ultra",
+        "Apple Watch Series 7",
+      ],
+    },
+    {
+      name: "AirPods",
+      items: ["AirPods", "AirPods 2", "AirPods 3", "AirPods 4"],
+    },
+    {
+      name: "HomePod",
+      items: ["HomePod 2023", "HomePod mini"],
+    },
+    {
+      name: "AirTag",
+      items: ["Apple Airtag 4 pack", "AirTag"],
+    },
+    {
+      name: "Accessories",
+      items: [
+        "Apple Vision Pro",
+        "iPad Accessories",
+        "iPhone Accessories",
+        "Mac Accessories",
+        "Smart Watch Accessories",
+      ],
+    },
+  ];
+
+  const MobileMenuItem = ({ item, index }) => (
+    <div className="w-full">
+      <button
+        onClick={() => toggleDropdown(index)}
+        className="w-full py-2 text-base font-medium text-white flex items-center justify-between"
+      >
+        {item.name}
+        {item.items?.length > 0 && (
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${
+              openDropdown === index ? "rotate-180" : ""
+            }`}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M19 9l-7 7-7-7"></path>
+          </svg>
+        )}
+      </button>
+
+      {item.items?.length > 0 && openDropdown === index && (
+        <div className="ml-4 mt-2 space-y-2">
+          {item.items.map((subItem, subIndex) => (
+            <a
+              key={subIndex}
+              href="/categories"
+              className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200"
+            >
+              {subItem}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+    <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
+      <header>
+        <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
+          <div className="flex-shrink-0 ml-10">
+            <a href="/" className="flex">
+              <img className="w-auto h-5 lg:h-6" src="/icons/logo.png" alt="" />
+            </a>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex lg:items-center lg:space-x-7">
+            {menuItems.map((item, index) => (
+              <div key={index} className="relative group">
+                <a
+                  href="/categories"
+                  className="text-sm text-white relative py-1 group"
+                >
+                  <span className="inline-block relative py-1">
+                    {item.name}
+                    <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
+                  </span>
+                </a>
+                {/* Dropdown Menu */}
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
+                  <div className="py-2">
+                    {item.items.map((subItem, subIndex) => (
+                      <a
+                        key={subIndex}
+                        href="/categories"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gradient-to-r from-purple-500 to-orange-500 hover:bg-clip-text hover:text-transparent hover:font-semibold"
+                      >
+                        {subItem}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
+            {showSearchInput && (
+              <input
+                type="text"
+                placeholder="Search"
+                className="px-5 py-1 rounded bg-transparent text-white border border-gray-200 focus:outline-none focus:ring-1 focus:ring-white"
+              />
+            )}
+            <button className="text-white" onClick={handleSearchClick}>
+              <SearchOutlined />
+            </button>
+
+            <div className="inline-flex relative">
+              <a href="/cart">
+                <div className="w-8 h-8 text-white flex items-center justify-center rounded">
+                  <ShoppingCart className="w-5 h-5" />
+                </div>
+              </a>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs">{totalQuentity || "0"}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button onClick={openDrawer} className="flex items-center gap-2">
+                <Avatar icon={<UserOutlined />} />
+                {isLoggedIn && (
+                  <span className="text-white text-sm">
+                    Welcome, {user.name}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
 
     return (
       <div className="w-full">
