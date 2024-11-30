@@ -17,11 +17,11 @@ const PopularCategories = () => {
       // Check if response and categories exist
       if (response && response.categories) {
         // Transform backend data to match the expected format
+        // Removed toLowerCase() to preserve original case
         const transformedCategories = response.categories.map((category) => ({
           _id: category._id,
-          image: `/popular/${getImageForCategory(category.name)}.png`,
+          image: category.image.url,
           title: category.name,
-          // Updated href to match the requested format
           href: `/categories/${category.name}`,
         }));
 
@@ -36,18 +36,6 @@ const PopularCategories = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // Helper function to map category names to image filenames
-  const getImageForCategory = (categoryName) => {
-    const imageMap = {
-      IPhone: "1",
-      MackBook: "2",
-      Airpods: "6",
-      AppleWatch: "4",
-      IPad: "3",
-    };
-    return imageMap[categoryName] || "10"; // Default to last image if no match
   };
 
   useEffect(() => {
@@ -100,7 +88,6 @@ const PopularCategories = () => {
                   className="block focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg"
                   aria-label={`View ${category.title} category`}
                 >
-                  {/* Responsive image container */}
                   <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
                     <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-110">
                       <img
@@ -112,7 +99,6 @@ const PopularCategories = () => {
                     </div>
                   </div>
 
-                  {/* Text content */}
                   <div className="mt-3 sm:mt-4 text-center">
                     <h3 className="text-sm sm:text-base font-medium text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {category.title}

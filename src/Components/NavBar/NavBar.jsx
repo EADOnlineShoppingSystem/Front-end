@@ -33,6 +33,7 @@ const NavBar = () => {
     email: "john@example.com",
   });
 
+  // State Management
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,15 +48,15 @@ const NavBar = () => {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
 
+  // useEffect hooks
   useEffect(() => {
     fetchCategoriesAndProducts();
 
-    // Add click outside listener
     const handleClickOutside = (event) => {
       if (
         searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target) &&
-        !searchTerm // Only hide if there's no search term
+        !searchTerm
       ) {
         setShowSearchInput(false);
       }
@@ -67,7 +68,6 @@ const NavBar = () => {
     };
   }, [searchTerm]);
 
-  // Reset search when changing routes
   useEffect(() => {
     if (!location.pathname.includes("/categories")) {
       setShowSearchInput(false);
@@ -77,6 +77,7 @@ const NavBar = () => {
     }
   }, [location]);
 
+  // Data fetching function
   const fetchCategoriesAndProducts = async () => {
     try {
       const categoriesResponse = await productServices.getAllCategories();
@@ -108,6 +109,7 @@ const NavBar = () => {
     }
   };
 
+  // Search functionality
   const performSearch = async (term) => {
     if (!term.trim()) {
       setSearchResults([]);
@@ -130,7 +132,7 @@ const NavBar = () => {
                 .toLowerCase()
                 .includes(term.toLowerCase())
           )
-          .slice(0, 5); // Limit to 5 quick results
+          .slice(0, 5);
 
         if (results.length === 0) {
           setSearchError("No products found matching your search.");
@@ -148,6 +150,7 @@ const NavBar = () => {
     }
   };
 
+  // Search handlers
   const handleSearchInputChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -184,11 +187,11 @@ const NavBar = () => {
     navigate(`/product/${productId}`);
   };
 
-  // Rest of your existing functions...
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
 
+  // UI Event Handlers
   const handleAuthAction = (view) => {
     setAuthModalView(view);
     setIsAuthModalOpen(true);
@@ -273,6 +276,7 @@ const NavBar = () => {
     ];
   };
 
+  // Mobile Menu Component
   const MobileMenuItem = ({ item, index }) => {
     const products = categoryProducts[item.name] || [];
 
@@ -283,36 +287,80 @@ const NavBar = () => {
           className="w-full py-2 text-base font-medium text-white flex items-center justify-between"
         >
           {item.name}
-          {products.length > 0 && (
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${
-                openDropdown === index ? "rotate-180" : ""
-              }`}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M19 9l-7 7-7-7"></path>
-            </svg>
-          )}
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${
+              openDropdown === index ? "rotate-180" : ""
+            }`}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M19 9l-7 7-7-7"></path>
+          </svg>
         </button>
 
-        {products.length > 0 && openDropdown === index && (
+        {openDropdown === index && (
           <div className="ml-4 mt-2 space-y-2">
-            {products.map((product) => (
-              <a
-                key={product._id}
-                onClick={() => handleProductClick(product._id)}
-                className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200 cursor-pointer"
-              >
-                {product.productTitle}
-              </a>
-            ))}
+            {products.length > 0 ? (
+              products.map((product) => (
+                <a
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                  className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200 cursor-pointer"
+                >
+                  {product.productTitle}
+                </a>
+              ))
+            ) : (
+              <div className="py-2 text-sm text-gray-200 flex items-center justify-center">
+                <span>No products available</span>
+                <span className="ml-2">😔</span>
+              </div>
+            )}
           </div>
         )}
+      </div>
+    );
+  };
+
+  // Desktop Category Component
+  const DesktopCategory = ({ category, index }) => {
+    const products = categoryProducts[category.name] || [];
+
+    return (
+      <div key={index} className="relative group">
+        <a
+          href={`/categories/${category.name}`}
+          className="text-sm text-white relative py-1 group"
+        >
+          <span className="inline-block relative py-1">
+            {category.name}
+            <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
+          </span>
+        </a>
+        <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
+          <div className="py-2">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <a
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gradient-to-r from-purple-500 to-orange-500 hover:bg-clip-text hover:text-transparent hover:font-semibold cursor-pointer"
+                >
+                  {product.productTitle}
+                </a>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-sm text-gray-500 flex items-center justify-center">
+                <span>No products available</span>
+                <span className="ml-2">😔</span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   };
@@ -322,6 +370,7 @@ const NavBar = () => {
       <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
         <header>
           <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
+            {/* Logo */}
             <div className="flex-shrink-0 ml-10">
               <a href="/" className="flex">
                 <img
@@ -332,37 +381,20 @@ const NavBar = () => {
               </a>
             </div>
 
+            {/* Desktop Navigation */}
             <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {categories.map((category, index) => (
-                <div key={index} className="relative group">
-                  <a
-                    href={`/categories/${category.name}`}
-                    className="text-sm text-white relative py-1 group"
-                  >
-                    <span className="inline-block relative py-1">
-                      {category.name}
-                      <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
-                    </span>
-                  </a>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
-                    <div className="py-2">
-                      {categoryProducts[category.name]?.map((product) => (
-                        <a
-                          key={product._id}
-                          onClick={() => handleProductClick(product._id)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gradient-to-r from-purple-500 to-orange-500 hover:bg-clip-text hover:text-transparent hover:font-semibold cursor-pointer"
-                        >
-                          {product.productTitle}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <DesktopCategory
+                  key={index}
+                  category={category}
+                  index={index}
+                />
               ))}
             </div>
 
+            {/* Desktop Right Section */}
             <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
-              {/* Updated Search Container */}
+              {/* Search Container */}
               <div
                 ref={searchContainerRef}
                 className="relative flex items-center"
@@ -459,13 +491,14 @@ const NavBar = () => {
                       </>
                     ) : (
                       <div className="p-4 text-center text-gray-500">
-                        No results found 😞
+                        No results found 😔
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
+              {/* Cart */}
               <div className="inline-flex relative">
                 <a href="/cart">
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
@@ -477,6 +510,7 @@ const NavBar = () => {
                 </div>
               </div>
 
+              {/* User Menu */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={openDrawer}
@@ -549,13 +583,14 @@ const NavBar = () => {
                   />
                   {searchTerm && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50">
+                      {/* Mobile Search Results */}
                       {isSearchLoading ? (
                         <div className="p-4 text-center text-gray-500">
                           Loading...
                         </div>
                       ) : searchError ? (
                         <div className="p-4 text-center text-red-500 flex flex-col items-center">
-                          <div className="text-4xl mb-2">😞</div>
+                          <div className="text-4xl mb-2">😔</div>
                           <p>{searchError}</p>
                         </div>
                       ) : searchResults.length > 0 ? (
@@ -607,7 +642,7 @@ const NavBar = () => {
                         </>
                       ) : (
                         <div className="p-4 text-center text-gray-500">
-                          No results found 😞
+                          No results found 😔
                         </div>
                       )}
                     </div>
