@@ -332,6 +332,12 @@ const SingleProduct = () => {
                     value={quantity}
                     readOnly
                   />
+                   <button
+                    onClick={handleIncrement}
+                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
