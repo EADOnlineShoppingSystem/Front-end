@@ -13,8 +13,8 @@ const SingleProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { state } = useAuthContext();
-  const { isLoggedIn } = state;
+  const {state} = useAuthContext()
+  const {isLoggedIn} = state
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -30,6 +30,7 @@ const SingleProduct = () => {
       setLoading(false);
       return;
     }
+    
 
     try {
       setLoading(true);
@@ -275,28 +276,6 @@ const SingleProduct = () => {
                 </h3>
               </div>
 
-              <div className="flex flex-col gap-3 mt-6">
-                <button
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors"
-                  onClick={handleAddToCart}
-                >
-                  Add To Cart
-                </button>
-                <button className="w-full border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
-                  Buy Now
-                </button>
-              </div>
-
-              <div className="mt-6">
-                <details className="bg-white rounded-lg shadow-sm">
-                  <summary className="cursor-pointer p-4 font-medium">
-                    Product Description
-                  </summary>
-                  <div className="p-4 text-sm text-gray-600">
-                    {product.productDescription}
-                  </div>
-</details>
-                </div>
                 <div>
                   <h3 className="font-bold mb-2">Color :</h3>
                   <div className="flex gap-2">
@@ -310,33 +289,8 @@ const SingleProduct = () => {
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="font-bold mb-2">
-                    Warranty : {product.warranty} Year Warranty
-                  </h3>
-                  <span className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer">
-                    {product.warranty} Year Warranty
-                  </span>
-                </div>
+                
 
-                <div>
-                  <h3 className="font-bold mb-2">Quantity : {quantity}</h3>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleDecrement}
-                      className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="text"
-                      className="w-16 text-center border border-gray-200 rounded"
-                      value={quantity}
-                      readOnly
-                    />
-                  
-                </div>
-              </div>
 
               <div>
                 <h3 className="font-bold mb-2">
@@ -362,30 +316,17 @@ const SingleProduct = () => {
                     value={quantity}
                     readOnly
                   />
-                  <button
-                    onClick={handleIncrement}
-                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-bold mb-2">
-                  Availability : {product.quantity}
-                </h3>
-              </div>
-
               <div className="flex flex-col gap-3 mt-6">
-                <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors">
+                <button
+                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors"
+                  onClick={handleAddToCart}
+                >
                   Add To Cart
                 </button>
-                <button className="w-full border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
-                  Buy Now
-                </button>
               </div>
-
               <div className="mt-6">
                 <details className="bg-white rounded-lg shadow-sm">
                   <summary className="cursor-pointer p-4 font-medium">

@@ -30,7 +30,7 @@ const Profile = () => {
         phone: user.phoneNumber || prevData.phone,
         location: user.address || prevData.location,
         joinDate: user.createdAt ? new Date(user.createdAt).getFullYear() : prevData.joinDate,
-        profilePic: user.profilePic || prevData.profilePic,
+        profilePic: user.imageUrl || prevData.profilePic,
         bio: user.bio || prevData.bio,
       }));
     }
@@ -50,16 +50,23 @@ const Profile = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    
-    const updatedData = {
-      username: profileData.name,
-      address: profileData.location,
-      phoneNumber: profileData.phone,
-    };
-  
+
+    const formData = new FormData();
+    formData.append("username", profileData.name);
+    formData.append("address", profileData.location);
+    formData.append("phoneNumber", profileData.phone);
+
+    // If an image is selected, append it as well
+    if (profileData.profilePic && profileData.profilePic !== user.imageUrls) {
+      const file = profileData.profilePic;
+      formData.append("image", file); // Append the image file
+    }
+
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/update-profile/${user._id}`,
-        updatedData
+      const response = await axios.put(
+        `http://localhost:5000/api/users/update-profile/${user._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
        dispatch({ type: "UPDATE", payload: { user: response.data.user } });
       console.log("Profile updated:", response.data.user);
@@ -67,9 +74,9 @@ const Profile = () => {
     } catch (error) {
       console.error("Error updating profile:", error);
     }
-  };
-  
-  
+};
+
+
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
       <div className="mb-4 sm:mb-6 md:mb-10">

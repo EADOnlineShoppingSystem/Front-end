@@ -32,8 +32,6 @@ const SignInDrawer = ({
             </h2>
             <p className="text-lg text-gray-600">{user.username}</p>
             <p className="text-sm text-gray-500">{user.email}</p>
-            <p className="text-sm text-gray-500">{user.phoneNumber}</p>
-            <p className="text-sm text-gray-500">{user.address}</p>
           </div>
 
           <div className="mt-8 space-y-1">
