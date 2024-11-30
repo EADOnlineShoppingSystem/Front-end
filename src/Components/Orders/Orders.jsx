@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Package,
@@ -9,6 +9,7 @@ import {
   Star,
 } from "lucide-react";
 import NavBar from "../NavBar/NavBar";
+import orderServices from "../../Services/order.services";
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -23,6 +24,19 @@ const Orders = () => {
     dateRange: "all",
   });
 
+  const fetchOrders =async ()=>{
+       try {
+        console.log("fetchOrders")
+      const allOders= await orderServices.getOrderByUserId();
+      console.log("oders",allOders.data);
+      
+    } catch (error) {
+      throw new Error("Error fetching orders");
+    }
+  }
+  useEffect( () => {
+    fetchOrders();
+  },[]);
   const [orders, setOrders] = useState([
     {
       id: "92847362",
@@ -34,13 +48,7 @@ const Orders = () => {
           quantity: 1,
           price: 154900.0,
           image: "/newProducts/Types/12/1.png",
-        },
-        {
-          name: "Phone Case",
-          quantity: 2,
-          price: 2000.0,
-          image: "/cases/1.png",
-        },
+        }
       ],
       tracking: "LY234567890CN",
       estimatedDelivery: "2024-11-25",

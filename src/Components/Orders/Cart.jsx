@@ -56,7 +56,7 @@ const Cart = () => {
       dispatch({type:"ADD_ORDER",payload:{
         order:orderData
       }})
-      navigate('/checkout');
+      navigate('/checkout'); 
     }
   };
 
