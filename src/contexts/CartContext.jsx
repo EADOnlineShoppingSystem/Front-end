@@ -56,7 +56,7 @@ export const CartProvider = ({ children }) => {
     try {
       await cartServices.addToCart({
         productId: product.id,
-        quantity: 1,
+        quantity: product.quantity,
       });
       await fetchCartItems();
       message.success('Item added to cart');

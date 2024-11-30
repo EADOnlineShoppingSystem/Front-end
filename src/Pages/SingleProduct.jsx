@@ -6,6 +6,7 @@ import { TbGitCompare } from "react-icons/tb";
 import ReactStars from "react-stars";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal } from "react-icons/fa";
 import NavBar from "../Components/NavBar/NavBar";
+import { useCart } from "../contexts/CartContext";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -18,6 +19,20 @@ const SingleProduct = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart();
+
+  //add to cart
+  const handleAddToCart = () => {
+    const cartItem = {
+      id: product._id,
+      name: product.productTitle,
+      price: product.lowestPrice,
+      image: product.images[0]?.url || "/placeholder.jpg",
+      quentity: quantity,
+    };
+    addToCart(cartItem);
+  };
+
 
   // Fetch product details
   const fetchProductDetails = async () => {
@@ -310,7 +325,7 @@ const SingleProduct = () => {
                 </div>
 
                 <div className="flex flex-col gap-4 mt-8">
-                  <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors">
+                  <button onClick={handleAddToCart} className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors">
                     Add To Cart
                   </button>
                   <button className="w-full border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
