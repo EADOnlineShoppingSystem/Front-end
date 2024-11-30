@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import {
@@ -325,6 +326,7 @@ const NavBar = () => {
 
   const DesktopCategory = ({ category, index }) => {
     const products = categoryProducts[category.name] || [];
+    const navigate = useNavigate();
 
     return (
       <div key={index} className="relative group">
@@ -496,11 +498,13 @@ const NavBar = () => {
 
               {/* Cart */}
               <div className="inline-flex relative">
-                <a href="/cart">
+                <button onClick={
+                  ()=> navigate("/cart")
+                }>
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
                     <ShoppingCart className="w-5 h-5" />
                   </div>
-                </a>
+                </button>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs">{totalQuentity || "0"}</span>
                 </div>

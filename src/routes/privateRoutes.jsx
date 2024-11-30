@@ -6,6 +6,8 @@ const PrivateRoutes = () => {
   const { state } = useContext(AuthContext);
   const { isLoggedIn } = state;
 
+  console.log("PrivateRoutes isLoggedIn:", isLoggedIn);
+
   // Redirect to the home page if not logged in
   return isLoggedIn ? <Outlet /> : <Navigate to="/" />;
 };

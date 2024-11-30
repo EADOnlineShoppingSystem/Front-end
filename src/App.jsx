@@ -30,11 +30,11 @@ function App() {
                 path="/categories/:categoryName"
                 element={<Categories />}
               />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/wishlist" element={<Wishlist />} />
 
               {/* Protected Routes */}
               <Route element={<PrivateRoutes />}>
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/review/:id" element={<Review />} />
                 <Route path="/checkout" element={<Checkout />} />
