@@ -6,10 +6,15 @@ import { TbGitCompare } from "react-icons/tb";
 import ReactStars from "react-stars";
 import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal } from "react-icons/fa";
 import NavBar from "../Components/NavBar/NavBar";
+import { useAuthContext } from "../contexts/AthContext";
+import AuthModal from "../Components/Auth/AuthModal";
 
 const SingleProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const {state} = useAuthContext()
+  const {isLoggedIn} = state
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -25,6 +30,7 @@ const SingleProduct = () => {
       setLoading(false);
       return;
     }
+    
 
     try {
       setLoading(true);
@@ -79,6 +85,19 @@ const SingleProduct = () => {
       return [];
     }
   };
+
+  const [isAuthModalOpen, setIsAuthModalOpen]= useState(false)
+
+  const handleAddToCart = () => {
+
+    if(!isLoggedIn){
+      setIsAuthModalOpen(true)
+return
+    }
+
+    // ===================================================================
+
+  }
 
   if (loading) {
     return (
@@ -256,6 +275,14 @@ const SingleProduct = () => {
               <div>
                 <h3 className="font-bold mb-2">Color :</h3>
                 <div className="flex flex-wrap gap-2">
+                <h3 className="font-bold mb-2">
+                  Availability : {product.quantity}
+                </h3>
+              </div>
+
+              <div>
+                <h3 className="font-bold mb-2">Color :</h3>
+                <div className="flex gap-2">
                   {parseColors().map((color) => (
                     <div
                       key={color}
@@ -290,30 +317,17 @@ const SingleProduct = () => {
                     value={quantity}
                     readOnly
                   />
-                  <button
-                    onClick={handleIncrement}
-                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-bold mb-2">
-                  Availability : {product.quantity}
-                </h3>
-              </div>
-
               <div className="flex flex-col gap-3 mt-6">
-                <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors">
+                <button
+                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700 transition-colors"
+                  onClick={handleAddToCart}
+                >
                   Add To Cart
                 </button>
-                <button className="w-full border-2 border-blue-600 text-blue-600 py-3 px-6 rounded-full hover:bg-blue-600 hover:text-white transition-colors">
-                  Buy Now
-                </button>
               </div>
-
               <div className="mt-6">
                 <details className="bg-white rounded-lg shadow-sm">
                   <summary className="cursor-pointer p-4 font-medium">
@@ -327,6 +341,12 @@ const SingleProduct = () => {
             </div>
           </div>
         </div>
+      </div>
+       <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={()=> setIsAuthModalOpen(false)}
+          initialView="signin"
+        />
       </div>
     </div>
   );
