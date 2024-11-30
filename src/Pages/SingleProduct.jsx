@@ -28,10 +28,12 @@ const SingleProduct = () => {
       name: product.productTitle,
       price: product.lowestPrice,
       image: product.images[0]?.url || "/placeholder.jpg",
-      quentity: quantity,
+      quantity: quantity,
     };
+    console.log("hajhcv",cartItem);
     addToCart(cartItem);
   };
+  console.log(quantity);
 
 
   // Fetch product details
