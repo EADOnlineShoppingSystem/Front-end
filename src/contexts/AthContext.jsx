@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useReducer, useEffect, useContext } from "react";
-import { saveAuthData, getAuthData } from "../utils/encript";
+import { saveAuthData, getAuthData, getAuthToken } from "../utils/encript";
 
 // Initial state for authentication
 const initialState = {
@@ -29,6 +29,15 @@ const authReducer = (state, action) => {
         token: null,
         isLoggedIn: false,
       };
+    }
+    case "UPDATE":{
+      const newState = {
+        user: action.payload.user,
+        token: getAuthToken(),
+        isLoggedIn: true,
+      };
+      saveAuthData(newState);
+      return newState;
     }
     default:
       return state;
