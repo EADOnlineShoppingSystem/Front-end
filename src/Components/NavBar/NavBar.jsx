@@ -13,13 +13,14 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  TransitionChild,
+  TransitionChild
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import SignInDrawer from "./SignInDrawer";
 import AuthModal from "../Auth/AuthModal";
 import { useCart } from "../../contexts/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import  {useAuthContext } from "../../contexts/AthContext";
 import productServices from "../../Services/product.services";
 
 const NavBar = () => {
@@ -27,12 +28,9 @@ const NavBar = () => {
   const location = useLocation();
   const searchContainerRef = useRef(null);
   const { totalQuentity } = useCart();
-  const [isLoggedIn] = useState(false);
-  const [user] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-  });
+  const { state: authState, dispatch: authDispatch } = useAuthContext();
 
+  // State Management
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,12 +48,11 @@ const NavBar = () => {
   useEffect(() => {
     fetchCategoriesAndProducts();
 
-    // Add click outside listener
     const handleClickOutside = (event) => {
       if (
         searchContainerRef.current &&
         !searchContainerRef.current.contains(event.target) &&
-        !searchTerm // Only hide if there's no search term
+        !searchTerm
       ) {
         setShowSearchInput(false);
       }
@@ -67,7 +64,6 @@ const NavBar = () => {
     };
   }, [searchTerm]);
 
-  // Reset search when changing routes
   useEffect(() => {
     if (!location.pathname.includes("/categories")) {
       setShowSearchInput(false);
@@ -108,6 +104,12 @@ const NavBar = () => {
     }
   };
 
+  const handleLogout = () => {
+    authDispatch({ type: "LOGOUT" });
+    setIsDrawerOpen(false);
+    navigate("/");
+  };
+
   const performSearch = async (term) => {
     if (!term.trim()) {
       setSearchResults([]);
@@ -130,7 +132,7 @@ const NavBar = () => {
                 .toLowerCase()
                 .includes(term.toLowerCase())
           )
-          .slice(0, 5); // Limit to 5 quick results
+          .slice(0, 5);
 
         if (results.length === 0) {
           setSearchError("No products found matching your search.");
@@ -184,7 +186,6 @@ const NavBar = () => {
     navigate(`/product/${productId}`);
   };
 
-  // Rest of your existing functions...
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
@@ -218,7 +219,7 @@ const NavBar = () => {
   };
 
   const getAccountNavItems = () => {
-    if (isLoggedIn) {
+    if (authState.isLoggedIn) {
       return [
         {
           label: "My Orders",
@@ -250,7 +251,7 @@ const NavBar = () => {
         },
         {
           label: <span className="text-red-500">Logout</span>,
-          href: "/",
+          onClick: handleLogout,
           icon: (
             <LogOut className="w-5 h-5 sm:w-5 sm:h-5 text-red-500 opacity-90" />
           ),
@@ -260,12 +261,12 @@ const NavBar = () => {
     return [
       {
         label: "Sign in",
-        href: "#",
+        onClick: () => handleAuthAction("signin"),
         icon: <User className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />,
       },
       {
         label: "Register",
-        href: "#",
+        onClick: () => handleAuthAction("signup"),
         icon: (
           <UserOutlined className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />
         ),
@@ -283,36 +284,79 @@ const NavBar = () => {
           className="w-full py-2 text-base font-medium text-white flex items-center justify-between"
         >
           {item.name}
-          {products.length > 0 && (
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${
-                openDropdown === index ? "rotate-180" : ""
-              }`}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M19 9l-7 7-7-7"></path>
-            </svg>
-          )}
+          <svg
+            className={`w-4 h-4 transition-transform duration-200 ${
+              openDropdown === index ? "rotate-180" : ""
+            }`}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M19 9l-7 7-7-7"></path>
+          </svg>
         </button>
 
-        {products.length > 0 && openDropdown === index && (
+        {openDropdown === index && (
           <div className="ml-4 mt-2 space-y-2">
-            {products.map((product) => (
-              <a
-                key={product._id}
-                onClick={() => handleProductClick(product._id)}
-                className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200 cursor-pointer"
-              >
-                {product.productTitle}
-              </a>
-            ))}
+            {products.length > 0 ? (
+              products.map((product) => (
+                <a
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                  className="block py-2 text-sm text-gray-200 hover:text-white transition-colors duration-200 cursor-pointer"
+                >
+                  {product.productTitle}
+                </a>
+              ))
+            ) : (
+              <div className="py-2 text-sm text-gray-200 flex items-center justify-center">
+                <span>No products available</span>
+                <span className="ml-2">😔</span>
+              </div>
+            )}
           </div>
         )}
+      </div>
+    );
+  };
+
+  const DesktopCategory = ({ category, index }) => {
+    const products = categoryProducts[category.name] || [];
+
+    return (
+      <div key={index} className="relative group">
+        <a
+          href={`/categories/${category.name}`}
+          className="text-sm text-white relative py-1 group"
+        >
+          <span className="inline-block relative py-1">
+            {category.name}
+            <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
+          </span>
+        </a>
+        <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
+          <div className="py-2">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <a
+                  key={product._id}
+                  onClick={() => handleProductClick(product._id)}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gradient-to-r from-purple-500 to-orange-500 hover:bg-clip-text hover:text-transparent hover:font-semibold cursor-pointer"
+                >
+                  {product.productTitle}
+                </a>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-sm text-gray-500 flex items-center justify-center">
+                <span>No products available</span>
+                <span className="ml-2">😔</span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   };
@@ -321,7 +365,8 @@ const NavBar = () => {
     <>
       <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
         <header>
-          <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
+          <nav className="relative flex items-center justify-between h-14 lg:h-12 bg-gray-900 bg-opacity-60">
+            {/* Logo */}
             <div className="flex-shrink-0 ml-10">
               <a href="/" className="flex">
                 <img
@@ -332,37 +377,20 @@ const NavBar = () => {
               </a>
             </div>
 
+            {/* Desktop Navigation */}
             <div className="hidden lg:flex lg:items-center lg:space-x-7">
               {categories.map((category, index) => (
-                <div key={index} className="relative group">
-                  <a
-                    href={`/categories/${category.name}`}
-                    className="text-sm text-white relative py-1 group"
-                  >
-                    <span className="inline-block relative py-1">
-                      {category.name}
-                      <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-500 to-orange-500 origin-left scale-x-0 transition-transform duration-800 ease-out group-hover:scale-x-100"></span>
-                    </span>
-                  </a>
-                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out">
-                    <div className="py-2">
-                      {categoryProducts[category.name]?.map((product) => (
-                        <a
-                          key={product._id}
-                          onClick={() => handleProductClick(product._id)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:bg-gradient-to-r from-purple-500 to-orange-500 hover:bg-clip-text hover:text-transparent hover:font-semibold cursor-pointer"
-                        >
-                          {product.productTitle}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <DesktopCategory
+                  key={index}
+                  category={category}
+                  index={index}
+                />
               ))}
             </div>
 
+            {/* Desktop Right Section */}
             <div className="hidden lg:flex lg:items-center lg:space-x-5 mr-10">
-              {/* Updated Search Container */}
+              {/* Search Container */}
               <div
                 ref={searchContainerRef}
                 className="relative flex items-center"
@@ -459,13 +487,14 @@ const NavBar = () => {
                       </>
                     ) : (
                       <div className="p-4 text-center text-gray-500">
-                        No results found 😞
+                        No results found 😔
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
+              {/* Cart */}
               <div className="inline-flex relative">
                 <a href="/cart">
                   <div className="w-8 h-8 text-white flex items-center justify-center rounded">
@@ -477,15 +506,34 @@ const NavBar = () => {
                 </div>
               </div>
 
+              {/* User Menu */}
               <div className="flex items-center gap-2">
                 <button
                   onClick={openDrawer}
                   className="flex items-center gap-2"
                 >
-                  <Avatar icon={<UserOutlined />} />
-                  {isLoggedIn && (
+                  <Avatar
+                    size={34}
+                    style={{
+                      background: authState.isLoggedIn
+                        ? "linear-gradient(to right, #f7198e,#2e18e8)"
+                        : "transparent",
+                      verticalAlign: "middle",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: authState.isLoggedIn ? "white" : "white",
+                    }}
+                  >
+                    {authState.isLoggedIn && authState.user.email ? (
+                      authState.user.email[0].toUpperCase()
+                    ) : (
+                      <UserOutlined />
+                    )}
+                  </Avatar>
+                  {authState.isLoggedIn && (
                     <span className="text-white text-sm">
-                      Welcome, {user.name}
+                      {/* {authState.user.email} */}
                     </span>
                   )}
                 </button>
@@ -524,7 +572,9 @@ const NavBar = () => {
             <div className="px-4 mx-auto sm:px-6 lg:px-8">
               <div className="flex items-center justify-between">
                 <p className="text-md font-semibold tracking-widest text-gray-100 uppercase">
-                  {isLoggedIn ? `Welcome, ${user.name}` : "Menu"}
+                  {authState.isLoggedIn
+                    ? `Welcome, ${authState.user.name}`
+                    : "Menu"}
                 </p>
 
                 <button
@@ -549,13 +599,14 @@ const NavBar = () => {
                   />
                   {searchTerm && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg z-50">
+                      {/* Mobile Search Results */}
                       {isSearchLoading ? (
                         <div className="p-4 text-center text-gray-500">
                           Loading...
                         </div>
                       ) : searchError ? (
                         <div className="p-4 text-center text-red-500 flex flex-col items-center">
-                          <div className="text-4xl mb-2">😞</div>
+                          <div className="text-4xl mb-2">😔</div>
                           <p>{searchError}</p>
                         </div>
                       ) : searchResults.length > 0 ? (
@@ -607,7 +658,7 @@ const NavBar = () => {
                         </>
                       ) : (
                         <div className="p-4 text-center text-gray-500">
-                          No results found 😞
+                          No results found 😔
                         </div>
                       )}
                     </div>
@@ -626,16 +677,16 @@ const NavBar = () => {
 
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 max-w-2xl">
                   {getAccountNavItems().map((item, index) => (
-                    <a
+                    <button
                       key={index}
-                      href={item.href}
+                      onClick={item.onClick || (() => navigate(item.href))}
                       className="flex items-center justify-start gap-1 sm:gap-2 p-2 sm:p-3 text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
                     >
                       {item.icon}
                       <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
                         {item.label}
                       </span>
-                    </a>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -649,55 +700,39 @@ const NavBar = () => {
           onClose={closeDrawer}
           className="relative z-50"
         >
-          <DialogBackdrop
+ <DialogBackdrop
             transition
             className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
-          />
+          />          
           <div className="fixed inset-0">
             <div className="absolute inset-0">
               <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-                <DialogPanel
+              <DialogPanel
                   transition
                   className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
-                >
-                  <TransitionChild>
-                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
-                      <button
-                        type="button"
-                        onClick={closeDrawer}
-                        className="relative rounded-md text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-                      >
-                        <span className="absolute -inset-2.5" />
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon className="h-6 w-6" />
-                      </button>
-                    </div>
-                  </TransitionChild>
-                  <div className="flex h-full flex-col justify-center overflow-hidden bg-white py-6 shadow-xl">
-                    <div className="relative flex-1 px-4 sm:px-6">
-                      {isLoggedIn ? (
-                        <div className="flex flex-col items-center gap-4">
-                          <Avatar size={64} icon={<UserOutlined />} />
-                          <h2 className="text-xl font-semibold">
-                            Welcome, {user.name}
-                          </h2>
-                          <p className="text-gray-600">{user.email}</p>
-                          <div className="w-full space-y-2">
-                            {getAccountNavItems().map((item, index) => (
-                              <a
-                                key={index}
-                                href={item.href}
-                                className="flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg transition-all duration-200"
-                              >
-                                {item.icon}
-                                <span>{item.label}</span>
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <SignInDrawer onAuthAction={handleAuthAction} />
-                      )}
+                >  
+                <TransitionChild>              
+                <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                    <button
+                      type="button"
+                      className="relative rounded-md text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                      onClick={closeDrawer}
+                    >
+                      <span className="absolute -inset-2.5" />
+                      <span className="sr-only">Close panel</span>
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+                  </TransitionChild>  
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                    <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                      <SignInDrawer
+                        isLoggedIn={authState.isLoggedIn}
+                        user={authState.user}
+                        onAuthAction={handleAuthAction}
+                        onLogout={handleLogout}
+                        onClose={closeDrawer}
+                      />
                     </div>
                   </div>
                 </DialogPanel>
@@ -705,14 +740,14 @@ const NavBar = () => {
             </div>
           </div>
         </Dialog>
-      </div>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={handleClose}
-        initialView={authModalView}
-      />
+        {/* Auth Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={handleClose}
+          initialView={authModalView}
+        />
+      </div>
     </>
   );
 };

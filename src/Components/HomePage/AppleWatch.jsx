@@ -184,9 +184,7 @@ const AppleWatch = () => {
                             <h3 className="text-md font-semibold text-shadow-lg text-gray-800 dark:text-white transition-colors duration-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
                               {watch.productTitle}
                             </h3>
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                              Available Colors
-                            </p>
+                            
                           </div>
 
                           <div className="flex justify-center gap-2 mt-2">

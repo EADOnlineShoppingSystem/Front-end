@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer, useEffect, useContext } from "react";
 import { saveAuthData, getAuthData } from "../utils/encript";
 
 // Initial state for authentication
@@ -38,6 +38,17 @@ const authReducer = (state, action) => {
 // Create context for authentication
 export const AuthContext = createContext(null);
 
+// Custom hook for using auth context
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error(
+      "useAuthContext must be used within an AuthContextProvider"
+    );
+  }
+  return context;
+};
+
 // Context provider component
 export const AuthContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -46,7 +57,7 @@ export const AuthContextProvider = ({ children }) => {
     const storedState = getAuthData();
     if (
       storedState &&
-      storedState.user !== null && // Ensure user is not null
+      storedState.user !== null && 
       storedState.token !== null
     ) {
       dispatch({
