@@ -3,7 +3,7 @@ import { Trash2, ChevronDown, ChevronUp, MapPin, ShoppingCart } from 'lucide-rea
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
-import { useOrder } from '../../contexts/orderContext';
+import { useOrderContext } from '../../hooks/useOrderContext';
 import { Spin } from 'antd'; 
 
 const Cart = () => {
@@ -20,8 +20,8 @@ const Cart = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   
   const navigate = useNavigate();
-  const { setOrderData } = useOrder();
-
+ const {dispatch}=useOrderContext();
+  console.log("cartData",cartItem)
   // Memoized calculations to prevent unnecessary re-renders
   const cartSummary = useMemo(() => {
     const selectedItem = cartItem.find(item => item._id === selectedItemId);
@@ -53,7 +53,9 @@ const Cart = () => {
         quantity: selectedItem.quantity.toString(),
         price: selectedItem.productDetails.product.lowestPrice.toString()
       };
-      setOrderData(orderData);
+      dispatch({type:"ADD_ORDER",payload:{
+        order:orderData
+      }})
       navigate('/checkout');
     }
   };
@@ -119,6 +121,7 @@ const Cart = () => {
                   </button>
                 </div>
               ) : (
+              
                 cartItem.map((item) => (
                   <div key={item._id} className="border-t py-4">
                     <div className="flex items-start gap-4">

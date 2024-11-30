@@ -27,7 +27,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
 const {state} = useAuthContext();
 const {isLoggedIn} = state;
-console.log("kanishka",state)
+console.log("kanishka",state);
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {

@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MdArrowBackIosNew, MdEdit, MdLocationPin } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import { createAnOrder } from "../features/user/userSlice";
+import {  useSelector } from "react-redux";
 import orderServices from "../Services/order.services";
 import md5 from "md5";
-import { useOrder } from "../contexts/orderContext";
+import { useOrderContext } from "../hooks/useOrderContext";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-
   const { isLoading, isError, user } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
+  const {state, dispatch} = useOrderContext();
+  const {order}=state;
+  console.log("state",order.order);
 
   const [addresses] = useState([
     {

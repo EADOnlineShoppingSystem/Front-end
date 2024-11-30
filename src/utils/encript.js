@@ -43,3 +43,22 @@ export const getAuthToken = () => {
   const authData = getAuthData();
   return authData?.token || null;
 };
+//SaveOrderData
+export const saveOrderData = (data) => {
+  const encryptedData = encryptData(data);
+  sessionStorage.setItem("orderData", encryptedData);
+};
+
+//getOrder Data
+export const getOrderData = () => {
+  const encryptedData = sessionStorage.getItem("orderData");
+  if (encryptedData) {
+    try {
+      return decryptData(encryptedData);
+    } catch (error) {
+      console.error("Failed to decrypt session data:", error);
+      return null;
+    }
+  }
+  return null;
+};

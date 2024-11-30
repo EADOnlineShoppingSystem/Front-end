@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
       setIsLoading(true);
       setError(null);
       const response = await cartServices.getCartDetailsByUserID();
-
+      console.log('Cart items fetched:', response);
       // Ensure response is an array, even if null or undefined
       setCartItem(Array.isArray(response) ? response : []);
       console.log('Cart items fetched:', response);
