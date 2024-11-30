@@ -8,6 +8,8 @@ export const CartProvider = ({ children }) => {
   const [cartItem, setCartItem] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [totalQuentity ,setTotalQuentity] = useState(0);
+
 
   // Fetch cart items
   const fetchCartItems = async () => {
@@ -73,10 +75,29 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+
+  //fetch all quntity 
+  const fetchupdateAllQuantity = async () => {
+    try {
+     const responce =   await cartServices.getAllQuantityByUsers(); 
+     setTotalQuentity(responce);
+     await fetchCartItems(); // Refresh cart
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      message.error('Failed to update quantity');
+    }
+  };
+
+  useEffect(() => {
+    fetchupdateAllQuantity();
+  }, []);
+
+
   const value = {
     cartItem,
     isLoading,
     error,
+    totalQuentity,
     fetchCartItems,
     addToCart,
     removeFromCart,

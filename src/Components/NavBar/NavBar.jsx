@@ -21,7 +21,7 @@ import AuthModal from "../Auth/AuthModal";
 import { useCart } from "../../contexts/CartContext";
 
 const NavBar = () => {
-  const { getCartCount } = useCart();
+  const { totalQuentity } = useCart();
   const [isLoggedIn] = useState(false);
   const [user] = useState({
     name: "John Doe",
@@ -292,7 +292,7 @@ const NavBar = () => {
                 </div>
               </a>
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">1</span>
+                <span className="text-white text-xs">{totalQuentity || "0"}</span>
               </div>
             </div>
 

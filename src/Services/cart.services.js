@@ -42,6 +42,39 @@ const cartServices={
             console.error('An unknown error occurred');
         }
     }
+  },
+
+  getAllQuantityByUsers:async()=>{
+    try {
+        console.log("get all quantity");
+        const responce =await axiosInstance.get("/order/api/cart/getAllQuantityByUsers");
+        console.log("get all quantity",responce.data);
+        return responce.data;
+       
+    } catch (error) {
+         if (error instanceof Error) {
+            console.error('An error occurred:', error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
+    }
+      
+  },
+
+  updateCartQuantity:async(cartId,quantity)=>{
+    try {
+        console.log("remove from cart");
+        const responce =await axiosInstance.put(`/order/api/cart/updateCart/`,quantity);
+        console.log("updated quentitu",responce.data);
+        return responce.data;
+       
+    } catch (error) {
+         if (error instanceof Error) {
+            console.error('An error occurred:', error.message);
+        } else {
+            console.error('An unknown error occurred');
+        }
+    }
   }
 
 
