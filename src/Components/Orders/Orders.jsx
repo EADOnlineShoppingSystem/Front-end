@@ -452,13 +452,7 @@ const Orders = () => {
                           Mark as Finished
                         </button>
                       )}
-                      <button
-                        onClick={() => handleDeleteOrder(order.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-sm text-red-500 border border-red-500 rounded-lg hover:bg-red-50 w-full sm:w-auto justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete</span>
-                      </button>
+                    
                     </div>
                   </div>
 
