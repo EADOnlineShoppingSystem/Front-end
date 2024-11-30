@@ -1,6 +1,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import { useNavigate } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -10,7 +11,12 @@ import "@leenguyen/react-flip-clock-countdown/dist/index.css";
 import sliderImages from "./Data/shoppingEvent1.json";
 
 const ShoppingEvent = () => {
+  const navigate = useNavigate();
   const countdownDate = new Date().getTime() + 24 * 3600 * 1000 + 5000;
+
+  const handleAirPodsShopNow = () => {
+    navigate("/product/674ad0179fdeb1eb423b9271");
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
@@ -79,15 +85,15 @@ const ShoppingEvent = () => {
           {/* Top Right Image*/}
           <div className="relative w-full h-[60%] rounded-xl overflow-hidden shadow-lg object-contain">
             <img
-              src="/shoppingEvent/L_13.png"
+              src="/shoppingEvent/L_18.jpg"
               alt="Top right"
               className="absolute inset-0 w-full h-full object-cover"
               loading="lazy"
             />
             <div className="absolute top-0 left-0 right-0 p-4 sm:p-8 z-10">
               <div className="flex flex-col items-start">
-                <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-400 mb-5">
-                  Aurora Headset
+                <h1 className="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-pink-500 mb-5">
+                  Air Pods 4
                 </h1>
                 <div className="countdown-wrapper mb-4">
                   <FlipClockCountdown
@@ -98,7 +104,10 @@ const ShoppingEvent = () => {
                     )}
                   />
                 </div>
-                <button className="bg-blue-400 text-white text-sm text-semibold px-3 py-2 rounded-lg ease-in-out transform hover:scale-105 hover:shadow-lg duration-500">
+                <button
+                  onClick={handleAirPodsShopNow}
+                  className="bg-blue-400 text-white text-sm text-semibold px-3 py-2 rounded-lg ease-in-out transform hover:scale-105 hover:shadow-lg duration-500"
+                >
                   Shop Now
                 </button>
               </div>
@@ -204,9 +213,7 @@ const ShoppingEvent = () => {
             --fcc-separator-size: 4px;
           }
         }
-      `}
-      
-      </style>
+      `}</style>
     </div>
   );
 };

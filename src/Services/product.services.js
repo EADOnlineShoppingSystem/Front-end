@@ -69,7 +69,7 @@ const productServices = {
   getAllIpads: async () => {
     try {
       const response = await axiosInstance.get(
-        "/Product/api/products/getProducts/IPad"
+        "/Product/api/products/getProducts/iPad"
       );
       return response.data;
     } catch (error) {
@@ -85,7 +85,7 @@ const productServices = {
   getAllMacProducts: async () => {
     try {
       const response = await axiosInstance.get(
-        "/Product/api/products/getProducts/MackBook"
+        "/Product/api/products/getProducts/MacBook"
       );
       return response.data;
     } catch (error) {
