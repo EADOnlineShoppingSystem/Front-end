@@ -15,38 +15,38 @@ const HomePage = () => {
   return (
     <div className="w-screen h-screen flex flex-col overflow-y-auto overflow-x-hidden ">
       <div className="min-h-screen relative">
-        <NavBar />
-        <VideoFrame />
+        <NavBar data-testid="navbar" />
+        <VideoFrame data-testid="videoframe" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-10 xl:pb-0">
-        <PopularCategories />
+        <PopularCategories data-testid="popularcategories" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0">
-        <NewProducts />
+        <NewProducts data-testid="newproducts" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0">
-        <ShoppingEvent />
+        <ShoppingEvent data-testid="shoppingevent" />
       </div>
       <div className="bg-black h-auto">
-        <Watch />
+        <Watch data-testid="watch" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-12">
-        <AppleWatch />
+        <AppleWatch data-testid="applewatch" />
       </div>
       <div className="bg-black h-screen">
-        <Tab />
+        <Tab data-testid="tab" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0">
-        <IPads />
+        <IPads data-testid="ipads" />
       </div>
       <div className="bg-black h-screen">
-        <Mac />
+        <Mac data-testid="mac" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-12">
-        <MacProducts />
+        <MacProducts data-testid="macproducts" />
       </div>
       <div className="bg-gray-100 h-auto xl:p-24 xl:pt-0 xl:pb-2">
-        <Footer />
+        <Footer data-testid="footer" />
       </div>
     </div>
   );

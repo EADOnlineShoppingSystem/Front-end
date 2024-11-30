@@ -49,7 +49,7 @@ const VideoHero = () => {
         className="absolute bottom-16 md:bottom-24 lg:bottom-32 left-0 right-0 
         flex flex-col items-center justify-center px-4 text-center"
       >
-        <h1
+        <h1 data-testid="explore-latest-lineup"
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
           text-white font-medium mb-6 md:mb-8 
           opacity-0 animate-[fadeIn_1s_ease-out_forwards] 
@@ -58,20 +58,20 @@ const VideoHero = () => {
           Explore Latest Lineup
         </h1>
 
-        <button
+        <button data-testid="see-more-button-one"
           className="group relative p-[2px] overflow-hidden rounded-full
           animate-[float_3s_ease-in-out_infinite]
           w-auto"
         >
           {/* Rotating gradient border */}
-          <div
+          <div data-testid="rotating-gradient-border"
             className="absolute inset-0 bg-gradient-to-r 
             from-purple-600 via-pink-600 to-blue-600
             animate-[spin_3s_linear_infinite]"
           />
 
           {/* Button content - Responsive Padding */}
-          <div
+          <div data-testid="see-more-button-content"
             className="relative flex items-center gap-2 
             px-4 sm:px-6 py-2 sm:py-2.5 rounded-full
             bg-black/80 hover:bg-black/60 backdrop-blur-sm
@@ -91,7 +91,7 @@ const VideoHero = () => {
       </div>
 
       {/* Play/Pause Button - Responsive Positioning and Sizing */}
-      <button
+      <button data-testid="play-pause-button"
         onClick={handlePlayPause}
         className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8
         w-10 h-10 sm:w-12 sm:h-12 rounded-full
