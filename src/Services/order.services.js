@@ -82,11 +82,21 @@ const orderServices={
                 console.error('An unknown error occurred');
             }
         }
-    }
+    },
+
+    updateAddressByAddressId: async(address)=>{
+        try {
+            const responce =await axiosInstance.put("/order/api/orders/updateAddress",address);
+            return responce.data;
+        } catch (error) {
+             if (error instanceof Error) {
+                console.error('An error occurred:', error.message);
+            } else {
+                console.error('An unknown error occurred');
+            }
+        }
+    } 
 
 
-    
-
-    
 }
 export default orderServices;
