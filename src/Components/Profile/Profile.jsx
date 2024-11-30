@@ -50,6 +50,7 @@ const Profile = () => {
     formData.append("username", profileData.name);
     formData.append("address", profileData.location);
     formData.append("phoneNumber", profileData.phone);
+    formData.append("bio", profileData.bio);
 
     // If an image is selected, append it as well
     if (profileData.profilePic) {
