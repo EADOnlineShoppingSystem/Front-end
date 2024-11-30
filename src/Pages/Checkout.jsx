@@ -5,6 +5,7 @@ import {  useSelector } from "react-redux";
 import orderServices from "../Services/order.services";
 import md5 from "md5";
 import { useCart } from "../contexts/CartContext";
+import { useAuthContext } from "../hooks/useAuthContext";	
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -12,10 +13,13 @@ const Checkout = () => {
   const [error, setError] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
-  const { isLoading, isError, user } = useSelector((state) => state.auth);
+  const { isLoading, isError,  } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
   const { cartItem } = useCart();
 
+  const {state} =useAuthContext();
+  const {user} =state;
+  
  // Calculate cart summary
   const cartSummary = useMemo(() => {
     const subtotal = cartItem.reduce(
@@ -48,7 +52,7 @@ const Checkout = () => {
   // Payment configuration
   const orderId = "123456";
   const name = "Iphone16";
-  const amount = 1000;
+  const amount = cartSummary.total;
   const merchantId = "1228659";
   const merchantSecret = "MjY0OTk5MTk1MjI3MzM3MDY5NDIyODQ5ODU0NDM5MjAwOTMxMzEwNg==";
   const currency = "LKR";

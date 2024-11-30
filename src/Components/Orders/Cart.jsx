@@ -95,7 +95,7 @@ const Cart = () => {
                   </p>
                   <button 
                     onClick={() => navigate('/')} 
-                    className="px-8 py-3 bg-orange-500 text-white rounded hover:bg-orange-600 font-medium transition-colors"
+                    className="px-8 py-3 bg-blue-400 text-white rounded hover:bg-orange-600 font-medium transition-colors"
                   >
                     CONTINUE SHOPPING
                   </button>
@@ -123,7 +123,7 @@ const Cart = () => {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-orange-500 font-medium">
+                            <p className="text-blue-400 font-medium">
                               Rs. {item.productDetails.product.lowestPrice}
                             </p>
                           </div>
@@ -234,13 +234,13 @@ const Cart = () => {
 
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
-                  <span className="text-orange-500 font-medium">
+                  <span className="text-blue-400 font-medium">
                     Rs. {total}
                   </span>
                 </div>
 
                 <button 
-                  className="w-full bg-orange-500 text-white py-3 rounded font-medium hover:bg-orange-600 disabled:bg-gray-300"
+                  className="bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition flex items-center gap-2 w-full justify-center"
                   disabled={cartItem.length === 0}
                   onClick={handleOrders}
                 >
