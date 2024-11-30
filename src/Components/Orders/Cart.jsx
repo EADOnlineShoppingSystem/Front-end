@@ -32,6 +32,7 @@ const Cart = () => {
   // }, [cartItem, voucherApplied]);
 
   const handleOrders = () => {
+
     const orders = cartItem.map(item => ({
       productId: item._id,
       quantity: item.quantity.toString(),
@@ -39,6 +40,7 @@ const Cart = () => {
     }));
     dispatch({ type: "ADD_ORDER", payload: { order: orders } });
     navigate('/checkout');
+
   };
 
   const handleQuantityChange = (item, newQuantity) => {
