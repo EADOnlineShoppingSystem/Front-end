@@ -17,7 +17,7 @@ const Profile = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const { state } = useAuthContext();
+  const { state, dispatch } = useAuthContext();
   const { user } = state;
 
   // Load profile data
@@ -68,7 +68,8 @@ const Profile = () => {
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      console.log("Profile updated:", response.data);
+       dispatch({ type: "UPDATE", payload: { user: response.data.user } });
+      console.log("Profile updated:", response.data.user);
       setIsEditing(false);  // Exit editing mode
     } catch (error) {
       console.error("Error updating profile:", error);

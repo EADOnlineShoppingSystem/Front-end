@@ -23,7 +23,7 @@ const orderServices = {
         throw new Error("User ID not found");
       }
       const response = await axiosInstance.get(
-        `/order/api/orders/getOdersByUserId/`
+        `/order/api/orders/getOdersByUserId`
       );
       console.log("getOrderByUserId response:", response);
       return response;
