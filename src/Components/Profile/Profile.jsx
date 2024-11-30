@@ -30,7 +30,7 @@ const Profile = () => {
         phone: user.phoneNumber || prevData.phone,
         location: user.address || prevData.location,
         joinDate: user.createdAt ? new Date(user.createdAt).getFullYear() : prevData.joinDate,
-        profilePic: user.imageUrls || prevData.profilePic,
+        profilePic: user.imageUrl || prevData.profilePic,
         bio: user.bio || prevData.bio,
       }));
     }
