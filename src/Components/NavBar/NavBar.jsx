@@ -13,13 +13,13 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  TransitionChild,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import SignInDrawer from "./SignInDrawer";
 import AuthModal from "../Auth/AuthModal";
 import { useCart } from "../../contexts/CartContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import  {useAuthContext } from "../../contexts/AthContext";
 import productServices from "../../Services/product.services";
 
 const NavBar = () => {
@@ -27,11 +27,7 @@ const NavBar = () => {
   const location = useLocation();
   const searchContainerRef = useRef(null);
   const { totalQuentity } = useCart();
-  const [isLoggedIn] = useState(false);
-  const [user] = useState({
-    name: "John Doe",
-    email: "john@example.com",
-  });
+  const { state: authState, dispatch: authDispatch } = useAuthContext();
 
   // State Management
   const [categories, setCategories] = useState([]);
@@ -48,7 +44,6 @@ const NavBar = () => {
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
 
-  // useEffect hooks
   useEffect(() => {
     fetchCategoriesAndProducts();
 
@@ -77,7 +72,6 @@ const NavBar = () => {
     }
   }, [location]);
 
-  // Data fetching function
   const fetchCategoriesAndProducts = async () => {
     try {
       const categoriesResponse = await productServices.getAllCategories();
@@ -109,7 +103,12 @@ const NavBar = () => {
     }
   };
 
-  // Search functionality
+  const handleLogout = () => {
+    authDispatch({ type: "LOGOUT" });
+    setIsDrawerOpen(false);
+    navigate("/");
+  };
+
   const performSearch = async (term) => {
     if (!term.trim()) {
       setSearchResults([]);
@@ -150,7 +149,6 @@ const NavBar = () => {
     }
   };
 
-  // Search handlers
   const handleSearchInputChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -191,7 +189,6 @@ const NavBar = () => {
     navigate(`/product/${productId}`);
   };
 
-  // UI Event Handlers
   const handleAuthAction = (view) => {
     setAuthModalView(view);
     setIsAuthModalOpen(true);
@@ -221,7 +218,7 @@ const NavBar = () => {
   };
 
   const getAccountNavItems = () => {
-    if (isLoggedIn) {
+    if (authState.isLoggedIn) {
       return [
         {
           label: "My Orders",
@@ -253,7 +250,7 @@ const NavBar = () => {
         },
         {
           label: <span className="text-red-500">Logout</span>,
-          href: "/",
+          onClick: handleLogout,
           icon: (
             <LogOut className="w-5 h-5 sm:w-5 sm:h-5 text-red-500 opacity-90" />
           ),
@@ -263,12 +260,12 @@ const NavBar = () => {
     return [
       {
         label: "Sign in",
-        href: "#",
+        onClick: () => handleAuthAction("signin"),
         icon: <User className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />,
       },
       {
         label: "Register",
-        href: "#",
+        onClick: () => handleAuthAction("signup"),
         icon: (
           <UserOutlined className="w-5 h-5 sm:w-5 sm:h-5 text-white opacity-90" />
         ),
@@ -276,7 +273,6 @@ const NavBar = () => {
     ];
   };
 
-  // Mobile Menu Component
   const MobileMenuItem = ({ item, index }) => {
     const products = categoryProducts[item.name] || [];
 
@@ -326,7 +322,6 @@ const NavBar = () => {
     );
   };
 
-  // Desktop Category Component
   const DesktopCategory = ({ category, index }) => {
     const products = categoryProducts[category.name] || [];
 
@@ -369,7 +364,7 @@ const NavBar = () => {
     <>
       <div className="fixed top-0 left-0 w-full z-50 bg-transparent">
         <header>
-          <nav className="relative flex items-center justify-between h-12 lg:h-12 bg-gray-900 bg-opacity-60">
+          <nav className="relative flex items-center justify-between h-14 lg:h-12 bg-gray-900 bg-opacity-60">
             {/* Logo */}
             <div className="flex-shrink-0 ml-10">
               <a href="/" className="flex">
@@ -516,10 +511,28 @@ const NavBar = () => {
                   onClick={openDrawer}
                   className="flex items-center gap-2"
                 >
-                  <Avatar icon={<UserOutlined />} />
-                  {isLoggedIn && (
+                  <Avatar
+                    size={34}
+                    style={{
+                      background: authState.isLoggedIn
+                        ? "linear-gradient(to right, #f7198e,#2e18e8)"
+                        : "transparent",
+                      verticalAlign: "middle",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: authState.isLoggedIn ? "white" : "white",
+                    }}
+                  >
+                    {authState.isLoggedIn && authState.user.email ? (
+                      authState.user.email[0].toUpperCase()
+                    ) : (
+                      <UserOutlined />
+                    )}
+                  </Avatar>
+                  {authState.isLoggedIn && (
                     <span className="text-white text-sm">
-                      Welcome, {user.name}
+                      {/* {authState.user.email} */}
                     </span>
                   )}
                 </button>
@@ -558,7 +571,9 @@ const NavBar = () => {
             <div className="px-4 mx-auto sm:px-6 lg:px-8">
               <div className="flex items-center justify-between">
                 <p className="text-md font-semibold tracking-widest text-gray-100 uppercase">
-                  {isLoggedIn ? `Welcome, ${user.name}` : "Menu"}
+                  {authState.isLoggedIn
+                    ? `Welcome, ${authState.user.name}`
+                    : "Menu"}
                 </p>
 
                 <button
@@ -661,16 +676,16 @@ const NavBar = () => {
 
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 max-w-2xl">
                   {getAccountNavItems().map((item, index) => (
-                    <a
+                    <button
                       key={index}
-                      href={item.href}
+                      onClick={item.onClick || (() => navigate(item.href))}
                       className="flex items-center justify-start gap-1 sm:gap-2 p-2 sm:p-3 text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
                     >
                       {item.icon}
                       <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
                         {item.label}
                       </span>
-                    </a>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -684,55 +699,31 @@ const NavBar = () => {
           onClose={closeDrawer}
           className="relative z-50"
         >
-          <DialogBackdrop
-            transition
-            className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
-          />
+          <DialogBackdrop className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0" />
           <div className="fixed inset-0">
             <div className="absolute inset-0">
               <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-                <DialogPanel
-                  transition
-                  className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
-                >
-                  <TransitionChild>
-                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
-                      <button
-                        type="button"
-                        onClick={closeDrawer}
-                        className="relative rounded-md text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-                      >
-                        <span className="absolute -inset-2.5" />
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon className="h-6 w-6" />
-                      </button>
-                    </div>
-                  </TransitionChild>
-                  <div className="flex h-full flex-col justify-center overflow-hidden bg-white py-6 shadow-xl">
-                    <div className="relative flex-1 px-4 sm:px-6">
-                      {isLoggedIn ? (
-                        <div className="flex flex-col items-center gap-4">
-                          <Avatar size={64} icon={<UserOutlined />} />
-                          <h2 className="text-xl font-semibold">
-                            Welcome, {user.name}
-                          </h2>
-                          <p className="text-gray-600">{user.email}</p>
-                          <div className="w-full space-y-2">
-                            {getAccountNavItems().map((item, index) => (
-                              <a
-                                key={index}
-                                href={item.href}
-                                className="flex items-center gap-2 p-3 hover:bg-gray-100 rounded-lg transition-all duration-200"
-                              >
-                                {item.icon}
-                                <span>{item.label}</span>
-                              </a>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <SignInDrawer onAuthAction={handleAuthAction} />
-                      )}
+                <DialogPanel className="pointer-events-auto relative w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700">
+                  <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                    <button
+                      type="button"
+                      className="relative rounded-md text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                      onClick={closeDrawer}
+                    >
+                      <span className="absolute -inset-2.5" />
+                      <span className="sr-only">Close panel</span>
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                    <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                      <SignInDrawer
+                        isLoggedIn={authState.isLoggedIn}
+                        user={authState.user}
+                        onAuthAction={handleAuthAction}
+                        onLogout={handleLogout}
+                        onClose={closeDrawer}
+                      />
                     </div>
                   </div>
                 </DialogPanel>
@@ -740,14 +731,14 @@ const NavBar = () => {
             </div>
           </div>
         </Dialog>
-      </div>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={handleClose}
-        initialView={authModalView}
-      />
+        {/* Auth Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={handleClose}
+          initialView={authModalView}
+        />
+      </div>
     </>
   );
 };
