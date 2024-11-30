@@ -26,7 +26,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchContainerRef = useRef(null);
- // const { getCartCount } = useCart();
+  const { totalQuentity } = useCart();
   const [isLoggedIn] = useState(false);
   const [user] = useState({
     name: "John Doe",
@@ -473,7 +473,7 @@ const NavBar = () => {
                   </div>
                 </a>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs">1</span>
+                  <span className="text-white text-xs">{totalQuentity}</span>
                 </div>
               </div>
 
