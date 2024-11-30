@@ -114,7 +114,7 @@ const Footer = () => {
                 </h3>
                 <div className="space-y-2">
                   <p className="font-medium text-gray-900">
-                    Apple Asia - Wellawatta Branch
+                    Handfree.lk - Wellawatta Branch
                   </p>
                   <div className="flex items-start gap-2">
                     <a
