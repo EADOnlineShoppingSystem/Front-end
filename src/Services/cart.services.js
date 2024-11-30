@@ -61,10 +61,11 @@ const cartServices={
       
   },
 
-  updateCartQuantity:async(cartId,quantity)=>{
+  updateCartQuantity:async(productId,quantity)=>{
     try {
-        console.log("remove from cart");
-        const responce =await axiosInstance.put(`/order/api/cart/updateCart/`,quantity);
+        const data = {_id:productId,quantity};
+        console.log("remove from cart" ,data);
+        const responce = await axiosInstance.put("/order/api/cart/UpdateCartQantity",data);
         console.log("updated quentitu",responce.data);
         return responce.data;
        

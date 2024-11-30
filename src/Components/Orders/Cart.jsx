@@ -20,11 +20,11 @@ const Cart = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   
   const navigate = useNavigate();
- const {dispatch}=useOrderContext();
+  const {dispatch}=useOrderContext();
   console.log("cartData",cartItem)
   // Memoized calculations to prevent unnecessary re-renders
   const cartSummary = useMemo(() => {
-    const selectedItem = cartItem.find(item => item._id === selectedItemId);
+  const selectedItem = cartItem.find(item => item._id === selectedItemId);
     
     const calculateSelectedSubtotal = () => {
       if (!selectedItem) return 0;

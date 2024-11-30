@@ -66,7 +66,8 @@ export const CartProvider = ({ children }) => {
   // Update quantity of an item in the cart
   const updateQuantity = async (productId, quantity) => {
     try {
-      await cartServices.updateQuantity(productId, quantity); // Update product quantity
+      console.log('Update quantity:', productId, quantity);
+      await cartServices.updateCartQuantity(productId, quantity); // Update product quantity
       await fetchCartItems(); // Refresh cart
       message.success('Quantity updated');
     } catch (error) {
