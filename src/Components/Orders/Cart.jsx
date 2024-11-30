@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Trash2, ChevronDown, ChevronUp, ShoppingCart } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronUp, ShoppingCart ,MapPin} from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import NavBar from '../NavBar/NavBar';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Spin } from 'antd';
 const Cart = () => {
   const { removeFromCart, updateQuantity, cartItem, isLoading,subtotal,shippingFee,total} = useCart();
   const [voucherCode, setVoucherCode] = useState('');
+  const [location, setLocation] = useState('Weligama, Matara,Southern');
   const [voucherApplied, setVoucherApplied] = useState(false);
   const navigate = useNavigate();
   const { dispatch } = useOrderContext();
@@ -177,6 +178,13 @@ const Cart = () => {
           {/* Order Summary Section */}
           <div className="lg:w-80">
             <div className="bg-white rounded-lg shadow-sm p-4">
+            <div className="mb-4">
+                <h2 className="font-medium mb-4">Location</h2>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
+                  <p className="text-gray-600 text-sm flex-1">{location}</p>
+                </div>
+              </div>
               <div className="border-t pt-4">
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
