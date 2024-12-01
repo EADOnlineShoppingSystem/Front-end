@@ -4,7 +4,8 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import productServices from "../../services/product.services";
+import productServices from "../../Services/product.services";
+import { useNavigate} from "react-router-dom";
 
 const NewProducts = () => {
   const [hoveredStates, setHoveredStates] = useState({});
@@ -12,6 +13,7 @@ const NewProducts = () => {
   const [newProducts, setNewProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleMouseEnter = (index) => {
     setHoveredStates((prev) => ({ ...prev, [index]: true }));
@@ -23,6 +25,10 @@ const NewProducts = () => {
 
   const handleColorSelect = (productIndex, variantIndex) => {
     setSelectedColors((prev) => ({ ...prev, [productIndex]: variantIndex }));
+  };
+
+  const handleProductClick = (href) => {
+    navigate(href);
   };
 
   const fetchNewProducts = async () => {
@@ -250,6 +256,7 @@ const NewProducts = () => {
                             <button
                               type="button"
                               className="inline-flex items-center justify-center rounded-md border border-transparent px-3 py-2 sm:px-4 sm:py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                              onClick={() => handleProductClick(product.href)}
                             >
                               <svg
                                 className="h-4 w-4"
@@ -264,7 +271,7 @@ const NewProducts = () => {
                                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                                 />
                               </svg>
-                              <span className="ml-2">Add to Cart</span>
+                              <span className="ml-2">Shop Now</span>
                             </button>
                           </div>
                         </div>

@@ -3,7 +3,6 @@ import {
   Package,
   Search,
   Filter,
-  Trash2,
   ShoppingBag,
   ArrowRight,
   Loader,
@@ -17,14 +16,13 @@ const Orders = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filterCriteria, setFilterCriteria] = useState({
     orderNumber: "",
     dateRange: "all",
+    status: "all",
   });
 
   const { state } = useAuthContext();
@@ -49,6 +47,8 @@ const Orders = () => {
           id: order._id,
           date: new Date(order.createdAt).toLocaleDateString(),
           total: order.price * order.quantity,
+          delevered: order.delevered,
+          status: order.delevered ? "finished" : "pending",
           items: [
             {
               name: order.productDetails.product.productTitle,
@@ -57,7 +57,6 @@ const Orders = () => {
               image: order.productDetails.product.images[0].url,
             },
           ],
-          isFinished: false,
         }));
         setOrders(formattedOrders);
       }
@@ -69,42 +68,50 @@ const Orders = () => {
     }
   };
 
+  const handleFinishOrder = async (orderId) => {
+    try {
+      // Optimistically update the UI
+      setOrders(
+        orders.map((order) =>
+          order.id === orderId ? { ...order, delevered: true } : order
+        )
+      );
+
+      // Make API call
+      const data = await orderServices.changeDeleveryStatus(orderId);
+      console.log("Order finished:", data);
+    } catch (error) {
+      // Revert the optimistic update if the API call fails
+      setOrders(
+        orders.map((order) =>
+          order.id === orderId ? { ...order, delevered: false } : order
+        )
+      );
+      console.error("Error finishing order:", error);
+      setError(true);
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       fetchOrders();
     }
   }, [userId]);
 
-  const handleDeleteOrder = (orderId) => {
-    setSelectedOrderId(orderId);
-    setShowDeleteDialog(true);
-  };
-
-  const confirmDelete = () => {
-    setOrders(orders.filter((order) => order.id !== selectedOrderId));
-    setShowDeleteDialog(false);
-    setSelectedOrderId(null);
-  };
-
-  const handleFinishOrder = async(orderId) => {
-    setOrders(
-      orders.map((order) =>
-        order.id === orderId ? { ...order, isFinished: true } : order
-      )
-    );
-    try {
-      const data = await orderServices.changeDeleveryStatus(orderId);
-      console.log("Order finished:", data);
-    } catch (error) {
-      console.error("Error finishing order:", error);
-      setError(true);
-      
-    }
-
+  const handleResetFilters = () => {
+    setFilterCriteria({
+      orderNumber: "",
+      dateRange: "all",
+      status: "all",
+    });
+    setSearchTerm("");
+    setActiveTab("all");
   };
 
   const filteredOrders = orders.filter((order) => {
-    if (activeTab === "finished" && !order.isFinished) return false;
+    // Filter based on tab selection
+    if (activeTab === "finished" && !order.delevered) return false;
+    if (activeTab === "pending" && order.delevered) return false;
 
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
@@ -131,12 +138,11 @@ const Orders = () => {
     return matchesSearch && matchesOrderNumber && matchesDateRange;
   });
 
-  const handleResetFilters = () => {
-    setFilterCriteria({
-      orderNumber: "",
-      dateRange: "all",
-    });
-    setSearchTerm("");
+  // Get counts for each status
+  const orderCounts = {
+    all: orders.length,
+    pending: orders.filter((order) => !order.delevered).length,
+    finished: orders.filter((order) => order.delevered).length,
   };
 
   // Loading State Component
@@ -176,32 +182,6 @@ const Orders = () => {
           While we're fixing things up, why not explore our amazing collection
           of the latest iPhones?
         </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-sm">
-            <div className="text-3xl mb-2">📱</div>
-            <h3 className="font-semibold mb-2">Latest Models</h3>
-            <p className="text-sm text-gray-600">
-              Discover the newest iPhone lineup
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-sm">
-            <div className="text-3xl mb-2">💰</div>
-            <h3 className="font-semibold mb-2">Best Deals</h3>
-            <p className="text-sm text-gray-600">
-              Unbeatable prices on all products
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-sm">
-            <div className="text-3xl mb-2">🎁</div>
-            <h3 className="font-semibold mb-2">Special Offers</h3>
-            <p className="text-sm text-gray-600">
-              Exclusive deals for new customers
-            </p>
-          </div>
-        </div>
 
         <div className="space-y-4">
           <Link
@@ -243,54 +223,14 @@ const Orders = () => {
         shopping journey with us today!
       </p>
 
-      <div className="space-y-6 max-w-2xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-blue-50 p-6 rounded-lg text-left">
-            <div className="text-2xl mb-2">🌟</div>
-            <h3 className="font-semibold text-lg mb-2">Exclusive Deals</h3>
-            <p className="text-gray-600 text-sm">
-              Get special discounts on your first purchase!
-            </p>
-          </div>
-
-          <div className="bg-purple-50 p-6 rounded-lg text-left">
-            <div className="text-2xl mb-2">🚚</div>
-            <h3 className="font-semibold text-lg mb-2">Free Shipping</h3>
-            <p className="text-gray-600 text-sm">
-              Enjoy free delivery on orders above $500
-            </p>
-          </div>
-
-          <div className="bg-green-50 p-6 rounded-lg text-left">
-            <div className="text-2xl mb-2">⭐</div>
-            <h3 className="font-semibold text-lg mb-2">Quality Guarantee</h3>
-            <p className="text-gray-600 text-sm">
-              100% authentic products with warranty
-            </p>
-          </div>
-
-          <div className="bg-orange-50 p-6 rounded-lg text-left">
-            <div className="text-2xl mb-2">🎁</div>
-            <h3 className="font-semibold text-lg mb-2">Special Rewards</h3>
-            <p className="text-gray-600 text-sm">
-              Earn points with every purchase
-            </p>
-          </div>
-        </div>
-
-        <div className="pt-8">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            Start Shopping Now
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-
-          <div className="mt-4 text-sm text-gray-500">
-            Join thousands of happy customers! 🌟
-          </div>
-        </div>
+      <div className="pt-8">
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+          Start Shopping Now
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </Link>
       </div>
     </div>
   );
@@ -412,8 +352,13 @@ const Orders = () => {
 
           <div className="flex gap-6 border-b mb-6 overflow-x-auto">
             {[
-              { id: "all", label: "All Orders" },
-              { id: "finished", label: "Finished" },
+              { id: "all", label: "All Orders", count: orderCounts.all },
+              { id: "pending", label: "Pending", count: orderCounts.pending },
+              {
+                id: "finished",
+                label: "Finished",
+                count: orderCounts.finished,
+              },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -424,7 +369,15 @@ const Orders = () => {
                     : "text-gray-600"
                 }`}
               >
-                {tab.label}
+                <span className="flex items-center gap-2">
+                  {tab.label}
+                  <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-sm">
+                    {tab.count}
+                  </span>
+                </span>
+                {tab.id === activeTab && (
+                  <span className="absolute -bottom-[2px] left-0 w-full h-0.5 bg-blue-500" />
+                )}
               </button>
             ))}
           </div>
@@ -450,10 +403,19 @@ const Orders = () => {
                           |
                         </span>
                         <span className="text-gray-500">{order.date}</span>
+                        <span
+                          className={`px-2 py-1 rounded-full text-sm ${
+                            order.delevered
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {order.delevered ? "Delivered" : "Pending"}
+                        </span>
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-                      {!order.isFinished && (
+                      {!order.delevered && (
                         <button
                           onClick={() => handleFinishOrder(order.id)}
                           className="flex items-center gap-1 px-3 py-1 text-sm text-green-600 border border-green-600 rounded-lg hover:bg-green-50 w-full sm:w-auto justify-center"
@@ -461,7 +423,6 @@ const Orders = () => {
                           Mark as Finished
                         </button>
                       )}
-                    
                     </div>
                   </div>
 
@@ -500,31 +461,6 @@ const Orders = () => {
             )}
           </div>
         </>
-      )}
-
-      {showDeleteDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4">Delete Order</h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this order?
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowDeleteDialog(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-4 py-2 text-red-500 hover:text-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
