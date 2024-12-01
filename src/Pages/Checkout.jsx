@@ -37,7 +37,7 @@ const Checkout = () => {
 
   const {state} =useAuthContext();
   const {user} =state;
-  const addres ="aaaaaa"
+  const addres = id;
 
   const [orderDataArray, setOrderDataArray] = useState([]);
 
