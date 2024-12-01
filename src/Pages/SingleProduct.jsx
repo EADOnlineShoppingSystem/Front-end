@@ -8,6 +8,7 @@ import { FaCcVisa, FaCcMastercard, FaCcAmex, FaCcPaypal } from "react-icons/fa";
 import NavBar from "../Components/NavBar/NavBar";
 import { useAuthContext } from "../contexts/AthContext";
 import AuthModal from "../Components/Auth/AuthModal";
+import { useCart } from "../contexts/CartContext";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -23,6 +24,11 @@ const SingleProduct = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart();
+
+  //add to cart
+ 
+
 
   const fetchProductDetails = async () => {
     if (!id) {
@@ -93,6 +99,16 @@ const SingleProduct = () => {
       setIsAuthModalOpen(true);
       return;
     }
+
+    const cartItem = {
+      id: product._id,
+      name: product.productTitle,
+      price: product.lowestPrice,
+      image: product.images[0]?.url || "/placeholder.jpg",
+      quantity: quantity,
+    };
+    console.log("hajhcv",cartItem);
+    addToCart(cartItem);
 
     // add to cart -----------------------------------------------------------------------
   };
@@ -316,6 +332,12 @@ const SingleProduct = () => {
                     value={quantity}
                     readOnly
                   />
+                   <button
+                    onClick={handleIncrement}
+                    className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
