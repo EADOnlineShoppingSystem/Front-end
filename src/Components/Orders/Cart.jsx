@@ -14,24 +14,6 @@ const Cart = () => {
   const navigate = useNavigate();
   const { dispatch } = useOrderContext();
 
-  // Calculate cart summary
-  // const cartSummary = useMemo(() => {
-  //   const subtotal = cartItem.reduce(
-  //     (sum, item) => sum + item.productDetails.product.lowestPrice * item.quantity,
-  //     0
-  //   );
-  //   const shippingFee = cartItem.length > 0 ? 280 : 0;
-  //   const voucherDiscount = voucherApplied ? 500 : 0;
-  //   const total = subtotal + shippingFee - voucherDiscount;
-
-  //   return {
-  //     subtotal,
-  //     shippingFee,
-  //     voucherDiscount,
-  //     total,
-  //   };
-  // }, [cartItem, voucherApplied]);
-
   const handleOrders = () => {
 
     const orders = cartItem.map(item => ({
@@ -178,13 +160,13 @@ const Cart = () => {
           {/* Order Summary Section */}
           <div className="lg:w-80">
             <div className="bg-white rounded-lg shadow-sm p-4">
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <h2 className="font-medium mb-4">Location</h2>
                 <div className="flex items-start gap-2">
                   <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
                   <p className="text-gray-600 text-sm flex-1">{location}</p>
                 </div>
-              </div>
+              </div> */}
               <div className="border-t pt-4">
                 <h2 className="font-medium mb-4">Order Summary</h2>
                 <div className="space-y-2 mb-4">
@@ -196,42 +178,7 @@ const Cart = () => {
                     <span className="text-gray-600">Shipping Fee</span>
                     <span>Rs. {shippingFee}</span>
                   </div>
-                  {/* {voucherApplied && (
-                    <div className="flex justify-between text-sm text-green-600">
-                      <span>Voucher Discount</span>
-                      <span>- Rs. 500</span>
-                    </div>
-                  )} */}
                 </div>
-
-                {/* <div className="mb-4">
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      placeholder="Enter Voucher Code (try: 1000)"
-                      className="flex-1 border rounded px-3 py-2 text-sm"
-                      value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
-                    />
-                    <button 
-                      className={`text-white px-4 py-2 rounded text-sm ${
-                        voucherApplied 
-                          ? 'bg-gray-400 cursor-not-allowed' 
-                          : 'bg-blue-500 hover:bg-blue-600'
-                      }`}
-                      onClick={handleApplyVoucher}
-                      disabled={voucherApplied}
-                    >
-                      {voucherApplied ? 'APPLIED' : 'APPLY'}
-                    </button>
-                  </div>
-                  {voucherApplied && (
-                    <p className="text-green-600 text-sm mt-2">
-                      Voucher successfully applied!
-                    </p>
-                  )}
-                </div> */}
-
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
                   <span className="text-blue-400 font-medium">

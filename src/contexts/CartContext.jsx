@@ -72,6 +72,7 @@ export const CartProvider = ({ children }) => {
     try {
       await cartServices.deleteFromCart(productId);
       await fetchCartItems();
+      await fetchupdateAllQuantity();
       message.success('Item removed from cart');
     } catch (error) {
       console.error('Error removing item:', error);
@@ -85,6 +86,7 @@ export const CartProvider = ({ children }) => {
       console.log('Update quantity:', productId, quantity);
       await cartServices.updateCartQuantity(productId, quantity);
       await fetchCartItems();
+      await fetchupdateAllQuantity();
       message.success('Quantity updated');
     } catch (error) {
       console.error('Error updating quantity:', error);
