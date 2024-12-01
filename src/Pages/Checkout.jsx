@@ -17,6 +17,8 @@ const Checkout = () => {
   const { isLoading, isError } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
   const [addresses, setAddresses] = useState([]);
+  const  [id,setId] = useState(null)
+  const [selectedAddress, setSelectedAddress] = useState(null);
 
   const [email, setEmail] = useState("");
 
@@ -174,8 +176,7 @@ const Checkout = () => {
   const payment = () => {
     window.payhere.startPayment(paymentData);
   };
-   const  [id,setId] = useState(null)
-  const [selectedAddress, setSelectedAddress] = useState(null);
+
 
   const handleAddressSelection = (address) => {
     setSelectedAddress(address);
