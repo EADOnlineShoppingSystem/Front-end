@@ -115,9 +115,9 @@ const NewProducts = () => {
     <div className="w-full">
       <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="pb-4 sm:pb-6 lg:pb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
+          <h2 data-testid="the-latest" className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
             The latest. Take a look at{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text">
+            <span data-testid="whats-new" className="bg-gradient-to-r from-blue-600 to-pink-600 inline-block text-transparent bg-clip-text">
               what&apos;s new,
             </span>{" "}
             right now.

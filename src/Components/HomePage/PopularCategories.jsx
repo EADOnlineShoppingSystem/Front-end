@@ -54,13 +54,13 @@ const PopularCategories = () => {
   return (
     <div className="w-full max-w-[2000px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       <div className="pb-4 sm:pb-6 lg:pb-8">
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
+        <h2 data-testid="popular-categories-heading" className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-semibold">
           Categories
         </h2>
       </div>
 
       {categories.length === 0 ? (
-        <div className="w-full text-center py-8 text-gray-500">
+        <div data-testid="no-categories-found" className="w-full text-center py-8 text-gray-500">
           No categories found
         </div>
       ) : (

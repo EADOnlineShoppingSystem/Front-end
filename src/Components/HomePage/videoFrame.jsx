@@ -79,7 +79,7 @@ const VideoHero = () => {
             transition-all duration-300
             group-hover:bg-black/40"
           >
-            <span>See More</span>
+            <span data-testid="see-more-button-text">See More</span>
             <FontAwesomeIcon
               icon={faChevronDown}
               className="w-3 h-3 sm:w-4 sm:h-4 
