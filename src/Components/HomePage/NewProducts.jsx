@@ -252,7 +252,7 @@ const NewProducts = () => {
                           </div>
 
                           {/* Add to Cart Button */}
-                          <div className="mt-4 flex justify-center mb-10">
+                          {/* <div className="mt-4 flex justify-center mb-10">
                             <button
                               type="button"
                               className="inline-flex items-center justify-center rounded-md border border-transparent px-3 py-2 sm:px-4 sm:py-2 bg-blue-500 text-sm font-medium text-white transition-all duration-300 hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -273,7 +273,7 @@ const NewProducts = () => {
                               </svg>
                               <span className="ml-2">Shop Now</span>
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

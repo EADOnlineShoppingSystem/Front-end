@@ -225,7 +225,7 @@ const IPads = () => {
                             </p>
                           </div>
 
-                          <div className="w-full flex justify-center mt-2">
+                          {/* <div className="w-full flex justify-center mt-2">
                             <button
                               type="button"
                               onClick={(e) => {
@@ -249,7 +249,7 @@ const IPads = () => {
                               </svg>
                               <span className="ml-2">Shop Now</span>
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
