@@ -17,6 +17,8 @@ const Checkout = () => {
   const { isLoading, isError } = useSelector((state) => state.auth);
   const cartState = useSelector((state) => state.auth.cartProducts);
   const [addresses, setAddresses] = useState([]);
+     const [AddressId, setAddressId] = useState(null);
+     const [selectedAddress, setSelectedAddress] = useState(null);
 
   const [email, setEmail] = useState("");
 
@@ -37,25 +39,25 @@ const Checkout = () => {
 
   const {state} =useAuthContext();
   const {user} =state;
-  const addres = id;
+ 
 
   const [orderDataArray, setOrderDataArray] = useState([]);
 
   useEffect(() => {
     if (cartItem && cartItem.length > 0) {
+      console.log("cartItem", AddressId);
       const mappedOrders = cartItem.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
 
         price: item.productDetails.product.lowestPrice,
-        addressId:addres,
-        delevered:false
-
+        addressId: AddressId,
+        delevered: false,
       }));
 
       setOrderDataArray(mappedOrders);
     }
-  }, [cartItem]);
+  }, [cartItem,AddressId]);
 
   console.log("orderDataArray", orderDataArray);
   // Calculate cart summary
@@ -174,14 +176,13 @@ const Checkout = () => {
   const payment = () => {
     window.payhere.startPayment(paymentData);
   };
-   const  [id,setId] = useState(null)
-  const [selectedAddress, setSelectedAddress] = useState(null);
+
 
   const handleAddressSelection = (address) => {
     setSelectedAddress(address);
-    setId(address._id);
+    setAddressId(address._id);
   };
-  console.log(selectedAddress)
+ 
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
