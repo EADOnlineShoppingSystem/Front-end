@@ -446,7 +446,7 @@ const Address = () => {
               <p>{`${address.city}, ${address.state} ${address.zip}`}</p>
               <p>{address.phone}</p>
             </div>
-            <div className="mt-3 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            {/* <div className="mt-3 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
               {!address.isDefault && (
                 <button
                   onClick={() => handleSetDefault(address._id)}
@@ -462,7 +462,7 @@ const Address = () => {
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Use this address
               </button>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
