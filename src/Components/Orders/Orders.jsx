@@ -86,12 +86,21 @@ const Orders = () => {
     setSelectedOrderId(null);
   };
 
-  const handleFinishOrder = (orderId) => {
+  const handleFinishOrder = async(orderId) => {
     setOrders(
       orders.map((order) =>
         order.id === orderId ? { ...order, isFinished: true } : order
       )
     );
+    try {
+      const data = await orderServices.changeDeleveryStatus(orderId);
+      console.log("Order finished:", data);
+    } catch (error) {
+      console.error("Error finishing order:", error);
+      setError(true);
+      
+    }
+
   };
 
   const filteredOrders = orders.filter((order) => {
@@ -452,13 +461,7 @@ const Orders = () => {
                           Mark as Finished
                         </button>
                       )}
-                      <button
-                        onClick={() => handleDeleteOrder(order.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-sm text-red-500 border border-red-500 rounded-lg hover:bg-red-50 w-full sm:w-auto justify-center"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete</span>
-                      </button>
+                    
                     </div>
                   </div>
 

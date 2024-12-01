@@ -34,8 +34,10 @@ const Checkout = () => {
   }, [LoggedUser]);
   const { cartItem } = useCart();
 
-  const { state } = useAuthContext();
-  const { user } = state;
+
+  const {state} =useAuthContext();
+  const {user} =state;
+  const addres ="aaaaaa"
 
   const [orderDataArray, setOrderDataArray] = useState([]);
 
@@ -44,7 +46,11 @@ const Checkout = () => {
       const mappedOrders = cartItem.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        price: item.productDetails?.product?.price || 0, // Use price if available
+
+        price: item.productDetails.product.lowestPrice,
+        addressId:addres,
+        delevered:false
+
       }));
 
       setOrderDataArray(mappedOrders);
@@ -138,6 +144,7 @@ const Checkout = () => {
       setTotalAmount(sum);
     }
   }, [cartState]);
+
 
   useEffect(() => {
     try {
