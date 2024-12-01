@@ -219,7 +219,7 @@ const AppleWatch = () => {
                             </p>
                           </div>
 
-                          <div className="w-full flex justify-center mt-2">
+                          {/* <div className="w-full flex justify-center mt-2">
                             <button
                               type="button"
                               onClick={(e) => {
@@ -243,7 +243,7 @@ const AppleWatch = () => {
                               </svg>
                               <span className="ml-2">Add to Cart</span>
                             </button>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
