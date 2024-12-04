@@ -1,35 +1,49 @@
-import { useState } from "react";
-import { PlusCircle, Trash2, Edit2, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  PlusCircle,
+  Trash2,
+  Edit2,
+  X,
+  Briefcase,
+  Home,
+  CheckCircle,
+} from "lucide-react";
 import NavBar from "../NavBar/NavBar";
-
+import orderServices from "../../Services/order.services";
+import { message, Spin } from 'antd';
 const Address = () => {
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      street: "123 Main St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94105",
-      phone: "(555) 123-4567",
-      isDefault: true,
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      street: "456 Market St",
-      city: "San Francisco",
-      state: "CA",
-      zip: "94102",
-      phone: "(555) 987-6543",
-      isDefault: false,
-    },
-  ]);
+  // const [addresses, setAddresses] = useState([
+  //   {
+  //     id: 1,
+  //     name: "Jaden Johnson",
+  //     street: "123 Main St",
+  //     city: "San Francisco",
+  //     state: "CA",
+  //     zip: "94105",
+  //     phone: "(555) 123-4567",
+  //     isDefault: true,
+  //     isProfessional: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Jane Smith",
+  //     street: "456 Market St",
+  //     city: "San Francisco",
+  //     state: "CA",
+  //     zip: "94102",
+  //     phone: "(555) 987-6543",
+  //     isDefault: false,
+  //     isProfessional: true,
+  //   },
+  // ]);
 
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [errors, setErrors] = useState({});
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(null);
 
   const handleAdd = () => {
     setModalMode("add");
@@ -38,6 +52,61 @@ const Address = () => {
     setShowModal(true);
   };
 
+  //save address 
+  const handleSaveAddress = async (address) => {
+    try {
+        setLoading(true);
+        console.log("Saving address:", address);
+        await orderServices.createAddress(address);
+        await fetchAddresses(); // Fetch updated addresses
+        message.success('Address saved successfully');
+        setShowModal(false);
+        setLoading(false);
+    } catch (error) {
+        console.error("Error saving address:", error);
+        message.error(error.message || 'Failed to save address');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  ///update assress
+  const handleUpdateAddress = async (address) => {
+    try {
+        setLoading(true);
+        console.log("Updating address:", address);
+        await orderServices.updateAddressByAddressId(address);
+        await fetchAddresses(); // Fetch updated addresses
+        message.success('Address updated successfully');
+        setShowModal(false);
+        setLoading(false);
+    } catch (error) {
+        console.error("Error updating address:", error);
+        message.error(error.message || 'Failed to update address');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //fetch address from database
+   const fetchAddresses = async () => {
+    try {
+      setLoading(true);
+      const response = await orderServices.getAddressById();
+      setAddresses(response);
+      console.log("Fetched addresses:", response);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    }finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+
   const handleEdit = (address) => {
     setModalMode("edit");
     setSelectedAddress(address);
@@ -45,17 +114,38 @@ const Address = () => {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
-    setAddresses(addresses.filter((address) => address.id !== id));
+  // const handleDelete = (id) => {
+  //   setAddresses(addresses.filter((address) => address._id !== id));
+  // };
+
+  //delete address from database
+  const handleDelete = async (id) => {
+    try {
+      setDeleteLoading(id);
+      await orderServices.deleteAddressByUserId(id);
+      message.success('Address deleted successfully');
+      fetchAddresses();
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      message.error(error.message || 'Failed to delete address');
+    }
+    finally {
+      setDeleteLoading(null);
+    }
   };
 
   const handleSetDefault = (id) => {
     setAddresses(
       addresses.map((address) => ({
         ...address,
-        isDefault: address.id === id,
+        isDefault: address._id === id,
       }))
     );
+  };
+
+  const handleUseAddress = (address) => {
+    // Add your checkout logic here
+    console.log("Using address for checkout:", address);
   };
 
   const validateForm = (formData) => {
@@ -72,10 +162,11 @@ const Address = () => {
 
     // Phone validation
     const phone = formData.get("phone").trim();
-    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
-    if (!phoneRegex.test(phone)) {
-      newErrors.phone = "Phone must be in format (XXX) XXX-XXXX";
-    }
+    const phoneRegex = /^\d{10}$/; // Matches exactly 10 digits
+   if (!phoneRegex.test(phone)) {
+     newErrors.phone = "Phone number must contain exactly 10 digits.";
+}
+
 
     // Street validation
     const street = formData.get("street").trim();
@@ -121,40 +212,36 @@ const Address = () => {
             <X className="w-6 h-6" />
           </button>
         </div>
-
+        <Spin spinning={loading}>
         <form
-          className="p-6 space-y-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
+  className="p-6 space-y-4"
+  onSubmit={(e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-            if (!validateForm(formData)) {
-              return;
-            }
+    if (!validateForm(formData)) {
+      return;
+    }
 
-            const newAddress = {
-              id: selectedAddress?.id || Date.now(),
-              name: formData.get("name").trim(),
-              street: formData.get("street").trim(),
-              city: formData.get("city").trim(),
-              state: formData.get("state").trim().toUpperCase(),
-              zip: formData.get("zip").trim(),
-              phone: formData.get("phone").trim(),
-              isDefault: selectedAddress?.isDefault || false,
-            };
+    const addressData = {
+      ...selectedAddress, // Spread existing address to preserve _id
+      name: formData.get("name").trim(),
+      street: formData.get("street").trim(),
+      city: formData.get("city").trim(),
+      state: formData.get("state").trim().toUpperCase(),
+      zip: formData.get("zip").trim(),
+      phone: formData.get("phone").trim(),
+      isDefault: selectedAddress?.isDefault || false,
+      isProfessional: formData.get("isProfessional") === "true",
+    };
 
-            if (modalMode === "add") {
-              setAddresses((prev) => [...prev, newAddress]);
-            } else {
-              setAddresses((prev) =>
-                prev.map((addr) =>
-                  addr.id === selectedAddress.id ? newAddress : addr
-                )
-              );
-            }
-            setShowModal(false);
-          }}
-        >
+    if (modalMode === "edit") {
+      handleUpdateAddress(addressData);
+    } else {
+      handleSaveAddress(addressData);
+    }
+  }}
+>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -239,7 +326,7 @@ const Address = () => {
                 ZIP Code
               </label>
               <input
-                type="text"
+                type="number"
                 name="zip"
                 defaultValue={selectedAddress?.zip || ""}
                 placeholder="12345 or 12345-6789"
@@ -249,6 +336,21 @@ const Address = () => {
               {errors.zip && (
                 <p className="mt-1 text-sm text-red-600">{errors.zip}</p>
               )}
+            </div>
+            <div className="md:col-span-2">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="isProfessional"
+                  value="true"
+                  defaultChecked={selectedAddress?.isProfessional}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ml-3 text-sm font-medium text-gray-700">
+                  Business Address
+                </span>
+              </label>
             </div>
           </div>
           <div className="flex justify-end space-x-3 mt-6">
@@ -267,6 +369,7 @@ const Address = () => {
             </button>
           </div>
         </form>
+        </Spin>
       </div>
     </div>
   );
@@ -287,10 +390,11 @@ const Address = () => {
         </button>
       </div>
 
+      <Spin spinning={loading}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {addresses.map((address) => (
           <div
-            key={address.id}
+            key={address._id}
             className={`p-4 rounded-lg border ${
               address.isDefault
                 ? "border-blue-500 bg-blue-50"
@@ -302,11 +406,25 @@ const Address = () => {
                 <span className="font-medium text-gray-900">
                   {address.name}
                 </span>
-                {address.isDefault && (
-                  <span className="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
-                    Default
-                  </span>
-                )}
+                <div className="flex space-x-2">
+                  {address.isDefault && (
+                    <span className="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full">
+                      Default
+                    </span>
+                  )}
+                  {address.isProfessional && (
+                    <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full flex items-center">
+                      <Briefcase className="w-3 h-3 mr-1" />
+                      Business
+                    </span>
+                  )}
+                  {!address.isProfessional && (
+                    <span className="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full flex items-center">
+                      <Home className="w-3 h-3 mr-1" />
+                      Residential
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex space-x-2">
                 <button
@@ -316,7 +434,7 @@ const Address = () => {
                   <Edit2 className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleDelete(address.id)}
+                  onClick={() => handleDelete(address._id)}
                   className="p-1 text-gray-500 hover:text-red-600"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -328,17 +446,27 @@ const Address = () => {
               <p>{`${address.city}, ${address.state} ${address.zip}`}</p>
               <p>{address.phone}</p>
             </div>
-            {!address.isDefault && (
+            {/* <div className="mt-3 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+              {!address.isDefault && (
+                <button
+                  onClick={() => handleSetDefault(address._id)}
+                  className="text-sm text-blue-600 hover:text-blue-700"
+                >
+                  Set as default
+                </button>
+              )}
               <button
-                onClick={() => handleSetDefault(address.id)}
-                className="mt-3 text-sm text-blue-600 hover:text-blue-700"
+                onClick={() => handleUseAddress(address)}
+                className="flex items-right justify-right px-4 py-2 text-sm font-medium text-white bg-blue-300 rounded-md hover:bg-blue-400 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-blue-400"
               >
-                Set as default
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Use this address
               </button>
-            )}
+            </div> */}
           </div>
         ))}
       </div>
+      </Spin>
 
       {showModal && <AddressModal />}
     </div>
