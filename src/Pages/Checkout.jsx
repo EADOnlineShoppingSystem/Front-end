@@ -195,7 +195,7 @@ const Checkout = () => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">Contact Information</h3>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700">Supun Ishara ({email})</p>
+                  <p className="text-gray-700">{email}</p>
                 </div>
               </div>
 

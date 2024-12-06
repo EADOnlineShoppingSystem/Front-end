@@ -15,7 +15,6 @@ const Cart = () => {
   const { dispatch } = useOrderContext();
 
 
-
   const handleOrders = () => {
 
     const orders = cartItem.map(item => ({
@@ -180,7 +179,6 @@ const Cart = () => {
                     <span className="text-gray-600">Shipping Fee</span>
                     <span>Rs. {shippingFee}</span>
                   </div>
-                  
                 </div>
                 <div className="flex justify-between items-center mb-4">
                   <span className="font-medium">Total</span>
